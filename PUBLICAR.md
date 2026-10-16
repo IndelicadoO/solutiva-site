@@ -22,7 +22,7 @@ Nada foi publicado ainda. Faça nesta ordem:
 ## Trocar o contato para o WhatsApp
 
 Em `script.js`, no topo, preencha `whatsapp: '5561XXXXXXXXX'` (55 + DDD + número, só dígitos).
-Todos os botões laranja passam a abrir o WhatsApp com a mensagem pronta. Commit e push.
+Todos os botões principais (ciano) passam a abrir o WhatsApp com a mensagem pronta. Commit e push.
 
 Obs.: os botões apontam para `https://ig.me/m/solutiva.dev`. Só funciona depois que o Instagram @solutiva.dev existir.
 
