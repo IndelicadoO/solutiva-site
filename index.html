@@ -31,7 +31,7 @@
   try {
     if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       d.classList.add('intro');
-      setTimeout(function () { d.classList.add('intro-monta', 'intro-fim'); }, 4000);
+      setTimeout(function () { d.classList.add('intro-monta', 'intro-desfaz', 'intro-fim'); }, 4000);
     }
   } catch (e) {}
 })(document.documentElement);
@@ -360,7 +360,7 @@
     <div class="wrap">
       <p class="rotulo">Mais soluções</p>
       <h2>Tudo o que a Solutiva <span class="grad-frio">pode fazer pelo seu negócio</span></h2>
-      <p class="lead">Feito com as mesmas ferramentas que rodam nos meus sistemas todo dia. Orçamento sob consulta.</p>
+      <p class="lead">Tudo com IA, feito por mim. Orçamento sob consulta.</p>
       <div class="solucoes">
         <article class="cartao sol revela tilt">
           <span class="sol-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 9.5v5l4-2.5z"/></svg></span>

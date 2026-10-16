@@ -264,10 +264,19 @@ const CONTATO = {
   var hero = document.getElementById('inicio');
   var fim = document.getElementById('contato');
   if (flut && hero && 'IntersectionObserver' in window) {
-    var vis = { hero: true, fim: false };
-    var upd = function () { flut.classList.toggle('mostra', !vis.hero && !vis.fim); };
+    var vis = { hero: true, fim: false }, ctas = 0;
+    var upd = function () { flut.classList.toggle('mostra', !vis.hero && !vis.fim && ctas === 0); };
     new IntersectionObserver(function (e) { vis.hero = e[0].isIntersecting; upd(); }).observe(hero);
     if (fim) new IntersectionObserver(function (e) { vis.fim = e[0].isIntersecting; upd(); }).observe(fim);
+    // some quando um botão de orçamento da própria seção está na tela (não cobre o botão)
+    var oc = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) {
+        var antes = e.target._visto === true;
+        if (e.isIntersecting !== antes) { e.target._visto = e.isIntersecting; ctas += e.isIntersecting ? 1 : -1; }
+      });
+      upd();
+    }, { rootMargin: '0px 0px 40px 0px' });
+    document.querySelectorAll('main .acoes, main .produto-acoes, .sis-cta .btn').forEach(function (el) { if (!hero.contains(el)) oc.observe(el); });
   }
 
   // ---- fundo vivo: triângulos da logo subindo devagar ----

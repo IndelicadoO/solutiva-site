@@ -444,3 +444,4 @@ html:not(.js-mov) .pii i { transform: none; }
 .sol:hover .sol-ico { transform: rotate(60deg); }
 .sol:hover .sol-ico svg { transform: rotate(-60deg); transition: transform .6s var(--mola); }
 #solucoes .acoes { margin-top: 26px; }
+.sem-js .passos::before { transform: none; }
