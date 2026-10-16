@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /previews/
+Sitemap: https://solutiva-site.onrender.com/sitemap.xml
