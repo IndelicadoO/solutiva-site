@@ -1,0 +1,11 @@
+# Render: Static Site (sem build). Blueprint opcional; o painel do Render também funciona sem este arquivo.
+services:
+  - type: web
+    name: solutiva-site
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: .
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=604800
