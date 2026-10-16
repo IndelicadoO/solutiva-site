@@ -68,7 +68,7 @@ const CONTATO = {
     ['NexoFrame', 'gravou o vídeo do produto'],
     ['Orbix', 'conferiu o preço antes de publicar'],
     ['Orbix', 'publicou o vídeo em 4 redes'],
-    ['Robô de WhatsApp', 'respondeu um cliente', 'em teste'],
+    ['Robô de WhatsApp', 'respondeu um cliente e marcou o horário'],
     ['LYRA', 'editou a gameplay e agendou'],
     ['Certeza Duvidosa', 'montou roteiro, narração e cenas'],
     ['Orbit', 'recebeu um comando pelo Telegram']
