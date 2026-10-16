@@ -26,11 +26,22 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Onest:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script>
+(function (d) {
+  try {
+    if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      d.classList.add('intro');
+      setTimeout(function () { d.classList.add('intro-monta', 'intro-fim'); }, 4000);
+    }
+  } catch (e) {}
+})(document.documentElement);
+</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"ProfessionalService","name":"Solutiva","description":"Sites profissionais em 48 h, robô de WhatsApp com IA e software sob medida para pequenos negócios.","areaServed":"BR","address":{"@type":"PostalAddress","addressLocality":"Brasília","addressRegion":"DF","addressCountry":"BR"},"logo":"https://solutiva.dev.br/assets/icon-512.png","sameAs":["https://www.linkedin.com/in/erinaldo-gomes-a30442264/"]}
 </script>
 </head>
 <body>
+<div class="malha" aria-hidden="true"></div>
 <canvas id="bgCanvas" class="bg-canvas" aria-hidden="true"></canvas>
 
 <header class="topo" id="topo">
@@ -43,7 +54,7 @@
       <a href="#entrega-site">Site em 48 h</a>
       <a href="#robo">Robô de WhatsApp</a>
       <a href="#portfolio">Portfólio</a>
-      <a href="#sistemas">Sistemas</a>
+      <a href="#solucoes">Mais soluções</a>
       <a href="#duvidas">Dúvidas</a>
     </nav>
     <a class="btn btn-prim btn-sm" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo>Pedir orçamento</span></a>
@@ -56,16 +67,12 @@
     <div class="wrap hero-in">
       <div class="hero-txt">
       <p class="selo"><span class="ponto"></span>Brasília · atendimento online</p>
-      <h1>Seu site profissional<br><span class="grad-agua">pronto em 48 h</span></h1>
+      <h1><span class="l"><span>Seu site profissional</span></span><span class="l"><span class="grad-agua">pronto em 48 h</span></span></h1>
       <p class="hero-sub">E de brinde, <strong>1 vídeo do seu produto feito com IA</strong> para postar no Instagram, no TikTok e no WhatsApp. Feito para loja, clínica, salão, restaurante e prestador de serviço.</p>
       <div class="acoes">
         <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 5l7 7-7 7"/></svg>
           <span data-rotulo>Orçamento grátis em 5 minutos</span>
-        </a>
-        <a class="btn btn-vidro" data-contato="secundario" href="https://www.linkedin.com/in/erinaldo-gomes-a30442264/" target="_blank" rel="noopener">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>
-          Falar no LinkedIn
         </a>
       </div>
       <ul class="hero-chips" aria-label="Destaques">
@@ -81,6 +88,19 @@
       </a>
       </div>
 
+      <div class="painel-palco">
+      <svg class="s-intro" viewBox="398 210 288 666" aria-hidden="true" focusable="false">
+        <polygon points="541,298 675,220 675,380" fill="#a8dcf0"/>
+        <polygon points="408,378 541,298 541,460" fill="#5bbfee"/>
+        <polygon points="541,298 675,380 541,460" fill="#4fb6ea"/>
+        <polygon points="408,378 541,460 408,540" fill="#9fb3bf"/>
+        <polygon points="408,540 541,460 541,625" fill="#7f9cab"/>
+        <polygon points="541,460 675,545 541,625" fill="#4d7f95"/>
+        <polygon points="541,625 675,545 675,705" fill="#2f6a85"/>
+        <polygon points="408,705 541,625 541,785" fill="#5cc4f2"/>
+        <polygon points="541,625 675,705 541,785" fill="#48b0e6"/>
+        <polygon points="408,705 541,785 408,865" fill="#a9def2"/>
+      </svg>
       <aside class="painel" aria-labelledby="painel-tit">
         <div class="painel-topo">
           <img class="painel-logo" src="assets/logo-s.webp" width="14" height="32" alt="">
@@ -99,6 +119,7 @@
         </ol>
         <p class="painel-pe">Cada linha é um robô fazendo sozinho o que antes tomava o seu dia.</p>
       </aside>
+      </div>
     </div>
   </section>
 
@@ -108,7 +129,7 @@
       <p class="rotulo">O que a Solutiva entrega</p>
       <h2>Dois produtos para o seu negócio <span class="grad-frio">atender e vender melhor</span></h2>
       <div class="produtos">
-        <article class="cartao produto revela">
+        <article class="cartao produto revela tilt">
           <span class="produto-tag">Produto 1</span>
           <h3>Site profissional em 48 h</h3>
           <p>Uma página bonita e rápida, com a cara do seu negócio, que leva o cliente direto para o seu WhatsApp.</p>
@@ -123,7 +144,7 @@
             <a class="link-seta" href="#entrega-site">Como funciona a entrega <span aria-hidden="true">↓</span></a>
           </div>
         </article>
-        <article class="cartao produto produto-robo revela">
+        <article class="cartao produto produto-robo revela tilt">
           <span class="produto-tag">Produto 2</span>
           <h3>Robô de WhatsApp com IA</h3>
           <p>Atende o seu cliente no WhatsApp a qualquer hora: responde dúvidas, manda orçamento e marca horário com as informações que você aprovar.</p>
@@ -189,32 +210,32 @@
       <p class="rotulo">O que vem no site</p>
       <h2>Tudo que o cliente procura, <span class="grad-frio">na palma da mão</span></h2>
       <div class="grade-itens">
-        <article class="cartao item revela">
+        <article class="cartao item revela tilt">
           <svg class="item-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg>
           <h3>Feito para o celular</h3>
           <p>Desenhado primeiro para a tela do celular, que é onde o seu cliente está. No computador fica bonito também.</p>
         </article>
-        <article class="cartao item revela">
+        <article class="cartao item revela tilt">
           <svg class="item-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>
           <h3>Rápido de abrir</h3>
           <p>Imagens leves e código enxuto. Página que demora, o cliente fecha antes de ver o que você faz.</p>
         </article>
-        <article class="cartao item revela">
+        <article class="cartao item revela tilt">
           <svg class="item-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 10c.5 2 2 3.5 4 4l1.2-1.2 2 1-.5 1.7c-3.5.3-7.6-3.7-7.3-7.2l1.7-.5 1 2z"/></svg>
           <h3>Botão de WhatsApp</h3>
           <p>Um toque e o cliente já está falando com você, com uma mensagem pronta dizendo de onde ele veio.</p>
         </article>
-        <article class="cartao item revela">
+        <article class="cartao item revela tilt">
           <svg class="item-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <h3>Pronto para o Google</h3>
           <p>Títulos, descrição, mapa e dados organizados para o Google entender o seu negócio. Ajudo a ligar ao Perfil da Empresa no Google.</p>
         </article>
-        <article class="cartao item revela">
+        <article class="cartao item revela tilt">
           <svg class="item-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>
           <h3>Seu domínio</h3>
           <p>Endereço com o nome da sua marca (seunegocio.com.br). Eu configuro tudo; o registro fica no seu nome.</p>
         </article>
-        <article class="cartao item revela">
+        <article class="cartao item revela tilt">
           <svg class="item-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>
           <h3>A sua cara</h3>
           <p>Cores, fotos e textos do seu negócio. Nada de modelo genérico igual ao do vizinho.</p>
@@ -281,6 +302,50 @@
         </li>
       </ol>
       <p class="nota">O prazo é combinado no orçamento e depende da aprovação da Meta para o seu número e a sua empresa.</p>
+
+      <div class="treino" id="treino" data-etapa="0">
+        <div class="treino-txt">
+          <span class="treino-tag">Opcional · só se você quiser</span>
+          <h3>Treinado nas conversas reais do seu negócio</h3>
+          <ol class="treino-passos">
+            <li data-e="1"><span class="tp-n" aria-hidden="true">1</span>Você exporta algumas conversas do seu WhatsApp (sem fotos).</li>
+            <li data-e="1"><span class="tp-n" aria-hidden="true">2</span>A gente tira nomes e telefones dos seus clientes.</li>
+            <li data-e="2"><span class="tp-n" aria-hidden="true">3</span>A IA encontra as perguntas que mais se repetem, os preços e horários que você passa e o seu jeito de falar.</li>
+            <li data-e="3"><span class="tp-n" aria-hidden="true">4</span>Você recebe um relatório grátis do que dá para automatizar.</li>
+            <li data-e="3"><span class="tp-n" aria-hidden="true">5</span>O robô aprende e responde no seu tom.</li>
+          </ol>
+          <p class="treino-selo">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            Só com a sua autorização. Os arquivos são apagados depois.
+          </p>
+        </div>
+        <div class="treino-vis" role="img" aria-label="Ilustração: conversas exportadas, nomes e telefones apagados, a IA separa perguntas, preços, horários e jeito de falar, e sai um relatório de exemplo">
+          <div class="tv-cena tv-1">
+            <p class="tv-rot">Conversas exportadas</p>
+            <p class="tv-msg"><span class="pii"><span>Nome do cliente</span><i></i></span> <span class="pii"><span>(00) 00000-0000</span><i></i></span><br>Vocês abrem no sábado?</p>
+            <p class="tv-msg"><span class="pii"><span>Nome do cliente</span><i></i></span> <span class="pii"><span>(00) 00000-0000</span><i></i></span><br>Quanto fica o serviço?</p>
+            <p class="tv-msg"><span class="pii"><span>Nome do cliente</span><i></i></span> <span class="pii"><span>(00) 00000-0000</span><i></i></span><br>Tem horário amanhã?</p>
+          </div>
+          <div class="tv-cena tv-2">
+            <p class="tv-rot">O que a IA encontrou</p>
+            <ul class="tv-chips">
+              <li>Perguntas que mais se repetem</li>
+              <li>Preços que você passa</li>
+              <li>Horários</li>
+              <li>Seu jeito de falar</li>
+            </ul>
+          </div>
+          <div class="tv-cena tv-3">
+            <p class="tv-rot">Relatório grátis <span class="tv-ex">exemplo ilustrativo</span></p>
+            <ul class="tv-rel">
+              <li><span>Dúvidas de horário</span><b class="ok">dá para automatizar</b></li>
+              <li><span>Pedidos de preço</span><b class="ok">dá para automatizar</b></li>
+              <li><span>Marcação de horário</span><b class="ok">dá para automatizar</b></li>
+              <li><span>Casos especiais</span><b>ficam com você</b></li>
+            </ul>
+          </div>
+        </div>
+      </div>
       <div class="acoes">
         <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener">
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 5l7 7-7 7"/></svg>
@@ -290,14 +355,77 @@
     </div>
   </section>
 
-  <!-- 6. PORTFÓLIO -->
+  <!-- 6. MAIS SOLUÇÕES -->
+  <section class="secao" id="solucoes">
+    <div class="wrap">
+      <p class="rotulo">Mais soluções</p>
+      <h2>Tudo o que a Solutiva <span class="grad-frio">pode fazer pelo seu negócio</span></h2>
+      <p class="lead">Feito com as mesmas ferramentas que rodam nos meus sistemas todo dia. Orçamento sob consulta.</p>
+      <div class="solucoes">
+        <article class="cartao sol revela tilt">
+          <span class="sol-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 9.5v5l4-2.5z"/></svg></span>
+          <h3>Vitrine em Movimento</h3>
+          <p>Vídeos curtos do seu produto feitos com IA, a partir da foto que você já tem.</p>
+        </article>
+        <article class="cartao sol revela tilt">
+          <span class="sol-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+          <h3>Narração com IA</h3>
+          <p>Locução para vídeos, anúncios e aulas, com vozes naturais em português.</p>
+        </article>
+        <article class="cartao sol revela tilt">
+          <span class="sol-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></span>
+          <h3>Trilha musical com IA</h3>
+          <p>Música original feita com IA para os seus vídeos e anúncios.</p>
+        </article>
+        <article class="cartao sol revela tilt">
+          <span class="sol-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2.5"/><path d="M3 9h18M8 2v4M16 2v4M8 14l2.5 2.5L16 12"/></svg></span>
+          <h3>Postagem automática</h3>
+          <p>Seus posts saem sozinhos no Instagram, no LinkedIn e no YouTube, mesmo com o computador desligado.</p>
+        </article>
+        <article class="cartao sol revela tilt">
+          <span class="sol-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></span>
+          <h3>Cardápio digital</h3>
+          <p>Cardápio em link e QR, com o pedido chegando pronto no seu WhatsApp.</p>
+        </article>
+        <article class="cartao sol revela tilt">
+          <span class="sol-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4a3 3 0 0 1 3 3V14M7 10v4a3 3 0 0 0 3 3h4"/></svg></span>
+          <h3>Automações</h3>
+          <p>Formulário que vai para a planilha e avisa você no WhatsApp ou no Telegram, sem ninguém copiar e colar.</p>
+        </article>
+        <article class="cartao sol revela tilt">
+          <span class="sol-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 4 3 11l6 2.5L19 7l-7.5 8v5l3.5-4 4 3z"/></svg></span>
+          <h3>Assistente no Telegram</h3>
+          <p>Um robô no Telegram que responde, avisa e executa tarefas para você.</p>
+        </article>
+        <article class="cartao sol revela tilt">
+          <span class="sol-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="15" height="14" rx="2.5"/><path d="m17.5 10 4-2.5v9l-4-2.5"/></svg></span>
+          <h3>Vídeos explicativos e documentários</h3>
+          <p>Roteiro, narração e edição completos, do tema ao vídeo pronto.</p>
+        </article>
+        <article class="cartao sol revela tilt">
+          <span class="sol-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 6 2.5 12 8 18M16 6l5.5 6-5.5 6M14 4l-4 16"/></svg></span>
+          <h3>Sistemas sob medida</h3>
+          <p>Quando o seu negócio precisa de algo só dele.</p>
+          <a class="link-seta" href="#sistemas">Ver os que já rodam <span aria-hidden="true">↓</span></a>
+        </article>
+      </div>
+      <div class="acoes">
+        <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 5l7 7-7 7"/></svg>
+          <span data-rotulo>Pedir orçamento sob consulta</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. PORTFÓLIO -->
   <section class="secao" id="portfolio">
     <div class="wrap">
       <p class="rotulo">Portfólio real</p>
       <h2>Sites que eu fiz e <span class="grad-frio">estão no ar agora</span></h2>
       <p class="lead">Pode abrir, clicar e testar no seu celular.</p>
       <div class="portfolio">
-        <article class="cartao proj revela">
+        <article class="cartao proj revela tilt">
           <a class="proj-tela" href="https://cursoenglishathome.online" target="_blank" rel="noopener" aria-label="Abrir o site English at Home">
             <picture>
               <source media="(max-width: 600px)" srcset="assets/port-eah-mobile.webp" width="390" height="844">
@@ -310,7 +438,7 @@
             <a class="link-seta" href="https://cursoenglishathome.online" target="_blank" rel="noopener">cursoenglishathome.online <span aria-hidden="true">↗</span></a>
           </div>
         </article>
-        <article class="cartao proj revela">
+        <article class="cartao proj revela tilt">
           <a class="proj-tela" href="https://orbixbr.onrender.com" target="_blank" rel="noopener" aria-label="Abrir o site de links do Orbix">
             <picture>
               <source media="(max-width: 600px)" srcset="assets/port-orbix-mobile.webp" width="390" height="844">
@@ -327,7 +455,7 @@
     </div>
   </section>
 
-  <!-- 7. BÔNUS -->
+  <!-- 8. BÔNUS -->
   <section class="secao" id="bonus">
     <div class="wrap bonus">
       <div class="bonus-txt">
@@ -347,34 +475,34 @@
     </div>
   </section>
 
-  <!-- 8. SISTEMAS (também faço) -->
+  <!-- 9. SISTEMAS (também faço) -->
   <section class="secao" id="sistemas">
     <div class="wrap">
       <p class="rotulo">Também faço · sistemas sob medida</p>
       <h2>Precisa de algo maior? <span class="grad-frio">Meus sistemas rodam todo dia.</span></h2>
       <p class="lead">Além do site e do robô, eu crio sistemas com IA que trabalham sozinhos. Estes são meus, em uso agora:</p>
       <div class="sistemas">
-        <article class="cartao sis revela">
+        <article class="cartao sis revela tilt">
           <img src="assets/app-orbix.webp" width="884" height="608" loading="lazy" decoding="async" alt="Painel do Orbix">
           <h3>Orbix</h3><p>Acha o produto, grava o vídeo, confere o preço e publica em 4 redes sozinho.</p>
         </article>
-        <article class="cartao sis revela">
+        <article class="cartao sis revela tilt">
           <img src="assets/app-certeza.webp" width="884" height="608" loading="lazy" decoding="async" alt="Vídeos do canal Certeza Duvidosa">
           <h3>Certeza Duvidosa</h3><p>Monta documentários completos: roteiro, narração, cenas e edição.</p>
         </article>
-        <article class="cartao sis revela">
+        <article class="cartao sis revela tilt">
           <img src="assets/app-lyra.webp" width="884" height="608" loading="lazy" decoding="async" alt="Gameplay editada pelo LYRA">
           <h3>LYRA</h3><p>Canal de games que edita a gameplay e agenda a publicação sozinho.</p>
         </article>
-        <article class="cartao sis revela">
+        <article class="cartao sis revela tilt">
           <img src="assets/app-orbit.webp" width="884" height="608" loading="lazy" decoding="async" alt="Assistente Orbit">
           <h3>Orbit</h3><p>Assistente de voz que comanda os outros sistemas, até pelo Telegram.</p>
         </article>
-        <article class="cartao sis revela">
+        <article class="cartao sis revela tilt">
           <img src="assets/app-nexoframe.webp" width="884" height="608" loading="lazy" decoding="async" alt="Etapas do NexoFrame">
           <h3>NexoFrame</h3><p>Motor de vídeo com IA que roda no próprio computador.</p>
         </article>
-        <article class="cartao sis sis-cta revela">
+        <article class="cartao sis sis-cta revela tilt">
           <span class="em-breve">Sob consulta</span>
           <h3>Um sistema para o seu negócio</h3>
           <p>Me conta o que toma o seu tempo todo dia. Se der para automatizar, eu mostro como e quanto custa.</p>
@@ -384,7 +512,7 @@
     </div>
   </section>
 
-  <!-- 9. DÚVIDAS -->
+  <!-- 10. DÚVIDAS -->
   <section class="secao" id="duvidas">
     <div class="wrap estreito">
       <p class="rotulo">Perguntas frequentes</p>
@@ -442,7 +570,7 @@
     </div>
   </section>
 
-  <!-- 10. CTA FINAL -->
+  <!-- 11. CTA FINAL -->
   <section class="secao cta-final" id="contato">
     <div class="wrap">
       <div class="cartao cta-caixa revela">
@@ -454,7 +582,6 @@
             <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 5l7 7-7 7"/></svg>
             <span data-rotulo>Orçamento grátis em 5 minutos</span>
           </a>
-          <a class="btn btn-vidro" data-contato="secundario" href="https://www.linkedin.com/in/erinaldo-gomes-a30442264/" target="_blank" rel="noopener">Falar no LinkedIn</a>
         </div>
       </div>
     </div>
@@ -467,7 +594,7 @@
     <p>Software sob medida com IA · Brasília, DF</p>
     <p class="rodape-links">
       <a data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo-canal>Instagram</span></a>
-      <a href="https://www.linkedin.com/in/erinaldo-gomes-a30442264/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="rodape-ico" data-contato="secundario" href="https://www.linkedin.com/in/erinaldo-gomes-a30442264/" target="_blank" rel="noopener" aria-label="LinkedIn de Erinaldo Gomes, fundador da Solutiva" title="LinkedIn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg></a>
     </p>
     <p class="rodape-copy">© <span id="ano">2026</span> Solutiva</p>
   </div>

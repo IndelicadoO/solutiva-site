@@ -26,8 +26,7 @@ body {
   background-image:
     radial-gradient(1000px 640px at 88% -8%, rgba(58, 134, 255, .2), transparent 60%),
     radial-gradient(800px 560px at -12% 38%, rgba(52, 224, 192, .08), transparent 60%),
-    radial-gradient(900px 700px at 100% 90%, rgba(154, 146, 255, .09), transparent 60%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M0 0L28 48.5L56 0M0 97L28 48.5L56 97M0 48.5H56' fill='none' stroke='%2366c8ff' stroke-opacity='.06'/%3E%3C/svg%3E");
+    radial-gradient(900px 700px at 100% 90%, rgba(154, 146, 255, .09), transparent 60%);
   background-attachment: fixed;
   overflow-x: hidden;
 }
@@ -38,6 +37,8 @@ h1, h2 { font-family: var(--titulo); font-weight: 800; letter-spacing: -.025em; 
 h2 { font-size: clamp(1.85rem, 3.8vw, 2.75rem); }
 h3 { font-size: 1.18rem; font-weight: 700; letter-spacing: -.01em; }
 p { margin: 0 0 1em; }
+.malha { position: fixed; left: 0; right: 0; top: -120px; height: calc(100% + 240px); z-index: 0; pointer-events: none; will-change: transform;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M0 0L28 48.5L56 0M0 97L28 48.5L56 97M0 48.5H56' fill='none' stroke='%2366c8ff' stroke-opacity='.06'/%3E%3C/svg%3E"); }
 .bg-canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .topo, main, .rodape, .flutuante { position: relative; z-index: 1; }
 .wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 16px; }
@@ -272,3 +273,174 @@ p { margin: 0 0 1em; }
 .balao.bot { align-self: flex-start; background: rgba(52, 224, 192, .14); color: var(--txt); border: 1px solid rgba(52, 224, 192, .28); border-bottom-left-radius: 4px; }
 #robo .passos { margin-top: 48px; }
 #robo .acoes { margin-top: 22px; }
+
+/* ===================== MOVIMENTO (v4) =====================
+   Só transform e opacity; a abertura só roda com a classe .intro,
+   que o <head> põe quando o aparelho não pede movimento reduzido. */
+:root { --mola: cubic-bezier(.16, 1, .3, 1); }
+
+/* abertura: o "S" se monta e se desfaz no painel */
+.painel-palco { position: relative; }
+.s-intro { display: none; position: absolute; left: 50%; top: 50%; height: 340px; width: auto; margin: -170px 0 0 -73px; z-index: 3; pointer-events: none; overflow: visible; }
+.intro .s-intro { display: block; }
+.s-intro polygon { transform-box: fill-box; transform-origin: center; opacity: 0;
+  transform: translate(var(--dx, 0), var(--dy, 0)) rotate(var(--r, 0deg)) scale(.35);
+  transition: transform 1.05s var(--mola), opacity .5s ease; }
+.intro-monta .s-intro polygon { opacity: 1; transform: none; }
+.intro-desfaz .s-intro polygon { opacity: 0; transform: translate(var(--ox, 0), var(--oy, 0)) rotate(var(--r2, 0deg)) scale(.15);
+  transition: transform .85s cubic-bezier(.55, 0, .7, .2), opacity .7s ease .1s; }
+.intro .painel { opacity: 0; transform: translateY(18px) scale(.965); }
+.intro-fim .painel { opacity: 1; transform: none; transition: opacity .7s ease, transform .9s var(--mola); }
+.intro .painel .ev { opacity: 0; transform: translateY(10px); }
+.intro-fim .painel .ev { opacity: 1; transform: none; transition: opacity .5s ease, transform .6s var(--mola); }
+.intro-fim .painel .ev:nth-child(1) { transition-delay: .25s; }
+.intro-fim .painel .ev:nth-child(2) { transition-delay: .33s; }
+.intro-fim .painel .ev:nth-child(3) { transition-delay: .41s; }
+.intro-fim .painel .ev:nth-child(4) { transition-delay: .49s; }
+.intro-fim .painel .ev:nth-child(5) { transition-delay: .57s; }
+@media (max-width: 999px) {
+  .painel-palco { position: static; }
+  .s-intro { left: auto; right: 10px; top: 6px; margin: 0; height: 230px; opacity: .38; z-index: 0; }
+  .hero-txt { position: relative; z-index: 1; }
+  .intro .painel, .intro .painel .ev { opacity: 1; transform: none; }
+}
+
+/* texto do topo entra em cascata; o título sobe por trás de uma máscara */
+.l { display: block; }
+.intro .l { overflow: hidden; padding-bottom: .12em; margin-bottom: -.12em; }
+.intro .l > span { display: inline-block; transform: translateY(110%); }
+.intro-monta .l > span { transform: none; transition: transform 1s var(--mola); }
+.intro-monta .l:nth-child(2) > span { transition-delay: .12s; }
+.intro .hero-txt > :not(h1) { opacity: 0; transform: translateY(16px); }
+.intro-monta .hero-txt > :not(h1) { opacity: 1; transform: none; transition: opacity .8s ease, transform .9s var(--mola); }
+.intro-monta .hero-txt > .selo { transition-delay: 0s; }
+.intro-monta .hero-txt > .hero-sub { transition-delay: .32s; }
+.intro-monta .hero-txt > .acoes { transition-delay: .44s; }
+.intro-monta .hero-txt > .hero-chips { transition-delay: .56s; }
+.intro-monta .hero-txt > .hero-robo { transition-delay: .66s; }
+
+/* painel dos robôs: linha nova desliza, texto é digitado, barra carrega, check estala */
+.ev { will-change: transform; }
+.ev.nova { animation: evEntra .55s var(--mola) both; }
+@keyframes evEntra { from { opacity: 0; transform: translateY(-14px) scale(.97); } }
+.ev.sai { opacity: 0 !important; transform: translateY(8px) scale(.97) !important; transition: opacity .28s ease, transform .28s ease !important; }
+.ev.entra { animation: none; }
+.ev.rodando::after { animation: none; transform: scaleX(0); }
+.ev.rodando.carrega::after { animation: enche var(--dur, 1.4s) cubic-bezier(.4, 0, .2, 1) forwards; }
+.ev.feito.pop .ev-marca { animation: estala .5s var(--mola); }
+@keyframes estala { 0% { transform: scale(.4) rotate(-30deg); } 60% { transform: scale(1.18); } 100% { transform: none; } }
+.cursor { display: inline-block; width: 2px; height: 1.05em; margin-left: 2px; vertical-align: -.18em; background: var(--ciano); animation: cursor .9s steps(1) infinite; }
+@keyframes cursor { 50% { opacity: 0; } }
+
+/* revelação ao rolar: mais longa e com mola (o atraso em cascata vem do script) */
+.revela { transform: translateY(30px) scale(.985); transition: opacity .8s ease, transform 1s var(--mola); }
+.revela.visivel { transition-delay: var(--atraso, 0s); }
+
+/* trilho dos passos se desenha; os triângulos estalam em sequência */
+.passos::before { transform: scaleY(0); transform-origin: top; transition: transform 1.4s var(--mola) .1s; }
+@media (min-width: 1100px) { .passos::before { transform: scaleX(0); transform-origin: left; } }
+.passos.desenha::before { transform: none; }
+.js-mov .passo-n { transform: scale(0); transition: transform .6s var(--mola); }
+.js-mov .passos.desenha .passo-n { transform: none; }
+.passos.desenha .passo:nth-child(1) .passo-n { transition-delay: .15s; }
+.passos.desenha .passo:nth-child(2) .passo-n { transition-delay: .35s; }
+.passos.desenha .passo:nth-child(3) .passo-n { transition-delay: .55s; }
+.passos.desenha .passo:nth-child(4) .passo-n { transition-delay: .75s; }
+.passos.desenha .passo:nth-child(5) .passo-n { transition-delay: .95s; }
+
+/* conversa do robô aparece balão por balão */
+.js-mov .chat .balao { opacity: 0; transform: translateY(10px) scale(.96); }
+.js-mov .chat.ativo .balao { opacity: 1; transform: none; transition: opacity .45s ease, transform .6s var(--mola); }
+.js-mov .chat.ativo .balao:nth-of-type(2) { transition-delay: .3s; }
+.js-mov .chat.ativo .balao:nth-of-type(3) { transition-delay: 1.3s; }
+.js-mov .chat.ativo .balao:nth-of-type(4) { transition-delay: 2.2s; }
+.js-mov .chat.ativo .balao:nth-of-type(5) { transition-delay: 3.1s; }
+
+/* botões: brilho que atravessa, seta que anda, toque que afunda */
+.btn { position: relative; overflow: hidden; }
+.btn::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 60%; pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent); transform: translateX(-130%) skewX(-18deg); }
+.btn-vidro::after { background: linear-gradient(100deg, transparent, rgba(166, 230, 255, .22), transparent); }
+.btn:hover::after { transform: translateX(260%) skewX(-18deg); transition: transform .8s var(--mola); }
+.btn .ico { transition: transform .35s var(--mola); }
+.btn:hover .ico { transform: translateX(4px); }
+.btn:active { transform: scale(.975); transition: transform .1s; }
+
+/* cartões: inclinação leve e luz que segue o mouse (só com mouse) */
+.tilt { position: relative; }
+.tilt::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s;
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(63, 210, 255, .13), transparent 60%); }
+.tilt.inclina::after { opacity: 1; }
+.tilt.inclina { transition: transform .18s ease-out, border-color .25s !important; transition-delay: 0s !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .s-intro { display: none !important; }
+  .passos::before, .js-mov .passo-n, .js-mov .chat .balao { transform: none !important; opacity: 1 !important; }
+  .malha { transform: none !important; }
+}
+.rodape-links { align-items: center; }
+.rodape-ico { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 9px; color: var(--txt-2) !important; border: 1px solid rgba(110, 200, 255, .2); transition: color .2s, border-color .2s; }
+.rodape-ico .ico { width: 17px; height: 17px; }
+.rodape-ico:hover { color: var(--ciano) !important; border-color: rgba(63, 210, 255, .5); }
+.rodape-ico:focus-visible { outline: 3px solid var(--ceu); outline-offset: 2px; }
+
+/* ===== treino nas conversas reais (opcional) ===== */
+.treino { margin-top: 56px; display: grid; gap: 28px; align-items: center; padding: 28px 22px; border-radius: var(--raio); position: relative; overflow: hidden;
+  background: linear-gradient(160deg, rgba(52, 224, 192, .08), rgba(12, 24, 52, .75) 45%, rgba(154, 146, 255, .08)); border: 1px solid rgba(52, 224, 192, .25); }
+@media (min-width: 900px) { .treino { grid-template-columns: 1.05fr .95fr; padding: 40px; gap: 44px; } }
+.treino h3 { font-family: var(--titulo); font-weight: 800; font-size: clamp(1.4rem, 2.6vw, 1.9rem); letter-spacing: -.02em; margin: 12px 0 18px; }
+.treino-tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #bff5ea; border: 1px solid rgba(52, 224, 192, .45); }
+.treino-passos { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.treino-passos li { display: flex; gap: 12px; align-items: flex-start; color: var(--txt-2); font-size: .97rem; line-height: 1.45; transition: color .4s; }
+.tp-n { flex: none; display: grid; place-items: end center; width: 26px; height: 23px; padding-bottom: 1px; font-size: .74rem; font-weight: 800; color: var(--tinta); background: rgba(166, 230, 255, .35); clip-path: polygon(50% 0, 100% 100%, 0 100%); transition: background .4s, transform .5s var(--mola); }
+.treino[data-etapa="1"] li[data-e="1"], .treino[data-etapa="2"] li[data-e="2"], .treino[data-etapa="3"] li[data-e="3"] { color: var(--txt); }
+.treino[data-etapa="1"] li[data-e="1"] .tp-n, .treino[data-etapa="2"] li[data-e="2"] .tp-n, .treino[data-etapa="3"] li[data-e="3"] .tp-n { background: var(--agua); transform: scale(1.15); }
+.treino-selo { display: flex; gap: 10px; align-items: center; margin: 20px 0 0; padding: 10px 14px; border-radius: 10px; font-size: .9rem; font-weight: 600; color: #d8fff6; background: rgba(52, 224, 192, .1); border: 1px solid rgba(52, 224, 192, .3); }
+.treino-selo .ico { color: var(--agua); }
+.treino-vis { position: relative; min-height: 290px; border-radius: 16px; background: rgba(5, 11, 26, .6); border: 1px solid rgba(110, 200, 255, .16); }
+.tv-cena { position: absolute; inset: 0; padding: 18px; opacity: 0; transform: translateY(14px) scale(.98); transition: opacity .55s ease, transform .7s var(--mola); pointer-events: none; }
+.treino[data-etapa="0"] .tv-1, .treino[data-etapa="1"] .tv-1, .treino[data-etapa="2"] .tv-2, .treino[data-etapa="3"] .tv-3 { opacity: 1; transform: none; }
+.tv-rot { margin: 0 0 12px; font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ciano); }
+.tv-ex { margin-left: 6px; padding: 2px 7px; border-radius: 5px; font-size: .66rem; color: var(--violeta); border: 1px solid rgba(154, 146, 255, .4); }
+.tv-msg { margin: 0 0 10px; padding: 10px 12px; border-radius: 12px 12px 12px 4px; background: rgba(166, 230, 255, .08); font-size: .9rem; line-height: 1.45; color: var(--txt); }
+.pii { position: relative; display: inline-block; font-size: .78rem; color: var(--txt-2); }
+.pii i { position: absolute; left: -2px; right: -2px; top: 1px; bottom: 1px; border-radius: 4px; background: linear-gradient(90deg, var(--azul), var(--ciano)); transform: scaleX(0); transform-origin: left; transition: transform .5s var(--mola); }
+.treino[data-etapa="1"] .pii i { transform: none; }
+.treino[data-etapa="1"] .tv-msg:nth-of-type(3) .pii i { transition-delay: .25s; }
+.treino[data-etapa="1"] .tv-msg:nth-of-type(4) .pii i { transition-delay: .5s; }
+.tv-chips { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.tv-chips li { padding: 12px 14px; border-radius: 12px; font-weight: 600; font-size: .95rem; background: rgba(63, 210, 255, .09); border: 1px solid rgba(63, 210, 255, .28); opacity: 0; transform: translateX(-14px); transition: opacity .45s ease, transform .6s var(--mola); }
+.treino[data-etapa="2"] .tv-chips li { opacity: 1; transform: none; }
+.treino[data-etapa="2"] .tv-chips li:nth-child(2) { transition-delay: .15s; }
+.treino[data-etapa="2"] .tv-chips li:nth-child(3) { transition-delay: .3s; }
+.treino[data-etapa="2"] .tv-chips li:nth-child(4) { transition-delay: .45s; }
+.tv-rel { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.tv-rel li { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 11px 13px; border-radius: 10px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(110, 200, 255, .12); font-size: .9rem; opacity: 0; transform: translateY(8px); transition: opacity .45s ease, transform .6s var(--mola); }
+.tv-rel b { font-size: .74rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--txt-2); white-space: nowrap; }
+.tv-rel b.ok { color: var(--agua); }
+.treino[data-etapa="3"] .tv-rel li { opacity: 1; transform: none; }
+.treino[data-etapa="3"] .tv-rel li:nth-child(2) { transition-delay: .12s; }
+.treino[data-etapa="3"] .tv-rel li:nth-child(3) { transition-delay: .24s; }
+.treino[data-etapa="3"] .tv-rel li:nth-child(4) { transition-delay: .36s; }
+/* sem JS ou com movimento reduzido: mostra o relatório de exemplo parado */
+html:not(.js-mov) .tv-cena { position: static; opacity: 1; transform: none; }
+html:not(.js-mov) .tv-cena + .tv-cena { border-top: 1px solid rgba(110, 200, 255, .12); }
+html:not(.js-mov) .tv-chips li, html:not(.js-mov) .tv-rel li { opacity: 1; transform: none; }
+html:not(.js-mov) .pii i { transform: none; }
+
+/* ===== mais soluções ===== */
+.solucoes { display: grid; gap: 16px; margin-top: 34px; }
+@media (min-width: 640px) { .solucoes { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .solucoes { grid-template-columns: repeat(3, 1fr); } }
+.sol { padding: 24px 22px; }
+.sol h3 { margin-top: 2px; }
+.sol p { color: var(--txt-2); font-size: .96rem; margin: 0; }
+.sol .link-seta { display: inline-block; margin-top: 12px; }
+.sol-ico { position: relative; display: grid; place-items: center; width: 52px; height: 52px; margin-bottom: 16px;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: conic-gradient(from 30deg, rgba(166, 230, 255, .32) 0 60deg, rgba(63, 210, 255, .22) 0 120deg, rgba(58, 134, 255, .18) 0 180deg, rgba(52, 224, 192, .2) 0 240deg, rgba(63, 210, 255, .14) 0 300deg, rgba(154, 146, 255, .2) 0 360deg);
+  transition: transform .6s var(--mola); }
+.sol-ico svg { width: 24px; height: 24px; fill: none; stroke: #e6fbff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sol:hover .sol-ico { transform: rotate(60deg); }
+.sol:hover .sol-ico svg { transform: rotate(-60deg); transition: transform .6s var(--mola); }
+#solucoes .acoes { margin-top: 26px; }

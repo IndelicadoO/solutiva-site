@@ -1,7 +1,7 @@
 /* =====================================================================
    CONTATO: o ÚNICO lugar para trocar para onde os botões levam.
-   - principal: botão ciano (todos os "Orçamento grátis").
-   - secundario: botão "Falar no LinkedIn".
+   - principal: botão de orçamento (ciano), o único botão principal do site.
+   - secundario: ícone do LinkedIn no rodapé.
    - whatsapp: quando tiver o número comercial, preencha só com dígitos,
      com 55 + DDD, ex.: '5561999999999'. Aí todos os botões principais
      passam a abrir o WhatsApp com a mensagem pronta abaixo.
@@ -10,7 +10,7 @@ const CONTATO = {
   principal: 'https://ig.me/m/solutiva.dev',
   secundario: 'https://www.linkedin.com/in/erinaldo-gomes-a30442264/',
   whatsapp: '',
-  mensagemWhatsapp: 'Olá! Vi o site da Solutiva e quero um orçamento do site em 48 h.'
+  mensagemWhatsapp: 'Olá! Vi o site da Solutiva e quero um orçamento.'
 };
 
 (function () {
@@ -36,8 +36,13 @@ const CONTATO = {
   var revelas = document.querySelectorAll('.revela');
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (ents) {
+      var k = 0;
+      ents.sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top || a.boundingClientRect.left - b.boundingClientRect.left; });
       ents.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add('visivel'); io.unobserve(e.target); }
+        if (e.isIntersecting) {
+          e.target.style.setProperty('--atraso', Math.min(k++, 6) * 90 + 'ms');
+          e.target.classList.add('visivel'); io.unobserve(e.target);
+        }
       });
     }, { rootMargin: '0px 0px -8% 0px' });
     revelas.forEach(function (el) { io.observe(el); });
@@ -62,6 +67,8 @@ const CONTATO = {
   if (vit && reduz) { vit.controls = true; }
 
   // ---- painel do topo: robôs trabalhando (demonstração, sem números) ----
+  var html = document.documentElement;
+  var temIO = 'IntersectionObserver' in window;
   var feed = document.getElementById('feed');
   var EVENTOS = [
     ['Orbix', 'achou um produto novo para divulgar'],
@@ -74,38 +81,182 @@ const CONTATO = {
     ['Orbit', 'recebeu um comando pelo Telegram']
   ];
   // a lista estática do HTML vale sem JS ou com movimento reduzido; com JS ela recomeça do ciclo
+  var iniciaFeed = function () {};
   if (feed && !reduz) {
-    var idx = 0, vivo = true, noTopo = true, timer = null, MAX = 5, DUR = 2600;
-    var cria = function (ev) {
+    var idx = 0, vivo = true, noTopo = true, liberado = false, timer = null, MAX = 5;
+    var cria = function (ev, digitar) {
       var li = document.createElement('li');
-      li.className = 'ev rodando entra';
-      li.style.setProperty('--dur', DUR + 'ms');
+      li.className = 'ev';
       var m = document.createElement('span'); m.className = 'ev-marca'; m.setAttribute('aria-hidden', 'true');
       var t = document.createElement('span'); t.className = 'ev-txt';
       var b = document.createElement('b'); b.textContent = ev[0];
-      t.appendChild(b); t.appendChild(document.createTextNode(' ' + ev[1]));
-      if (ev[2]) { var i = document.createElement('i'); i.textContent = ev[2]; t.appendChild(document.createTextNode(' ')); t.appendChild(i); }
+      var resto = document.createTextNode(digitar ? ' ' : ' ' + ev[1]);
+      t.appendChild(b); t.appendChild(resto);
       li.appendChild(m); li.appendChild(t);
+      li._resto = resto;
       return li;
     };
-    var passo = function () {
-      timer = null;
-      if (!vivo || !noTopo) return;
-      var li = cria(EVENTOS[idx % EVENTOS.length]); idx++;
-      feed.insertBefore(li, feed.firstChild);
-      while (feed.children.length > MAX) feed.removeChild(feed.lastChild);
-      setTimeout(function () { li.classList.remove('rodando', 'entra'); li.classList.add('feito'); }, DUR);
-      timer = setTimeout(passo, DUR + 900);
-    };
     feed.textContent = '';
-    for (var k0 = MAX - 1; k0 >= 0; k0--) { var li0 = cria(EVENTOS[k0]); li0.className = 'ev feito'; feed.appendChild(li0); }
+    for (var k0 = MAX - 1; k0 >= 0; k0--) { var li0 = cria(EVENTOS[k0], false); li0.classList.add('feito'); feed.appendChild(li0); }
     idx = MAX;
-    var liga = function () { if (!timer && vivo && noTopo) timer = setTimeout(passo, 700); };
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (e) { noTopo = e[0].isIntersecting; liga(); }).observe(feed);
-    }
+
+    // desliza as linhas que já estavam (técnica FLIP: só transform)
+    var insere = function (li) {
+      var antes = [];
+      for (var i = 0; i < feed.children.length; i++) antes.push([feed.children[i], feed.children[i].getBoundingClientRect().top]);
+      feed.insertBefore(li, feed.firstChild);
+      antes.forEach(function (par) {
+        var d = par[1] - par[0].getBoundingClientRect().top;
+        if (!d) return;
+        par[0].style.transition = 'none';
+        par[0].style.transform = 'translateY(' + d + 'px)';
+      });
+      void feed.offsetHeight;
+      antes.forEach(function (par) {
+        par[0].style.transition = 'transform .6s cubic-bezier(.16,1,.3,1)';
+        par[0].style.transform = '';
+      });
+    };
+
+    var digita = function (li, texto, fim) {
+      var cur = document.createElement('span'); cur.className = 'cursor'; cur.setAttribute('aria-hidden', 'true');
+      li.querySelector('.ev-txt').appendChild(cur);
+      var n = 0;
+      var passoD = function () {
+        if (!vivo) { setTimeout(passoD, 200); return; }
+        n++;
+        li._resto.nodeValue = ' ' + texto.slice(0, n);
+        if (n < texto.length) {
+          var c = texto.charAt(n - 1);
+          setTimeout(passoD, c === ' ' ? 55 : (c === ',' ? 160 : 22 + Math.random() * 38));
+        } else {
+          setTimeout(function () { if (cur.parentNode) cur.parentNode.removeChild(cur); fim(); }, 250);
+        }
+      };
+      setTimeout(passoD, 380);
+    };
+
+    var proximo = function () {
+      timer = null;
+      if (!vivo || !noTopo || !liberado) return;
+      var ev = EVENTOS[idx % EVENTOS.length]; idx++;
+      var li = cria(ev, true);
+      li.classList.add('rodando', 'nova');
+      var vai = function () {
+        while (feed.children.length >= MAX) feed.removeChild(feed.lastChild);
+        insere(li);
+        digita(li, ev[1], function () {
+          li.style.setProperty('--dur', '1300ms');
+          li.classList.add('carrega');
+          setTimeout(function () {
+            li.classList.remove('rodando', 'carrega', 'nova');
+            li.classList.add('feito', 'pop');
+            timer = setTimeout(proximo, 1100);
+          }, 1300);
+        });
+      };
+      if (feed.children.length >= MAX) { feed.lastChild.classList.add('sai'); setTimeout(vai, 300); } else vai();
+    };
+    var liga = function () { if (!timer && vivo && noTopo && liberado) timer = setTimeout(proximo, 500); };
+    if (temIO) new IntersectionObserver(function (e) { noTopo = e[0].isIntersecting; liga(); }).observe(feed);
     document.addEventListener('visibilitychange', function () { vivo = !document.hidden; liga(); });
-    liga();
+    iniciaFeed = function () { liberado = true; liga(); };
+  }
+
+  // ---- abertura: o "S" se monta (triângulos da logo) e se desfaz no painel ----
+  var rnd = function (a, b) { return a + Math.random() * (b - a); };
+  if (html.classList.contains('intro') && !reduz) {
+    var sTris = document.querySelectorAll('.s-intro polygon');
+    var grande = window.innerWidth >= 1000;
+    for (var ti = 0; ti < sTris.length; ti++) {
+      var st = sTris[ti].style, ang = rnd(0, 6.283), dist = rnd(260, 520);
+      st.setProperty('--dx', Math.cos(ang) * dist + 'px');
+      st.setProperty('--dy', Math.sin(ang) * dist + 'px');
+      st.setProperty('--r', rnd(-200, 200) + 'deg');
+      st.transitionDelay = (ti * 65) + 'ms';
+    }
+    requestAnimationFrame(function () { requestAnimationFrame(function () { html.classList.add('intro-monta'); }); });
+    setTimeout(function () {
+      for (var tj = 0; tj < sTris.length; tj++) {
+        var s2 = sTris[tj].style;
+        // no computador os triângulos "caem" para dentro do painel; no celular sobem e somem
+        s2.setProperty('--ox', rnd(-90, 90) + 'px');
+        s2.setProperty('--oy', (grande ? rnd(120, 320) : rnd(-260, -120)) + 'px');
+        s2.setProperty('--r2', rnd(-160, 160) + 'deg');
+        s2.transitionDelay = (tj * 35) + 'ms';
+      }
+      html.classList.add('intro-desfaz');
+    }, 1900);
+    setTimeout(function () { html.classList.add('intro-fim'); }, 2250);
+    setTimeout(function () {
+      var svg = document.querySelector('.s-intro'); if (svg) svg.style.display = 'none';
+      iniciaFeed();
+    }, 3300);
+  } else {
+    html.classList.add('intro-monta', 'intro-fim');
+    iniciaFeed();
+  }
+
+  if (!reduz) html.classList.add('js-mov');
+
+  // ---- trilho dos passos e conversa do robô: desenham ao entrar na tela ----
+  var aoEntrar = function (sel, classe, margem) {
+    var els = document.querySelectorAll(sel);
+    if (!temIO || reduz) { els.forEach(function (el) { el.classList.add(classe); }); return; }
+    var o = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add(classe); o.unobserve(e.target); } });
+    }, { rootMargin: margem || '0px 0px -15% 0px' });
+    els.forEach(function (el) { o.observe(el); });
+  };
+  aoEntrar('.passos', 'desenha');
+  aoEntrar('.chat', 'ativo', '0px 0px -25% 0px');
+
+  // ---- treino nas conversas reais: as 3 cenas passam sozinhas enquanto estão na tela ----
+  var treino = document.getElementById('treino');
+  if (treino && temIO && !reduz) {
+    var tEtapa = 0, tTimer = null, tVis = false;
+    var ESPERA = [700, 1900, 2000, 3400];
+    var tPasso = function () {
+      tTimer = null;
+      if (!tVis || document.hidden) return;
+      tEtapa = (tEtapa + 1) % 4;
+      treino.setAttribute('data-etapa', tEtapa);
+      tTimer = setTimeout(tPasso, ESPERA[tEtapa]);
+    };
+    new IntersectionObserver(function (e) {
+      tVis = e[0].isIntersecting;
+      if (tVis && !tTimer) tTimer = setTimeout(tPasso, ESPERA[tEtapa]);
+    }, { rootMargin: '0px 0px -20% 0px' }).observe(treino);
+  }
+
+  // ---- inclinação leve dos cartões e luz que segue o mouse (só com mouse) ----
+  if (!reduz && window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('.tilt').forEach(function (c) {
+      var raf = 0, px = 0, py = 0;
+      var aplica = function () {
+        raf = 0;
+        var r = c.getBoundingClientRect(), x = (px - r.left) / r.width, y = (py - r.top) / r.height;
+        c.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+        c.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+        c.style.transform = 'perspective(900px) rotateX(' + ((.5 - y) * 5).toFixed(2) + 'deg) rotateY(' + ((x - .5) * 6).toFixed(2) + 'deg) translateY(-4px)';
+      };
+      c.addEventListener('pointerenter', function () { c.classList.add('inclina'); });
+      c.addEventListener('pointermove', function (e) { px = e.clientX; py = e.clientY; if (!raf) raf = requestAnimationFrame(aplica); });
+      c.addEventListener('pointerleave', function () {
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
+        c.style.transform = '';
+        setTimeout(function () { c.classList.remove('inclina'); }, 180);
+      });
+    });
+  }
+
+  // ---- grade triangular do fundo com parallax sutil ----
+  var malha = document.querySelector('.malha');
+  if (malha && !reduz) {
+    var pend = false;
+    var moveMalha = function () { pend = false; var y = window.scrollY || 0; malha.style.transform = 'translate3d(0,' + (-(y * .18) % 97).toFixed(1) + 'px,0)'; };
+    window.addEventListener('scroll', function () { if (!pend) { pend = true; requestAnimationFrame(moveMalha); } }, { passive: true });
+    moveMalha();
   }
 
   // ---- botão flutuante no celular depois do topo ----
