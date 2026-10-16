@@ -82,7 +82,7 @@ p { margin: 0 0 1em; }
 .hero-chips li { padding: 7px 14px; border-radius: 999px; background: rgba(255, 255, 255, .05); border: 1px solid var(--card-borda); color: var(--txt-2); font-size: .88rem; font-weight: 500; }
 .hero-chips li::before { content: '✓'; color: var(--ciano); font-weight: 800; margin-right: 7px; }
 @media (max-width: 520px) { .acoes .btn { width: 100%; } }
-@media (max-width: 759px) { .hero-video { display: none; } .hero { background: url('assets/hero-poster.webp') center / cover no-repeat; } }
+@media (max-width: 759px) { .hero-video { display: none; } .hero { background: url('assets/hero-poster.webp') center / cover no-repeat; } .hero-veu { background: linear-gradient(180deg, rgba(5, 10, 24, .82), rgba(5, 10, 24, .9) 70%, var(--bg)); } }
 
 /* seções */
 .secao { padding: 88px 0; position: relative; }
