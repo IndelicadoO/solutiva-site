@@ -66,6 +66,21 @@ const CONTATO = {
   }
   if (vit && reduz) { vit.controls = true; }
 
+  // ---- animações sob medida: cada vídeo só baixa/toca na tela; movimento reduzido = só o pôster ----
+  var anims = document.querySelectorAll('.anim-video');
+  if (anims.length && !reduz && 'IntersectionObserver' in window) {
+    var aio = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting) {
+          if (!v.getAttribute('src')) { v.src = v.getAttribute('data-src'); }
+          var p = v.play(); if (p && p.catch) p.catch(function () {});
+        } else if (!v.paused) { v.pause(); }
+      });
+    }, { threshold: 0.35 });
+    anims.forEach(function (v) { aio.observe(v); });
+  }
+
   // ---- painel do topo: robôs trabalhando (demonstração, sem números) ----
   var html = document.documentElement;
   var temIO = 'IntersectionObserver' in window;

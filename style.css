@@ -444,4 +444,14 @@ html:not(.js-mov) .pii i { transform: none; }
 .sol:hover .sol-ico { transform: rotate(60deg); }
 .sol:hover .sol-ico svg { transform: rotate(-60deg); transition: transform .6s var(--mola); }
 #solucoes .acoes { margin-top: 26px; }
+/* animações sob medida (vitrine dentro de Mais soluções) */
+.animacoes { margin-top: 72px; padding-top: 56px; border-top: 1px solid rgba(110, 200, 255, .12); }
+.anim-grade { display: grid; gap: 16px; margin-top: 30px; }
+@media (min-width: 640px) { .anim-grade { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .anim-grade { grid-template-columns: repeat(3, 1fr); } }
+.anim { margin: 0; overflow: hidden; transition: border-color .25s; }
+.anim:hover { border-color: rgba(63, 210, 255, .45); }
+.anim-video { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: #03060f; }
+.anim figcaption { padding: 12px 18px 14px; font-weight: 600; font-size: .95rem; color: var(--txt-2); display: flex; align-items: center; gap: 10px; }
+.anim figcaption::before { content: ''; width: 9px; height: 8px; background: var(--ciano); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
 .sem-js .passos::before { transform: none; }
