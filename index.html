@@ -3,16 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Solutiva | Site pronto em 48 h e Robô de WhatsApp com IA, em Brasília</title>
-<meta name="description" content="Seu site profissional pronto em 48 h, com WhatsApp, Google e domínio, mais 1 vídeo do seu produto de brinde feito com IA. E um robô de WhatsApp com IA que atende seus clientes a qualquer hora. Solutiva, Brasília. Orçamento grátis em 5 minutos.">
-<meta name="theme-color" content="#050a18">
-<!-- Troque SITE_URL aqui e em script.js se usar domínio próprio -->
+<title>Solutiva | Site profissional em 48 h e robô de atendimento no WhatsApp</title>
+<meta name="description" content="Site profissional em 48 h, robô de atendimento no WhatsApp, vídeos do seu produto e sistemas sob medida. Peça o esboço do seu site grátis. Solutiva, Brasília.">
+<meta name="theme-color" content="#02050c">
 <link rel="canonical" href="https://solutiva.dev.br/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Solutiva">
-<meta property="og:title" content="Seu site profissional pronto em 48 h | Solutiva">
-<meta property="og:description" content="Site rápido, com WhatsApp, Google e domínio, mais 1 vídeo do seu produto de brinde feito com IA. Orçamento grátis em 5 minutos.">
+<meta property="og:title" content="Seu site profissional em 48 h | Solutiva">
+<meta property="og:description" content="Site profissional em 48 h e robô de atendimento no WhatsApp. Esboço do seu site grátis.">
 <meta property="og:url" content="https://solutiva.dev.br/">
 <meta property="og:image" content="https://solutiva.dev.br/assets/og-cover.jpg">
 <meta property="og:image:width" content="1200">
@@ -22,389 +21,229 @@
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preload" as="image" href="assets/v5/hero-m.jpg" media="(max-width: 699px)">
+<link rel="preload" as="image" href="assets/v5/hero-d.jpg" media="(min-width: 700px)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Onest:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<script>
-(function (d) {
-  try {
-    if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      d.classList.add('intro');
-      setTimeout(function () { d.classList.add('intro-monta', 'intro-desfaz', 'intro-fim'); }, 4000);
-    }
-  } catch (e) {}
-})(document.documentElement);
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Instrument+Serif:ital@1&family=Onest:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="v5.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"ProfessionalService","name":"Solutiva","description":"Sites profissionais em 48 h, robô de WhatsApp com IA e software sob medida para pequenos negócios.","areaServed":"BR","address":{"@type":"PostalAddress","addressLocality":"Brasília","addressRegion":"DF","addressCountry":"BR"},"logo":"https://solutiva.dev.br/assets/icon-512.png","sameAs":["https://www.linkedin.com/in/erinaldo-gomes-a30442264/"]}
+{"@context":"https://schema.org","@type":"ProfessionalService","name":"Solutiva","description":"Sites profissionais em 48 h, robô de atendimento no WhatsApp, vídeos de produto com IA e sistemas sob medida.","areaServed":"BR","address":{"@type":"PostalAddress","addressLocality":"Brasília","addressRegion":"DF","addressCountry":"BR"},"logo":"https://solutiva.dev.br/assets/icon-512.png","sameAs":["https://www.linkedin.com/in/erinaldo-gomes-a30442264/"]}
 </script>
 </head>
 <body>
-<div class="malha" aria-hidden="true"></div>
-<canvas id="bgCanvas" class="bg-canvas" aria-hidden="true"></canvas>
 
-<header class="topo" id="topo">
-  <div class="wrap topo-in">
-    <a class="marca" href="#inicio" aria-label="Solutiva, início">
-      <img src="assets/logo-s.webp" width="17" height="38" alt="">
-      <span>Solutiva</span>
-    </a>
-    <nav class="menu" aria-label="Seções">
-      <a href="#portfolio">Sistemas</a>
-      <a href="#entrega-site">Site em 48 h</a>
-      <a href="#robo">Robô de WhatsApp</a>
-      <a href="#animacoes">Animações</a>
-      <a href="#contato">Contato</a>
-    </nav>
-    <a class="btn btn-prim btn-sm" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo>Pedir orçamento</span></a>
-  </div>
+<header class="topo">
+  <a class="marca" href="#inicio" aria-label="Solutiva, início">
+    <img src="assets/logo-s.webp" width="17" height="38" alt="">
+    <span>Solutiva</span>
+  </a>
+  <nav class="menu" aria-label="Produtos">
+    <a href="#site">Site em 48 h</a>
+    <a href="#robo">Robô de WhatsApp</a>
+    <a href="#vitrine">Vídeos do produto</a>
+    <a href="#sistemas">Sistemas</a>
+  </nav>
+  <a class="btn btn-linha" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo>Falar com a gente</span></a>
 </header>
 
 <main>
-  <!-- 1. HERO -->
-  <section class="hero" id="inicio">
-    <div class="wrap hero-in">
-      <div class="hero-txt">
-      <p class="selo"><span class="ponto"></span>Brasília · atendimento online</p>
-      <h1><span class="l"><span>Seu site profissional</span></span><span class="l"><span class="grad-agua">pronto em 48 h</span></span></h1>
-      <p class="hero-sub">Para loja, clínica, salão, restaurante e serviços. <strong>Vídeo com IA de brinde.</strong></p>
+  <!-- ABERTURA: tela cheia com o nosso vídeo -->
+  <section class="cena abertura" id="inicio">
+    <video class="cena-video" data-src="assets/v5/hero-d.mp4" data-src-m="assets/v5/hero-m.mp4" data-poster-m="assets/v5/hero-m.jpg" poster="assets/v5/hero-d.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <div class="faixa faixa-topo" aria-hidden="true"></div>
+    <div class="faixa faixa-base" aria-hidden="true"></div>
+    <div class="cena-txt">
+      <p class="claquete"><span>Solutiva</span> apresenta</p>
+      <h1><span class="l">Seu site em 48&nbsp;h.</span> <span class="l"><em>Do esboço ao ar.</em></span></h1>
+      <p class="sub">Este vídeo foi feito por nós. O do seu negócio também pode ser.</p>
       <div class="acoes">
-        <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 5l7 7-7 7"/></svg>
-          <span data-rotulo>Orçamento grátis em 5 minutos</span>
+        <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo>Esboço do seu site grátis</span></a>
+      </div>
+      <nav class="escolha" aria-label="Escolha o que você quer">
+        <a href="#site"><b>01</b> Site em 48 h</a>
+        <a href="#robo"><b>02</b> Robô de WhatsApp</a>
+        <a href="#vitrine"><b>03</b> Vídeos do produto</a>
+        <a href="#sistemas"><b>04</b> Sistemas sob medida</a>
+      </nav>
+    </div>
+  </section>
+
+  <!-- CENA 01: SITE EM 48 H -->
+  <section class="cena" id="site">
+    <video class="cena-video vid" data-src="assets/v5/site-d.mp4" data-src-m="assets/v5/site-m.mp4" data-poster-m="assets/v5/site-m.jpg" poster="assets/v5/site-d.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <div class="corte" aria-hidden="true"></div>
+    <div class="cena-in">
+      <p class="slate"><b>01</b> Site profissional</p>
+      <h2 class="grande">O que vem.<br><em>E como funciona.</em></h2>
+      <div class="ficha">
+        <div class="ficha-bloco">
+          <h3>O que vem</h3>
+          <ul class="checks">
+            <li>Feito para o celular</li>
+            <li>Botão de WhatsApp com mensagem pronta</li>
+            <li>Pronto para o Google</li>
+            <li>Domínio com o nome do seu negócio</li>
+          </ul>
+        </div>
+        <div class="ficha-bloco">
+          <h3>Como funciona</h3>
+          <ol class="linha-tempo">
+            <li><b>Hoje</b> Conversa e você manda fotos, logo e textos</li>
+            <li><b>24 h</b> Prévia no seu celular para ajustar</li>
+            <li><b>48 h</b> Site no ar</li>
+          </ol>
+          <p class="nota">O prazo conta do orçamento aprovado e do material recebido. Sem texto? A gente escreve com você.</p>
+        </div>
+      </div>
+      <div class="telas">
+        <a class="tela revela" href="https://cursoenglishathome.online" target="_blank" rel="noopener">
+          <picture><source media="(max-width: 699px)" srcset="assets/port-eah-mobile.webp"><img src="assets/port-eah-desktop.webp" width="1200" height="750" loading="lazy" decoding="async" alt="Site English at Home, feito pela Solutiva"></picture>
+          <span>Feito por nós · English at Home ↗</span>
+        </a>
+        <a class="tela revela" href="https://orbixbr.onrender.com" target="_blank" rel="noopener">
+          <picture><source media="(max-width: 699px)" srcset="assets/port-orbix-mobile.webp"><img src="assets/port-orbix-desktop.webp" width="1200" height="750" loading="lazy" decoding="async" alt="Site de links do Orbix, feito pela Solutiva"></picture>
+          <span>Feito por nós · Orbix ↗</span>
         </a>
       </div>
-      <ul class="hero-chips" aria-label="Destaques">
-        <li>Prévia em 24 h</li>
-        <li>Botão de WhatsApp</li>
-        <li>Pronto para o Google</li>
-        <li>Domínio com o seu nome</li>
-      </ul>
-      <a class="hero-robo" href="#robo">
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg>
-        <span><b>E também:</b> robô de WhatsApp com IA que atende a qualquer hora</span>
-        <span class="hero-robo-seta" aria-hidden="true">↓</span>
-      </a>
+      <div class="acoes">
+        <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo>Quero meu site</span></a>
       </div>
+    </div>
+  </section>
 
-      <div class="painel-palco">
-      <svg class="s-intro" viewBox="398 210 288 666" aria-hidden="true" focusable="false">
-        <polygon points="541,298 675,220 675,380" fill="#a8dcf0"/>
-        <polygon points="408,378 541,298 541,460" fill="#5bbfee"/>
-        <polygon points="541,298 675,380 541,460" fill="#4fb6ea"/>
-        <polygon points="408,378 541,460 408,540" fill="#9fb3bf"/>
-        <polygon points="408,540 541,460 541,625" fill="#7f9cab"/>
-        <polygon points="541,460 675,545 541,625" fill="#4d7f95"/>
-        <polygon points="541,625 675,545 675,705" fill="#2f6a85"/>
-        <polygon points="408,705 541,625 541,785" fill="#5cc4f2"/>
-        <polygon points="541,625 675,705 541,785" fill="#48b0e6"/>
-        <polygon points="408,705 541,785 408,865" fill="#a9def2"/>
-      </svg>
-      <aside class="painel" aria-labelledby="painel-tit">
-        <div class="painel-topo">
-          <img class="painel-logo" src="assets/logo-s.webp" width="14" height="32" alt="">
-          <div>
-            <p class="painel-tit" id="painel-tit">Sistemas que trabalham sozinhos</p>
-            <p class="painel-sub">Demonstração dos robôs da Solutiva</p>
-          </div>
-          <span class="painel-selo">demonstração</span>
+  <!-- CENA 02: ROBÔ DE ATENDIMENTO -->
+  <section class="cena" id="robo">
+    <video class="cena-video vid" data-src="assets/v5/robo-d.mp4" data-src-m="assets/v5/robo-m.mp4" data-poster-m="assets/v5/robo-m.jpg" poster="assets/v5/robo-d.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <div class="corte" aria-hidden="true"></div>
+    <div class="cena-in">
+      <p class="slate"><b>02</b> Robô de atendimento</p>
+      <h2 class="grande">Seu WhatsApp<br><em>responde sozinho.</em></h2>
+      <div class="ficha">
+        <div class="ficha-bloco">
+          <h3>O que ele faz</h3>
+          <ul class="checks">
+            <li>Responde na hora, até de madrugada</li>
+            <li>Tira dúvidas: horário, endereço, serviços e preços</li>
+            <li>Manda orçamento e marca horário</li>
+            <li>Chama você quando o cliente quer uma pessoa</li>
+          </ul>
+          <h3 class="h3-2">Como funciona</h3>
+          <ol class="linha-tempo">
+            <li><b>1</b> Você conta como atende e manda as informações</li>
+            <li><b>2</b> Testa num simulador antes de ligar</li>
+            <li><b>3</b> Liga no seu número pela API oficial da Meta, sem passar senha</li>
+          </ol>
+          <p class="nota">Prazo combinado no orçamento; depende da aprovação da Meta.</p>
         </div>
-        <ol class="feed" id="feed">
-          <li class="ev feito"><span class="ev-marca" aria-hidden="true"></span><span class="ev-txt"><b>Orbix</b> achou um produto novo para divulgar</span></li>
-          <li class="ev feito"><span class="ev-marca" aria-hidden="true"></span><span class="ev-txt"><b>NexoFrame</b> gravou o vídeo do produto</span></li>
-          <li class="ev feito"><span class="ev-marca" aria-hidden="true"></span><span class="ev-txt"><b>Orbix</b> conferiu o preço e publicou em 4 redes</span></li>
-          <li class="ev feito"><span class="ev-marca" aria-hidden="true"></span><span class="ev-txt"><b>LYRA</b> editou a gameplay e agendou</span></li>
-          <li class="ev feito"><span class="ev-marca" aria-hidden="true"></span><span class="ev-txt"><b>Robô de WhatsApp</b> respondeu um cliente</span></li>
-        </ol>
-        <p class="painel-pe">Cada linha é um robô fazendo sozinho o que antes tomava o seu dia.</p>
-      </aside>
+        <div class="conversa" role="img" aria-label="Exemplo de conversa: o cliente pergunta horário e o robô marca">
+          <p class="b cli">Tem horário amanhã?</p>
+          <p class="b bot">Tenho às 10h e às 15h. Qual prefere?</p>
+          <p class="b cli">10h!</p>
+          <p class="b bot">Marcado. Até amanhã!</p>
+          <span class="selo-ex">exemplo</span>
+        </div>
+      </div>
+      <div class="acoes">
+        <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo>Quero o robô</span></a>
       </div>
     </div>
   </section>
 
-  <!-- 2. PRODUTOS -->
-  <section class="secao" id="produtos">
-    <div class="wrap">
-      <h2>O que você <span class="grad-frio">contrata</span></h2>
-      <div class="produtos">
-        <article class="cartao produto revela tilt">
-          <span class="produto-tag">Produto 1</span>
-          <h3>Site profissional em 48 h</h3>
-          <p>Com WhatsApp, Google, domínio e 1 vídeo de brinde.</p>
-          <div class="produto-acoes">
-            <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo>Quero meu site</span></a>
-            <a class="link-seta" href="#entrega-site">Como é <span aria-hidden="true">↓</span></a>
-          </div>
-        </article>
-        <article class="cartao produto produto-robo revela tilt">
-          <span class="produto-tag">Produto 2</span>
-          <h3>Robô de WhatsApp com IA</h3>
-          <p>Atende, orça e marca horário a qualquer hora.</p>
-          <div class="produto-acoes">
-            <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo>Quero o robô</span></a>
-            <a class="link-seta" href="#robo">Como é <span aria-hidden="true">↓</span></a>
-          </div>
-        </article>
-        <article class="cartao produto produto-sis revela tilt">
-          <span class="produto-tag">Produto 3</span>
-          <h3>Sistemas sob medida</h3>
-          <p>IA fazendo sozinha o que hoje toma o seu dia.</p>
-          <div class="produto-acoes">
-            <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo>Quero um sistema</span></a>
-            <a class="link-seta" href="#portfolio">Ver funcionando <span aria-hidden="true">↓</span></a>
-          </div>
-        </article>
+  <!-- 03: VITRINE EM MOVIMENTO (à parte, discreta, só com animações nossas) -->
+  <section class="canto vitrine" id="vitrine">
+    <div class="canto-in vitrine-in">
+      <div>
+        <p class="slate"><b>03</b> Vitrine em Movimento</p>
+        <h2 class="medio">Vídeos para postar, <em>avulsos ou todo mês.</em></h2>
+        <ul class="checks checks-mini">
+          <li>Feitos para Reels, TikTok, Shorts e status</li>
+          <li>Avulso, quando precisar, ou um pacote mensal</li>
+        </ul>
+        <p class="canto-pe"><a class="btn-texto" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo-curto>Quero saber</span> ↗</a></p>
+      </div>
+      <div class="mini-grade mini-3">
+        <video class="vid" data-src="assets/v5/mini-chave.mp4" poster="assets/v5/mini-chave.jpg" muted loop playsinline preload="none" aria-label="Animação nossa: chave abrindo um cofre"></video>
+        <video class="vid" data-src="assets/v5/mini-portal.mp4" poster="assets/v5/mini-portal.jpg" muted loop playsinline preload="none" aria-label="Animação nossa: esfera de vidro"></video>
+        <video class="vid" data-src="assets/v5/mini-xadrez.mp4" poster="assets/v5/mini-xadrez.jpg" muted loop playsinline preload="none" aria-label="Animação nossa: peças de xadrez"></video>
+        <p class="mini-leg">Animações feitas por nós</p>
       </div>
     </div>
   </section>
 
-  <!-- 3. PORTFÓLIO REAL: sistemas funcionando -->
-  <section class="secao" id="portfolio">
-    <div class="wrap">
-      <p class="rotulo">Portfólio real</p>
-      <h2>Uma pessoa. <span class="grad-agua">Sistemas que trabalham sozinhos</span> e conversam entre si.</h2>
-      <svg class="rede-sis" viewBox="0 0 600 120" role="img" aria-label="Os sistemas trocando informação entre si">
-        <g class="rede-fios">
-          <path d="M60 60 C150 10 210 10 300 60"/><path d="M300 60 C390 110 450 110 540 60"/>
-          <path d="M60 60 C150 110 210 110 300 60"/><path d="M300 60 C390 10 450 10 540 60"/>
-          <path d="M180 22 L420 98"/><path d="M180 98 L420 22"/>
-        </g>
-        <g class="rede-nos">
-          <circle cx="60" cy="60" r="7"/><circle cx="180" cy="22" r="6"/><circle cx="180" cy="98" r="6"/>
-          <circle cx="300" cy="60" r="9"/><circle cx="420" cy="22" r="6"/><circle cx="420" cy="98" r="6"/><circle cx="540" cy="60" r="7"/>
-        </g>
-        <g class="rede-rot">
-          <text x="60" y="88">Orbix</text><text x="180" y="12">NexoFrame</text><text x="180" y="118">LYRA</text>
-          <text x="300" y="38">Orbit</text><text x="420" y="12">Certeza</text><text x="420" y="118">Solutiva</text><text x="540" y="88">Redes</text>
-        </g>
-      </svg>
-      <div class="sistemas sistemas-v4">
-        <article class="cartao sis sis-destaque revela tilt">
+  <!-- CENA 04: SISTEMAS QUE CONVERSAM -->
+  <section class="cena" id="sistemas">
+    <video class="cena-video vid" data-src="assets/v5/sistemas-d.mp4" data-src-m="assets/v5/sistemas-m.mp4" data-poster-m="assets/v5/sistemas-m.jpg" poster="assets/v5/sistemas-d.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <div class="corte" aria-hidden="true"></div>
+    <div class="cena-in">
+      <p class="slate"><b>04</b> Sistemas sob medida · os nossos</p>
+      <h2 class="grande">Uma pessoa.<br><em>Sistemas que conversam entre si.</em></h2>
+      <div class="sis-destaques">
+        <article class="sis revela">
           <img src="assets/app-nexoframe.webp" width="884" height="608" loading="lazy" decoding="async" alt="Etapas do NexoFrame">
           <h3>NexoFrame</h3><p>Motor de vídeo com IA no próprio computador.</p>
         </article>
-        <article class="cartao sis sis-destaque revela tilt">
+        <article class="sis revela">
           <img src="assets/app-orbit.webp" width="884" height="608" loading="lazy" decoding="async" alt="Assistente Orbit">
           <h3>Orbit</h3><p>Comanda os outros sistemas por conversa.</p>
         </article>
-        <article class="cartao sis revela tilt">
-          <img src="assets/app-orbix.webp" width="884" height="608" loading="lazy" decoding="async" alt="Painel do Orbix">
-          <h3>Orbix</h3><p>Cria e agenda vídeos nas 4 redes sozinho.</p>
-        </article>
-        <article class="cartao sis revela tilt">
-          <img src="assets/app-certeza.webp" width="884" height="608" loading="lazy" decoding="async" alt="Vídeos do canal Certeza Duvidosa">
-          <h3>Certeza Duvidosa</h3><p>Canal automático de vídeos com animações.</p>
-        </article>
-        <article class="cartao sis revela tilt">
-          <img src="assets/app-lyra.webp" width="884" height="608" loading="lazy" decoding="async" alt="Gameplay editada pelo LYRA">
-          <h3>LYRA</h3><p>Canal de games que se edita sozinho.</p>
-        </article>
-        <article class="cartao sis revela tilt">
-          <img src="assets/app-solutiva.webp" width="884" height="608" loading="lazy" decoding="async" alt="Tela da Fábrica de vídeos do app da Solutiva">
-          <h3>App da Solutiva</h3><p>Prospecção, postagem e fábrica de conteúdo.</p>
-        </article>
-        <article class="cartao sis sis-cta revela tilt" id="sistemas">
-          <span class="em-breve">Sistemas sob medida</span>
-          <h3>Um sistema para o seu negócio</h3>
-          <a class="btn btn-vidro btn-sm" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo-curto>Quero saber</span></a>
-        </article>
       </div>
-    </div>
-  </section>
-
-  <!-- 4. SITE EM 48 H -->
-  <section class="secao" id="entrega-site">
-    <div class="wrap">
-      <p class="rotulo">Site em 48 h</p>
-      <h2>Você manda o material. <span class="grad-agua">Eu faço o resto.</span></h2>
-      <ol class="passos passos-5">
-        <li class="cartao passo revela"><span class="passo-n">1</span><h3>Conversa</h3><span class="passo-t">Hoje</span></li>
-        <li class="cartao passo revela"><span class="passo-n">2</span><h3>Material</h3><span class="passo-t">Hoje</span></li>
-        <li class="cartao passo revela"><span class="passo-n">3</span><h3>Prévia</h3><span class="passo-t">24 h</span></li>
-        <li class="cartao passo revela"><span class="passo-n">4</span><h3>Ajustes</h3><span class="passo-t">Na prévia</span></li>
-        <li class="cartao passo revela"><span class="passo-n">5</span><h3>No ar</h3><span class="passo-t">48 h</span></li>
-      </ol>
-      <div class="portfolio">
-        <article class="cartao proj revela tilt">
-          <a class="proj-tela" href="https://cursoenglishathome.online" target="_blank" rel="noopener" aria-label="Abrir o site English at Home">
-            <picture>
-              <source media="(max-width: 600px)" srcset="assets/port-eah-mobile.webp" width="390" height="844">
-              <img src="assets/port-eah-desktop.webp" width="1200" height="750" loading="lazy" decoding="async" alt="Página inicial do English at Home, plataforma de curso de inglês">
-            </picture>
-          </a>
-          <div class="proj-txt">
-            <h3>English at Home</h3>
-            <a class="link-seta" href="https://cursoenglishathome.online" target="_blank" rel="noopener">cursoenglishathome.online <span aria-hidden="true">↗</span></a>
-          </div>
-        </article>
-        <article class="cartao proj revela tilt">
-          <a class="proj-tela" href="https://orbixbr.onrender.com" target="_blank" rel="noopener" aria-label="Abrir o site de links do Orbix">
-            <picture>
-              <source media="(max-width: 600px)" srcset="assets/port-orbix-mobile.webp" width="390" height="844">
-              <img src="assets/port-orbix-desktop.webp" width="1200" height="750" loading="lazy" decoding="async" alt="Site de links do Orbix com vitrine de produtos">
-            </picture>
-          </a>
-          <div class="proj-txt">
-            <h3>Site de links do Orbix</h3>
-            <a class="link-seta" href="https://orbixbr.onrender.com" target="_blank" rel="noopener">orbixbr.onrender.com <span aria-hidden="true">↗</span></a>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- 5. BÔNUS -->
-  <section class="secao" id="bonus">
-    <div class="wrap bonus">
-      <div class="bonus-txt">
-        <p class="rotulo">Bônus do site</p>
-        <h2>1 vídeo do seu produto, <span class="grad-agua">feito com IA</span></h2>
-        <p class="lead">Sua foto vira Reels, TikTok e status.</p>
-      </div>
-      <div class="celular revela">
-        <video class="vitrine-video" muted loop playsinline preload="none" poster="assets/vitrine-poster.webp" data-src="assets/vitrine.mp4" width="540" height="960" aria-label="Demonstração de vídeos de produto feitos com IA"></video>
-      </div>
-    </div>
-  </section>
-
-  <!-- 6. ROBÔ DE WHATSAPP -->
-  <section class="secao" id="robo">
-    <div class="wrap">
-      <p class="rotulo">Robô de WhatsApp com IA</p>
-      <h2>Atende <span class="grad-agua">quando você não pode</span></h2>
-      <div class="robo">
-        <div class="robo-txt">
-          <ul class="robo-benef">
-            <li><b>Na hora</b>, até de madrugada</li>
-            <li><b>Orça e marca horário</b> sozinho</li>
-            <li><b>Chama você</b> quando precisa</li>
-            <li><b>API oficial da Meta</b>, sem passar senha</li>
-          </ul>
-        </div>
-        <div class="chat revela" role="img" aria-label="Exemplo de conversa: o cliente pergunta preço e horário, o robô responde e reserva">
-          <p class="chat-topo"><span class="chat-av" aria-hidden="true"></span>Sua empresa <span class="chat-ex">exemplo</span></p>
-          <p class="balao cli">Oi! Quanto custa a limpeza de pele? Tem horário essa semana?</p>
-          <p class="balao bot">Oi! Te mando agora o valor que a clínica cadastrou e os horários livres desta semana. Quer que eu já marque para você?</p>
-          <p class="balao cli">Quero sim!</p>
-          <p class="balao bot">Pronto, horário reservado. Se quiser falar com a equipe, é só pedir que eu chamo.</p>
-        </div>
-      </div>
-      <div class="treino" id="treino" data-etapa="0">
-        <div class="treino-txt">
-          <span class="treino-tag">Opcional</span>
-          <h3>Aprende com as suas conversas</h3>
-          <ol class="treino-passos">
-            <li data-e="1"><span class="tp-n" aria-hidden="true">1</span>Sem nomes nem telefones</li>
-            <li data-e="2"><span class="tp-n" aria-hidden="true">2</span>A IA acha o seu jeito</li>
-            <li data-e="3"><span class="tp-n" aria-hidden="true">3</span>Relatório grátis</li>
-          </ol>
-        </div>
-        <div class="treino-vis" role="img" aria-label="Ilustração: conversas exportadas, nomes e telefones apagados, a IA separa perguntas, preços, horários e jeito de falar, e sai um relatório de exemplo">
-          <div class="tv-cena tv-1">
-            <p class="tv-rot">Conversas exportadas</p>
-            <p class="tv-msg"><span class="pii"><span>Nome do cliente</span><i></i></span> <span class="pii"><span>(00) 00000-0000</span><i></i></span><br>Vocês abrem no sábado?</p>
-            <p class="tv-msg"><span class="pii"><span>Nome do cliente</span><i></i></span> <span class="pii"><span>(00) 00000-0000</span><i></i></span><br>Quanto fica o serviço?</p>
-            <p class="tv-msg"><span class="pii"><span>Nome do cliente</span><i></i></span> <span class="pii"><span>(00) 00000-0000</span><i></i></span><br>Tem horário amanhã?</p>
-          </div>
-          <div class="tv-cena tv-2">
-            <p class="tv-rot">O que a IA encontrou</p>
-            <ul class="tv-chips">
-              <li>Perguntas que mais se repetem</li>
-              <li>Preços que você passa</li>
-              <li>Horários</li>
-              <li>Seu jeito de falar</li>
-            </ul>
-          </div>
-          <div class="tv-cena tv-3">
-            <p class="tv-rot">Relatório grátis <span class="tv-ex">exemplo ilustrativo</span></p>
-            <ul class="tv-rel">
-              <li><span>Dúvidas de horário</span><b class="ok">dá para automatizar</b></li>
-              <li><span>Pedidos de preço</span><b class="ok">dá para automatizar</b></li>
-              <li><span>Marcação de horário</span><b class="ok">dá para automatizar</b></li>
-              <li><span>Casos especiais</span><b>ficam com você</b></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 7. ANIMAÇÕES E MAIS SOLUÇÕES (secundário) -->
-  <section class="secao secao-sec" id="solucoes">
-    <div class="wrap">
-      <div class="animacoes" id="animacoes">
-        <p class="rotulo">Animações sob medida</p>
-        <h2>Cenas 3D <span class="grad-frio">feitas em código</span></h2>
-        <div class="anim-grade">
-          <figure class="cartao anim revela">
-            <video class="anim-video" muted loop playsinline preload="none" poster="assets/animacoes/galaxia-poster.webp" data-src="assets/animacoes/galaxia.mp4" width="1280" height="720" aria-label="Animação 3D de uma galáxia em espiral"></video>
-            <figcaption>Galáxia</figcaption>
-          </figure>
-          <figure class="cartao anim revela">
-            <video class="anim-video" muted loop playsinline preload="none" poster="assets/animacoes/nebulosa-poster.webp" data-src="assets/animacoes/nebulosa.mp4" width="1280" height="720" aria-label="Animação 3D de uma nebulosa com pilares de gás"></video>
-            <figcaption>Nebulosa</figcaption>
-          </figure>
-          <figure class="cartao anim revela">
-            <video class="anim-video" muted loop playsinline preload="none" poster="assets/animacoes/dna-poster.webp" data-src="assets/animacoes/dna.mp4" width="1280" height="720" aria-label="Animação 3D de uma fita de DNA se dividindo"></video>
-            <figcaption>DNA</figcaption>
-          </figure>
-          <figure class="cartao anim revela">
-            <video class="anim-video" muted loop playsinline preload="none" poster="assets/animacoes/marionete-poster.webp" data-src="assets/animacoes/marionete.mp4" width="1280" height="720" aria-label="Animação 3D de uma marionete de madeira presa por fios"></video>
-            <figcaption>Marionete</figcaption>
-          </figure>
-          <figure class="cartao anim revela">
-            <video class="anim-video" muted loop playsinline preload="none" poster="assets/animacoes/cadeia-poster.webp" data-src="assets/animacoes/cadeia.mp4" width="1280" height="720" aria-label="Animação 3D de dominós caindo em cadeia"></video>
-            <figcaption>Efeito dominó</figcaption>
-          </figure>
-          <figure class="cartao anim revela">
-            <video class="anim-video" muted loop playsinline preload="none" poster="assets/animacoes/prisma-poster.webp" data-src="assets/animacoes/prisma.mp4" width="1280" height="720" aria-label="Animação 3D de um prisma separando a luz em cores"></video>
-            <figcaption>Prisma</figcaption>
-          </figure>
-        </div>
-      </div>
-      <ul class="sol-chips" aria-label="Mais soluções sob consulta">
-        <li>Vitrine em Movimento</li><li>Narração com IA</li><li>Trilha com IA</li><li>Postagem automática</li><li>Cardápio digital</li><li>Automações</li><li>Assistente no Telegram</li><li>Vídeos explicativos</li>
+      <ul class="sis-faixa">
+        <li class="revela"><img src="assets/app-orbix.webp" width="884" height="608" loading="lazy" decoding="async" alt="Painel do Orbix"><b>Orbix</b><span>Cria e agenda vídeos nas redes</span></li>
+        <li class="revela"><img src="assets/app-certeza.webp" width="884" height="608" loading="lazy" decoding="async" alt="Vídeos do canal Certeza Duvidosa"><b>Certeza Duvidosa</b><span>Canal automático com animações</span></li>
+        <li class="revela"><img src="assets/app-lyra.webp" width="884" height="608" loading="lazy" decoding="async" alt="Gameplay editada pelo LYRA"><b>LYRA</b><span>Canal de games</span></li>
+        <li class="revela"><img src="assets/app-solutiva.webp" width="884" height="608" loading="lazy" decoding="async" alt="Tela da Fábrica de vídeos do app da Solutiva"><b>App da Solutiva</b><span>Prospecção, postagem e fábrica</span></li>
       </ul>
-      <p class="sec-cta"><a class="btn btn-vidro btn-sm" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo-curto>Orçamento sob consulta</span></a></p>
+      <div class="acoes">
+        <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo>Quero um sistema</span></a>
+      </div>
     </div>
   </section>
 
-  <!-- 8. CONTATO -->
-  <section class="secao cta-final" id="contato">
-    <div class="wrap">
-      <div class="cartao cta-caixa revela" id="duvidas">
-        <img class="cta-logo" src="assets/logo-s.webp" width="42" height="96" alt="" loading="lazy">
-        <h2>Dúvidas? <span class="grad-agua">Fale com o nosso atendimento.</span></h2>
-        <div class="acoes centro">
-          <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener">
-            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 5l7 7-7 7"/></svg>
-            <span data-rotulo>Falar com o atendimento</span>
-          </a>
-        </div>
+  <!-- NO CANTO: animações sob medida e orçamento -->
+  <section class="canto" id="animacoes">
+    <div class="canto-in">
+      <p class="slate"><b>Extra</b> Animações sob medida, feitas em código</p>
+      <div class="mini-grade">
+        <video class="vid" data-src="assets/animacoes/galaxia.mp4" poster="assets/animacoes/galaxia-poster.webp" muted loop playsinline preload="none" aria-label="Animação de galáxia"></video>
+        <video class="vid" data-src="assets/animacoes/dna.mp4" poster="assets/animacoes/dna-poster.webp" muted loop playsinline preload="none" aria-label="Animação de DNA"></video>
+        <video class="vid" data-src="assets/animacoes/marionete.mp4" poster="assets/animacoes/marionete-poster.webp" muted loop playsinline preload="none" aria-label="Animação de marionete"></video>
+        <video class="vid" data-src="assets/animacoes/cadeia.mp4" poster="assets/animacoes/cadeia-poster.webp" muted loop playsinline preload="none" aria-label="Animação de dominós"></video>
+      </div>
+      <p class="canto-pe"><a class="btn-texto" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo-curto>Orçamento sob consulta</span> ↗</a></p>
+    </div>
+  </section>
+
+  <!-- FIM -->
+  <section class="cena fim" id="contato">
+    <video class="cena-video vid" data-src="assets/v5/fim-d.mp4" data-src-m="assets/v5/fim-m.mp4" data-poster-m="assets/v5/fim-m.jpg" poster="assets/v5/fim-d.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <div class="corte" aria-hidden="true"></div>
+    <div class="cena-in centro">
+      <p class="slate"><b>Fim</b> ou começo</p>
+      <h2 class="grande">E o seu negócio,<br><em>quando entra em cena?</em></h2>
+      <p class="sub">Peça o esboço do seu site grátis. Dúvidas? Nosso atendimento responde.</p>
+      <div class="acoes centro">
+        <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo>Esboço do seu site grátis</span></a>
       </div>
     </div>
   </section>
 </main>
 
 <footer class="rodape">
-  <div class="wrap rodape-in">
-    <a class="marca" href="#inicio"><img src="assets/logo-s.webp" width="17" height="38" alt="" loading="lazy"><span>Solutiva</span></a>
-    <p>Software sob medida com IA · Brasília, DF</p>
-    <p class="rodape-links">
-      <a data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo-canal>Instagram</span></a>
-      <a class="rodape-ico" data-contato="secundario" href="https://www.linkedin.com/in/erinaldo-gomes-a30442264/" target="_blank" rel="noopener" aria-label="LinkedIn de Erinaldo Gomes, fundador da Solutiva" title="LinkedIn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg></a>
-    </p>
-    <p class="rodape-legal"><a href="privacidade.html">Privacidade</a> · <a href="termos.html">Termos</a></p>
-    <p class="rodape-copy">© <span id="ano">2026</span> Solutiva</p>
-  </div>
+  <a class="marca" href="#inicio"><img src="assets/logo-s.webp" width="17" height="38" alt="" loading="lazy"><span>Solutiva</span></a>
+  <p>Brasília, DF · atendimento online</p>
+  <p class="rodape-links">
+    <a data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener"><span data-rotulo-canal>Instagram</span></a>
+    <a data-contato="secundario" href="https://www.linkedin.com/in/erinaldo-gomes-a30442264/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="privacidade.html">Privacidade</a>
+    <a href="termos.html">Termos</a>
+  </p>
+  <p class="rodape-copy">© <span id="ano">2026</span> Solutiva</p>
 </footer>
 
-<a class="flutuante" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener" aria-label="Pedir orçamento">
-  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/></svg>
-  <span>Orçamento grátis</span>
-</a>
+<a class="flutuante" data-contato="principal" href="https://ig.me/m/solutiva.dev" target="_blank" rel="noopener" aria-label="Pedir o esboço do seu site grátis">Esboço do seu site grátis</a>
 
 <script src="script.js" defer></script>
+<script src="v5.js" defer></script>
 </body>
 </html>
