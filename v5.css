@@ -24,7 +24,7 @@ h1, h2, h3, p { margin: 0; }
 :focus-visible { outline: 3px solid var(--ceu); outline-offset: 3px; }
 
 /* ===== topo ===== */
-.topo { position: fixed; inset: 0 0 auto 0; z-index: 30; display: flex; align-items: center; gap: 28px; padding: 14px clamp(16px, 4vw, 48px); background: linear-gradient(180deg, rgba(2, 5, 12, .8), rgba(2, 5, 12, 0)); }
+.topo { position: fixed; inset: 0 0 auto 0; z-index: 30; display: flex; align-items: center; gap: 28px; padding: 14px clamp(16px, 4vw, 48px); background: linear-gradient(180deg, rgba(2, 5, 12, .96) 55%, rgba(2, 5, 12, 0)); }
 .marca { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 800 1.2rem/1 var(--titulo); letter-spacing: -.02em; }
 .marca img { height: 28px; width: auto; }
 .menu { display: none; gap: 26px; margin-left: auto; }
@@ -47,12 +47,12 @@ h1, h2, h3, p { margin: 0; }
 /* ===== cena (cada seção é um plano) ===== */
 .cena { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden; isolation: isolate; padding: 110px clamp(16px, 5vw, 72px) 90px; }
 /* o vídeo ocupa só uma tela (não estica numa seção alta, o que ampliava e borrava) e some suave embaixo */
-.cena-video { position: absolute; top: 0; left: 0; width: 100%; height: min(100%, 100svh); object-fit: cover; z-index: -2; opacity: .85; background: var(--preto); -webkit-mask-image: linear-gradient(#000 80%, transparent); mask-image: linear-gradient(#000 80%, transparent); }
+.cena-video { position: absolute; top: 0; left: 0; width: 100%; height: min(100%, 100svh); object-fit: cover; z-index: -2; opacity: .85; background: var(--preto); -webkit-mask-image: linear-gradient(transparent, #000 14%, #000 80%, transparent); mask-image: linear-gradient(transparent, #000 14%, #000 80%, transparent); }
 .abertura .cena-video { height: 100%; -webkit-mask-image: none; mask-image: none; }
 .cena::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   /* escuro só do lado do texto (esquerda), o resto do vídeo fica limpo */
-  background: linear-gradient(90deg, rgba(2, 5, 12, .78), rgba(2, 5, 12, .45) 45%, rgba(2, 5, 12, .05) 75%), linear-gradient(180deg, var(--preto), transparent 14%, transparent 86%, var(--preto)); }
-@media (max-width: 699px) { .cena::before { background: linear-gradient(180deg, var(--preto), rgba(2, 5, 12, .35) 14%, rgba(2, 5, 12, .55) 55%, var(--preto)); } }
+  background: linear-gradient(90deg, rgba(2, 5, 12, .78), rgba(2, 5, 12, .45) 45%, rgba(2, 5, 12, .05) 75%), linear-gradient(180deg, rgba(2, 5, 12, .9), transparent 9%, transparent 86%, var(--preto)); }
+@media (max-width: 699px) { .cena::before { background: linear-gradient(180deg, rgba(2, 5, 12, .9), rgba(2, 5, 12, .35) 8%, rgba(2, 5, 12, .55) 55%, var(--preto)); } }
 .cena-in { position: relative; width: 100%; max-width: 1240px; margin: 0 auto; }
 .cena-in.centro { text-align: center; }
 
@@ -66,7 +66,7 @@ h1, h2, h3, p { margin: 0; }
 /* ===== abertura ===== */
 .abertura { align-items: flex-end; padding-bottom: clamp(70px, 12vh, 140px); }
 .abertura .cena-video { opacity: .9; }
-.abertura::before { background: linear-gradient(180deg, rgba(2, 5, 12, .55), transparent 30%, rgba(2, 5, 12, .25) 55%, rgba(2, 5, 12, .95)), radial-gradient(80% 60% at 15% 85%, rgba(2, 5, 12, .7), transparent 70%); }
+.abertura::before { background: linear-gradient(180deg, rgba(2, 5, 12, .55), transparent 30%, rgba(2, 5, 12, .25) 55%, var(--preto)), radial-gradient(80% 60% at 15% 85%, rgba(2, 5, 12, .7), transparent 70%); }
 .abertura .cena-txt { position: relative; width: 100%; max-width: 1240px; margin: 0 auto; }
 .claquete { font: 600 .78rem/1 ui-monospace, Consolas, monospace; letter-spacing: .32em; text-transform: uppercase; color: var(--ceu); margin-bottom: 20px; }
 .claquete span { color: var(--txt); }
@@ -79,7 +79,7 @@ h1 .l { display: block; }
 
 /* ===== corte entre cenas (só com JS e movimento liberado) ===== */
 .corte { display: none; }
-.js-v5 .corte { display: block; position: absolute; inset: 0; z-index: 5; pointer-events: none; background: #000; clip-path: inset(0 0 0 0); }
+.js-v5 .corte { display: none; position: absolute; inset: 0; z-index: 5; pointer-events: none; background: #000; clip-path: inset(0 0 0 0); }
 .js-v5 .cena.em-cena .corte { animation: corte 1.05s var(--mola) forwards; }
 @keyframes corte {
   0% { clip-path: inset(0 0 0 0); background: #000; }
@@ -94,8 +94,9 @@ h1 .l { display: block; }
 .js-v5 .cena .cena-in.duas > * { opacity: 1; transform: none; }
 
 /* abertura: faixas de cinema e título que sobe */
-.js-v5 .abertura .faixa { animation: faixa 1.4s var(--mola) .2s forwards; }
-@keyframes faixa { to { height: 6vh; } }
+.js-v5 .abertura .faixa { animation: faixa 2.6s var(--mola) .2s both; }
+/* as faixas de cinema abrem e recolhem: nada de barra preta parada entre a abertura e a seção 01 */
+@keyframes faixa { 0% { height: 0; } 35%, 65% { height: 6vh; } 100% { height: 0; } }
 .js-v5 .abertura h1 .l, .js-v5 .abertura .claquete, .js-v5 .abertura .sub, .js-v5 .abertura .acoes { opacity: 0; transform: translateY(40px); }
 .js-v5.v5-pronto .abertura h1 .l, .js-v5.v5-pronto .abertura .claquete, .js-v5.v5-pronto .abertura .sub, .js-v5.v5-pronto .abertura .acoes { opacity: 1; transform: none; transition: opacity 1s ease, transform 1.2s var(--mola); }
 .js-v5.v5-pronto .abertura h1 .l:nth-child(1) { transition-delay: .35s; }
@@ -236,3 +237,7 @@ h1 .l { display: block; }
 .mini-grade.mini-3 { grid-template-columns: repeat(3, 1fr); max-width: none; }
 .mini-leg { grid-column: 1 / -1; margin: 2px 0 0; font-size: .8rem; color: var(--txt-2); letter-spacing: .04em; }
 @media (max-width: 699px) { .mini-grade.mini-3 { grid-template-columns: 1fr 1fr; } .mini-grade.mini-3 video:first-child { grid-column: 1 / -1; } }
+
+/* passagem contínua: a seção já começa com conteúdo, sem bloco vazio no topo */
+.cena:not(.abertura) { padding-top: clamp(72px, 9vh, 96px); }
+@media (max-width: 699px) { .topo { background: rgba(2, 5, 12, .95); } }
