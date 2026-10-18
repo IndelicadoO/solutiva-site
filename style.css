@@ -492,7 +492,7 @@ html:not(.js-mov) .pii i { transform: none; }
 
 /* celular: carrossel com encaixe nas grades longas (página mais curta, mesmo conteúdo) */
 @media (max-width: 639px) {
-  .sistemas, .solucoes, .anim-grade { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 82%; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding-bottom: 12px; margin-right: -16px; padding-right: 16px; scrollbar-width: thin; }
+  .sistemas, .solucoes, .anim-grade { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 82%; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; overflow-y: hidden; padding-bottom: 24px; margin-right: -16px; padding-right: 16px; scrollbar-width: thin; }
   .sistemas > *, .solucoes > *, .anim-grade > * { scroll-snap-align: start; }
   .sistemas .sis-cta { grid-column: auto; }
   .solucoes { grid-auto-columns: 70%; }
