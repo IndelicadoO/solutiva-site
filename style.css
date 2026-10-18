@@ -455,3 +455,51 @@ html:not(.js-mov) .pii i { transform: none; }
 .anim figcaption { padding: 12px 18px 14px; font-weight: 600; font-size: .95rem; color: var(--txt-2); display: flex; align-items: center; gap: 10px; }
 .anim figcaption::before { content: ''; width: 9px; height: 8px; background: var(--ciano); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
 .sem-js .passos::before { transform: none; }
+
+/* ===== v3 clean: menos texto, mais respiro, hierarquia ===== */
+.secao h2 + .lead, .secao h2 + .rede-sis { margin-top: 10px; }
+.grade-itens, .solucoes, .sistemas, .anim-grade { gap: 20px; }
+.item p, .sol p, .sis p, .passo p { line-height: 1.5; }
+@media (min-width: 1000px) { .produtos { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) and (max-width: 999px) { .produtos .produto-sis { grid-column: 1 / -1; } }
+.produto-sis::before { background: linear-gradient(90deg, var(--azul), #9a92ff); }
+.produto-sis .produto-tag { color: #d6d2ff; border-color: rgba(154, 146, 255, .45); }
+
+/* portfólio: sistemas que conversam entre si */
+.rede-sis { display: block; width: 100%; max-width: 640px; height: auto; margin: 22px 0 6px; overflow: visible; }
+.rede-fios path { fill: none; stroke: rgba(63, 210, 255, .35); stroke-width: 1.5; stroke-dasharray: 4 10; animation: fio-corre 2.6s linear infinite; }
+.rede-fios path:nth-child(2n) { stroke: rgba(52, 224, 192, .4); animation-duration: 3.4s; animation-direction: reverse; }
+.rede-fios path:nth-child(n+5) { stroke: rgba(154, 146, 255, .3); animation-duration: 4.2s; }
+.rede-nos circle { fill: #07122a; stroke: var(--ciano); stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: no-pulsa 2.8s ease-in-out infinite; }
+.rede-nos circle:nth-child(4) { stroke: var(--agua); fill: rgba(52, 224, 192, .18); }
+.rede-nos circle:nth-child(2n) { animation-delay: .7s; }
+.rede-nos circle:nth-child(3n) { animation-delay: 1.4s; }
+.rede-rot text { fill: var(--txt-2); font: 600 12px/1 Onest, system-ui, sans-serif; text-anchor: middle; }
+@keyframes fio-corre { to { stroke-dashoffset: -28; } }
+@keyframes no-pulsa { 50% { transform: scale(1.35); } }
+@media (prefers-reduced-motion: reduce) { .rede-fios path, .rede-nos circle { animation: none; } }
+@media (min-width: 640px) { .sistemas .sis-cta { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px 0; } .sistemas .sis-cta h3 { flex: 1 1 260px; margin: 0; } .sistemas .sis-cta p { flex: 2 1 320px; } .sistemas .sis-cta .em-breve { flex-basis: 100%; align-self: flex-start; max-width: max-content; } .sistemas .sis-cta .btn { margin: 0 22px; } }
+.sub-port { font-family: var(--titulo, inherit); font-size: clamp(1.25rem, 2.2vw, 1.5rem); margin: 56px 0 0; }
+.sub-port + .portfolio, .sub-port + .nota { margin-top: 14px; }
+
+/* mais soluções: secundário, mais discreto */
+.secao-sec h2 { font-size: clamp(1.5rem, 2.8vw, 2.1rem); }
+.secao-sec .sol { padding: 20px 20px; }
+.secao-sec .sol-ico { width: 44px; height: 44px; margin-bottom: 12px; }
+.secao-sec .sol-ico svg { width: 20px; height: 20px; }
+.secao-sec .animacoes { margin-top: 48px; padding-top: 40px; }
+.sec-cta { margin: 22px 0 0; }
+
+/* celular: carrossel com encaixe nas grades longas (página mais curta, mesmo conteúdo) */
+@media (max-width: 639px) {
+  .sistemas, .solucoes, .anim-grade { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 82%; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding-bottom: 12px; margin-right: -16px; padding-right: 16px; scrollbar-width: thin; }
+  .sistemas > *, .solucoes > *, .anim-grade > * { scroll-snap-align: start; }
+  .sistemas .sis-cta { grid-column: auto; }
+  .solucoes { grid-auto-columns: 70%; }
+}
+@media (max-width: 639px) {
+  .rede-rot text { font-size: 19px; }
+  .item { padding: 18px 18px; display: grid; grid-template-columns: 40px 1fr; column-gap: 14px; align-items: start; }
+  .item-ico { width: 40px; height: 40px; padding: 9px; margin: 0; grid-row: span 2; }
+  .item h3 { margin: 0 0 4px; }
+}
