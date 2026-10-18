@@ -46,7 +46,7 @@
   if (!reduz && temIO) {
     var cio = new IntersectionObserver(function (ents) {
       ents.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('em-cena'); cio.unobserve(e.target); } });
-    }, { threshold: 0.22 });
+    }, { threshold: 0, rootMargin: '0px 0px -12% 0px' });
     cenas.forEach(function (c) { cio.observe(c); });
   } else {
     cenas.forEach(function (c) { c.classList.add('em-cena'); });
