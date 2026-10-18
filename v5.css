@@ -46,7 +46,9 @@ h1, h2, h3, p { margin: 0; }
 
 /* ===== cena (cada seção é um plano) ===== */
 .cena { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden; isolation: isolate; padding: 110px clamp(16px, 5vw, 72px) 90px; }
-.cena-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; opacity: .5; background: var(--preto); }
+/* o vídeo ocupa só uma tela (não estica numa seção alta, o que ampliava e borrava) e some suave embaixo */
+.cena-video { position: absolute; top: 0; left: 0; width: 100%; height: min(100%, 100svh); object-fit: cover; z-index: -2; opacity: .5; background: var(--preto); -webkit-mask-image: linear-gradient(#000 72%, transparent); mask-image: linear-gradient(#000 72%, transparent); }
+.abertura .cena-video { height: 100%; -webkit-mask-image: none; mask-image: none; }
 .cena::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(120% 90% at 20% 60%, rgba(2, 5, 12, .25), rgba(2, 5, 12, .85) 70%), linear-gradient(180deg, var(--preto), transparent 18%, transparent 80%, var(--preto)); }
 .cena-in { position: relative; width: 100%; max-width: 1240px; margin: 0 auto; }
