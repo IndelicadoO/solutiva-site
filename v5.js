@@ -20,8 +20,16 @@
       ents.forEach(function (e) {
         var v = e.target;
         if (e.isIntersecting) {
-          if (!v.getAttribute('src')) {
-            v.src = (celular && v.getAttribute('data-src-m')) || v.getAttribute('data-src');
+          if (!v.dataset.carregado) {
+            v.dataset.carregado = '1';
+            var fontes = v.querySelectorAll('source[data-src]');
+            if (fontes.length) {
+              // o navegador escolhe a fonte pelo media: a leve vai só para o celular
+              fontes.forEach(function (s) { s.src = s.getAttribute('data-src'); });
+              v.load();
+            } else {
+              v.src = (celular && v.getAttribute('data-src-m')) || v.getAttribute('data-src');
+            }
           }
           var p = v.play(); if (p && p.catch) p.catch(function () {});
         } else if (!v.paused) { v.pause(); }
