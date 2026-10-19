@@ -7,10 +7,10 @@
      passam a abrir o WhatsApp com a mensagem pronta abaixo.
    ===================================================================== */
 const CONTATO = {
-  principal: 'https://ig.me/m/solutiva.dev',
+  principal: 'https://ig.me/m/clickgo.dev',
   secundario: 'https://www.linkedin.com/in/erinaldo-gomes-a30442264/',
   whatsapp: '',
-  mensagemWhatsapp: 'Olá! Vi o site da Solutiva e quero um orçamento.'
+  mensagemWhatsapp: 'Olá! Vi o site da ClickGo e quero um orçamento.'
 };
 
 (function () {

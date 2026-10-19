@@ -1,4 +1,4 @@
-/* Solutiva v5: vídeos que só baixam e tocam na tela, e cortes entre cenas.
+/* ClickGo v5: vídeos que só baixam e tocam na tela, e cortes entre cenas.
    Os contatos continuam centralizados no script.js (não mexer lá). */
 (function () {
   'use strict';
