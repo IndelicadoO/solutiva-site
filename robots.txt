@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /previews/
-Sitemap: https://solutiva.dev.br/sitemap.xml
+Sitemap: https://clickgo.dev.br/sitemap.xml
