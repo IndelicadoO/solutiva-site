@@ -6,26 +6,19 @@
   var temIO = 'IntersectionObserver' in window;
   var NS = 'http://www.w3.org/2000/svg';
 
-  /* ================= MAPA DOS SISTEMAS ================= */
+  /* ================= MAPA DOS SISTEMAS (linhas finas, só texto) ================= */
   var mapa = document.getElementById('mapa');
   var svg = mapa && mapa.querySelector('.mapa-svg');
+  // posições num quadro de 520 x 420; o Orbit fica no centro
   var NOS = {
-    redes:   { nome: 'Redes sociais', sub: 'YouTube · Instagram · Facebook · TikTok · LinkedIn', ms: '5 redes, publicação sozinha', cls: 'redes', d: [500, 62, 470], m: [200, 46, 380] },
-    orbix:   { nome: 'Orbix', sub: 'acha produto, grava e publica', ms: 'grava e publica', d: [175, 200, 250], m: [104, 158, 180] },
-    lyra:    { nome: 'LYRA', sub: 'canal de games', ms: 'games', cls: 'lyra', d: [500, 196, 170], m: [200, 252, 150] },
-    certeza: { nome: 'Certeza Duvidosa', sub: 'canal que se produz sozinho', ms: 'canal automático', d: [825, 200, 250], m: [296, 158, 180] },
-    orbit:   { nome: 'Orbit', sub: 'comanda tudo por conversa', ms: 'comanda por conversa', cls: 'centro', d: [500, 330, 250], m: [200, 362, 220] },
-    nexo:    { nome: 'NexoFrame', sub: 'motor de vídeo local', ms: 'motor de vídeo', d: [175, 460, 250], m: [104, 482, 180] },
-    clickgo: { nome: 'ClickGo', sub: 'fábrica, postador e robôs', ms: 'fábrica e robôs', d: [825, 460, 250], m: [296, 482, 180] },
-    placa:   { nome: 'Placa de vídeo', sub: 'um trabalho pesado por vez', ms: '1 trabalho por vez', cls: 'placa', d: [500, 548, 270], m: [200, 600, 250] }
+    orbit:   ['Orbit', 260, 210],
+    orbix:   ['Orbix', 80, 80],
+    certeza: ['Certeza Duvidosa', 440, 80],
+    nexo:    ['NexoFrame', 80, 340],
+    clickgo: ['ClickGo', 440, 340],
+    lyra:    ['LYRA', 260, 395]
   };
-  // [de, para, rótulo, tipo]
-  var ARESTAS = [
-    ['orbit', 'orbix', 'ações'], ['orbit', 'certeza', 'ações'], ['orbit', 'clickgo', 'ações'], ['orbit', 'lyra', ''],
-    ['orbix', 'nexo', 'roteiro → vídeo'], ['certeza', 'clickgo', 'voz e cenas 3D'],
-    ['orbix', 'redes', '4 redes'], ['certeza', 'redes', ''], ['clickgo', 'redes', ''], ['lyra', 'redes', ''],
-    ['nexo', 'placa', '', 'placa'], ['clickgo', 'placa', '', 'placa'], ['orbix', 'placa', '', 'placa'], ['certeza', 'placa', '', 'placa']
-  ];
+  var ARESTAS = [['orbit', 'orbix'], ['orbit', 'certeza'], ['orbit', 'nexo'], ['orbit', 'clickgo'], ['orbit', 'lyra'], ['orbix', 'nexo'], ['certeza', 'clickgo']];
 
   function el(tag, at, pai) {
     var e = document.createElementNS(NS, tag);
@@ -34,100 +27,36 @@
     return e;
   }
 
-  function desenhaMapa() {
-    if (!svg) return;
-    var cel = window.innerWidth < 700;
-    var L = cel ? 'm' : 'd';
-    var W = cel ? 400 : 1000, H = cel ? 660 : 600;
-    var altNo = cel ? 60 : 62;
-    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-    var tit = svg.querySelector('title');
-    while (svg.lastChild) svg.removeChild(svg.lastChild);
-    if (tit) svg.appendChild(tit);
-
-    var defs = el('defs', {}, svg);
-    var g = el('linearGradient', { id: 'm-grad', x1: '0', y1: '0', x2: '1', y2: '1' }, defs);
-    el('stop', { offset: '0', 'stop-color': '#a6e6ff' }, g);
-    el('stop', { offset: '.5', 'stop-color': '#3fd2ff' }, g);
-    el('stop', { offset: '1', 'stop-color': '#8b7bff' }, g);
-
-    var camArestas = el('g', {}, svg);
-    var camRot = el('g', {}, svg);
-    var camNos = el('g', {}, svg);
-
-    ARESTAS.forEach(function (a, i) {
-      var A = NOS[a[0]][L], B = NOS[a[1]][L];
-      var x1 = A[0], y1 = A[1], x2 = B[0], y2 = B[1];
-      // curva suave: puxa o meio para o centro do mapa
-      var mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
-      var cx = mx + (W / 2 - mx) * 0.25, cy = my + (H / 2 - my) * 0.12;
-      if (a[3] === 'placa') { cx = mx + (W / 2 - mx) * -0.15; cy = my + 30; }
-      var d = 'M' + x1 + ' ' + y1 + ' Q' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ' ' + x2 + ' ' + y2;
-      var base = el('path', { d: d, 'class': 'm-aresta', 'data-a': a[0], 'data-b': a[1] }, camArestas);
-      var fl = el('path', { d: d, 'class': 'm-fluxo' + (a[3] === 'placa' ? ' placa' : ''), 'data-a': a[0], 'data-b': a[1] }, camArestas);
-      if (!reduz && a[0] === 'orbit') {
-        var bola = el('circle', { r: a[3] === 'placa' ? 2.4 : 3.4, 'class': 'm-pulso' }, camArestas);
-        var mov = el('animateMotion', { dur: (4.5 + (i % 3) * 0.8).toFixed(2) + 's', repeatCount: 'indefinite', path: d, begin: (i * 0.37).toFixed(2) + 's' }, bola);
-        if (i % 2) { mov.setAttribute('keyPoints', '1;0'); mov.setAttribute('keyTimes', '0;1'); mov.setAttribute('calcMode', 'linear'); }
-      }
-      if (a[2] && !cel) {
-        // rótulo no meio da curva
-        var t = 0.5, px = (1 - t) * (1 - t) * x1 + 2 * (1 - t) * t * cx + t * t * x2, py = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * cy + t * t * y2;
-        var tx = el('text', { x: px.toFixed(1), y: (py - 6).toFixed(1), 'text-anchor': 'middle', 'class': 'm-rot' }, camRot);
-        tx.textContent = a[2];
-      }
-      base = fl = null;
-    });
-
-    Object.keys(NOS).forEach(function (k) {
-      var n = NOS[k], p = n[L];
-      var w = p[2], h = n.cls === 'lyra' ? altNo - 10 : altNo;
-      var gr = el('g', { 'class': 'm-no ' + (n.cls || ''), 'data-no': k, tabindex: '0' }, camNos);
-      if (false) {
-        el('rect', { x: p[0] - w / 2, y: p[1] - h / 2, width: w, height: h, rx: h / 2, 'class': 'm-anel' }, gr);
-        el('rect', { x: p[0] - w / 2, y: p[1] - h / 2, width: w, height: h, rx: h / 2, 'class': 'm-anel b' }, gr);
-      }
-      el('rect', { x: p[0] - w / 2, y: p[1] - h / 2, width: w, height: h, rx: cel ? 14 : 16 }, gr);
-      var nome = el('text', { x: p[0], y: p[1] - (cel ? 3 : 4), 'text-anchor': 'middle', 'class': 'm-nome' }, gr);
-      nome.textContent = n.nome;
-      var sub = el('text', { x: p[0], y: p[1] + (cel ? 15 : 17), 'text-anchor': 'middle', 'class': 'm-sub' }, gr);
-      sub.textContent = cel ? (n.ms || n.sub) : n.sub;
-      if (cel) { nome.style.fontSize = (k === 'certeza' ? '17px' : '20px'); sub.style.fontSize = '13.5px'; }
-    });
-  }
-
-  function foco(k) {
-    if (!mapa) return;
-    mapa.classList.toggle('foco', !!k);
-    mapa.querySelectorAll('.m-aresta, .m-fluxo').forEach(function (p) {
-      p.classList.toggle('lig', !!k && (p.getAttribute('data-a') === k || p.getAttribute('data-b') === k));
-    });
-    mapa.querySelectorAll('.m-no').forEach(function (n) { n.classList.toggle('ativo', n.getAttribute('data-no') === k); });
-    document.querySelectorAll('.sis6').forEach(function (c) { c.classList.toggle('ativo', c.getAttribute('data-no') === k); });
-  }
-
   if (svg) {
-    desenhaMapa();
-    var largAnt = window.innerWidth < 700;
-    window.addEventListener('resize', function () {
-      var agora = window.innerWidth < 700;
-      if (agora !== largAnt) { largAnt = agora; desenhaMapa(); }
+    var linhas = el('g', {}, svg), nos = el('g', {}, svg);
+    ARESTAS.forEach(function (a) {
+      var A = NOS[a[0]], B = NOS[a[1]];
+      // a linha para um pouco antes do texto
+      var dx = B[1] - A[1], dy = B[2] - A[2], d = Math.sqrt(dx * dx + dy * dy), fa = (a[0] === 'orbit' ? 34 : 22) / d, fb = 22 / d;
+      el('line', { x1: (A[1] + dx * fa).toFixed(1), y1: (A[2] + dy * fa).toFixed(1), x2: (B[1] - dx * fb).toFixed(1), y2: (B[2] - dy * fb).toFixed(1), 'class': 'm-linha', 'data-a': a[0], 'data-b': a[1], pathLength: '1' }, linhas);
     });
-    svg.addEventListener('pointerover', function (e) { var n = e.target.closest && e.target.closest('.m-no'); foco(n ? n.getAttribute('data-no') : null); });
-    svg.addEventListener('pointerleave', function () { foco(null); });
-    svg.addEventListener('focusin', function (e) { var n = e.target.closest && e.target.closest('.m-no'); if (n) foco(n.getAttribute('data-no')); });
-    svg.addEventListener('focusout', function () { foco(null); });
-    document.querySelectorAll('.sis6').forEach(function (c) {
-      c.addEventListener('pointerenter', function () { foco(c.getAttribute('data-no')); });
-      c.addEventListener('pointerleave', function () { foco(null); });
+    Object.keys(NOS).forEach(function (k) {
+      var n = NOS[k], g = el('g', { 'class': 'm-no' + (k === 'orbit' ? ' centro' : ''), 'data-no': k }, nos);
+      if (k === 'orbit') el('circle', { cx: n[1], cy: n[2], r: 30, 'class': 'm-aro' }, g);
+      var t = el('text', { x: n[1], y: n[2] + 6, 'text-anchor': 'middle', 'class': 'm-nome' }, g);
+      t.textContent = n[0];
     });
-    // SMIL e traços só andam com o mapa na tela
-    if (temIO) new IntersectionObserver(function (e) {
-      if (e[0].isIntersecting) { if (svg.unpauseAnimations) svg.unpauseAnimations(); mapa.style.removeProperty('--pausa'); }
-      else if (svg.pauseAnimations) svg.pauseAnimations();
-    }).observe(mapa);
+    var foco = function (k) {
+      mapa.classList.toggle('foco', !!k);
+      svg.querySelectorAll('.m-linha').forEach(function (l) { l.classList.toggle('lig', !!k && (l.getAttribute('data-a') === k || l.getAttribute('data-b') === k)); });
+      svg.querySelectorAll('.m-no').forEach(function (n) { n.classList.toggle('ativo', n.getAttribute('data-no') === k); });
+    };
+    document.querySelectorAll('.sis-lista > div').forEach(function (d) {
+      d.addEventListener('pointerenter', function () { foco(d.getAttribute('data-no')); });
+      d.addEventListener('pointerleave', function () { foco(null); });
+    });
+    // as linhas se desenham uma vez quando o mapa aparece
+    if (!reduz && temIO) {
+      mapa.classList.add('desenha');
+      var mo = new IntersectionObserver(function (e) { if (e[0].isIntersecting) { mapa.classList.add('visto'); mo.disconnect(); } }, { threshold: .3 });
+      mo.observe(mapa);
+    }
   }
-
 
   /* ================= FITA DE VÍDEOS (03) ================= */
   var faixas = document.querySelectorAll('.reel-faixa');
@@ -184,7 +113,7 @@
   Cena.prototype.monta = function () {
     var t = this.tipo, i, n;
     if (t === 'galaxia') {
-      n = celular ? 1400 : 3200; this.p = [];
+      n = 900; this.p = [];
       for (i = 0; i < n; i++) {
         var braco = i % 3, r = Math.pow(Math.random(), 0.6) * 1.0;
         var ang = braco * (Math.PI * 2 / 3) + r * 5.2 + rnd(-.35, .35) * (1.1 - r);
