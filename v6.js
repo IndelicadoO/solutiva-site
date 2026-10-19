@@ -59,20 +59,12 @@
   }
 
   /* ================= FITA DE VÍDEOS (03) ================= */
-  var faixas = document.querySelectorAll('.reel-faixa');
-  if (faixas.length) {
-    if (!reduz) {
-      // duplica a fita para o laço não ter emenda; a cópia é só visual
-      faixas.forEach(function (f) {
-        Array.prototype.slice.call(f.children).forEach(function (c) {
-          var k = c.cloneNode(true); k.setAttribute('aria-hidden', 'true'); f.appendChild(k);
-        });
-      });
-      document.documentElement.classList.add('js-reel');
-    }
-    var rvs = document.querySelectorAll('video.rv');
+  var reel = document.querySelector('.reel');
+  var faixa = reel && reel.querySelector('.reel-faixa');
+  if (faixa) {
+    var rio = null;
     if (temIO && !reduz) {
-      var rio = new IntersectionObserver(function (ents) {
+      rio = new IntersectionObserver(function (ents) {
         ents.forEach(function (e) {
           var v = e.target;
           if (e.isIntersecting) {
@@ -81,8 +73,36 @@
           } else if (!v.paused) v.pause();
         });
       }, { threshold: 0.15 });
-      rvs.forEach(function (v) { rio.observe(v); });
     }
+    var originais = Array.prototype.slice.call(faixa.children);
+    var copia = function (c) {
+      var k = c.cloneNode(true); k.setAttribute('aria-hidden', 'true');
+      var v = k.querySelector('video'); if (v) { v.removeAttribute('src'); v.removeAttribute('aria-label'); }
+      return k;
+    };
+    var observa = function () { if (rio) faixa.querySelectorAll('video.rv').forEach(function (v) { rio.observe(v); }); };
+    var montaFita = function () {
+      if (rio) rio.disconnect();
+      // volta só aos clipes originais
+      while (faixa.children.length > originais.length) faixa.removeChild(faixa.lastChild);
+      // metade A: repete os clipes até passar da largura do espaço (+1 clipe de folga)
+      var largura = reel.clientWidth, um = originais[0].getBoundingClientRect().width + 12;
+      while (faixa.scrollWidth < largura + um) originais.forEach(function (c) { faixa.appendChild(copia(c)); });
+      // metade B: cópia exata da metade A; -50% cai no mesmo quadro, sem emenda
+      var metade = faixa.scrollWidth;
+      Array.prototype.slice.call(faixa.children).forEach(function (c) { faixa.appendChild(copia(c)); });
+      faixa.style.setProperty('--fita-dur', Math.round(metade / 38) + 's');
+      observa();
+    };
+    if (!reduz) {
+      montaFita();
+      document.documentElement.classList.add('js-reel');
+      var largAnt = reel.clientWidth, rt = 0;
+      window.addEventListener('resize', function () {
+        clearTimeout(rt);
+        rt = setTimeout(function () { if (reel.clientWidth !== largAnt) { largAnt = reel.clientWidth; montaFita(); } }, 200);
+      });
+    } else observa();
   }
 
   /* ================= ANIMAÇÕES VIVAS (canvas 2D) ================= */
