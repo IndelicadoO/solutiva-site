@@ -43,18 +43,22 @@
 .v7-topo { display: grid; gap: 22px 64px; align-items: end; margin-bottom: 48px; }
 @media (min-width: 900px) { .v7-topo { grid-template-columns: 1.15fr 1fr; } }
 .v7-txt { color: var(--txt-2); font-size: 1.08rem; max-width: 520px; }
-.reel { display: grid; gap: 14px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-.reel-faixa { display: flex; width: max-content; }
-.js-reel .reel-faixa { animation: fita 70s linear infinite; }
-.js-reel .reel-faixa.volta { animation-duration: 64s; animation-direction: reverse; }
+/* espaço delimitado: a fita fica dentro do container da página, com as laterais sumindo suave */
+.reel { position: relative; width: 100%; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+/* a fita tem 2 metades iguais (o JS repete os clipes até cada metade passar da largura do espaço), então -50% fecha o laço sem buraco */
+.reel-faixa { display: flex; width: max-content; will-change: transform; }
+.js-reel .reel-faixa { animation: fita var(--fita-dur, 60s) linear infinite; }
 .reel:hover .reel-faixa { animation-play-state: paused; }
 @keyframes fita { to { transform: translateX(-50%); } }
-.rcard { position: relative; flex: none; width: clamp(150px, 15vw, 220px); aspect-ratio: 9 / 16; margin: 0 14px 0 0; border-radius: 14px; overflow: hidden; background: #000; }
-.rcard video { width: 100%; height: 100%; object-fit: cover; }
+.rcard { position: relative; flex: none; width: clamp(140px, 14vw, 200px); aspect-ratio: 9 / 16; margin: 0 12px 0 0; border-radius: 14px; overflow: hidden; background: #000; }
+/* o vídeo não recebe o mouse: assim o navegador não desenha o botão de "picture-in-picture"/tela cheia por cima do clipe */
+.rcard video, .vcard video { pointer-events: none; }
+.rcard video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .rcard figcaption { position: absolute; left: 10px; bottom: 10px; padding: 5px 9px; border-radius: 999px; font: 600 .66rem/1 ui-monospace, Consolas, monospace; letter-spacing: .06em; color: var(--txt); background: rgba(2, 5, 12, .72); backdrop-filter: blur(6px); white-space: nowrap; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 699px) { .rcard figcaption { left: 8px; bottom: 8px; padding: 4px 7px; font-size: .58rem; letter-spacing: .02em; max-width: calc(100% - 16px); } }
 .v7-leg { margin-top: 22px; }
 /* sem animação: a fita vira uma faixa que se arrasta */
-html:not(.js-reel) .reel { overflow-x: auto; -webkit-mask-image: none; mask-image: none; padding: 0 16px; }
+html:not(.js-reel) .reel { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
 
 /* mais exemplos (os vídeos de demonstração), em segundo plano */
 .mais { margin-top: 40px; border-top: 1px solid var(--linha); padding-top: 18px; }
