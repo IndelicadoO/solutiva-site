@@ -1,4 +1,6 @@
-# Publicar a landing da Solutiva (Render, Static Site)
+# Publicar a landing da ClickGo, ex-Solutiva (Render, Static Site)
+
+(18/10/2026: a marca virou ClickGo; repo, serviço do Render e domínio seguem `solutiva-*` / solutiva.dev.br até o domínio novo clickgo.dev.br.)
 
 Nada foi publicado ainda. Faça nesta ordem:
 
@@ -24,7 +26,7 @@ Nada foi publicado ainda. Faça nesta ordem:
 Em `script.js`, no topo, preencha `whatsapp: '5561XXXXXXXXX'` (55 + DDD + número, só dígitos).
 Todos os botões principais (ciano) passam a abrir o WhatsApp com a mensagem pronta. Commit e push.
 
-Obs.: os botões apontam para `https://ig.me/m/solutiva.dev`. Só funciona depois que o Instagram @solutiva.dev existir.
+Obs.: os botões apontam para `https://ig.me/m/clickgo.dev` (Instagram @clickgo.dev).
 
 ## Domínio próprio
 
