@@ -7,16 +7,24 @@
   var erro = document.getElementById('erro'), botao = document.getElementById('enviar');
   var api = new URLSearchParams(location.search).get('api');
 
-  // já pediu neste aparelho: oferece voltar à página dele
+  // já pediu neste aparelho: cartão grande no topo "Continuar de onde parei" (sem redirecionar sozinho). "Fazer outro pedido"
+  // mostra o formulário; o pedido novo SUBSTITUI o antigo (id + chave do antigo vão junto; a fila confere a chave).
+  var antigo = null;
   try {
     var ult = JSON.parse(localStorage.getItem('cg_pedidos') || '[]')[0];
-    if (ult && ult.id) {
-      var aviso = document.createElement('p');
-      aviso.className = 'cg-dica';
-      aviso.innerHTML = 'Você já pediu o esboço de <b></b>. <a href="#">Abrir a sua página</a>';
-      aviso.querySelector('b').textContent = ult.negocio || 'seu negócio';
-      aviso.querySelector('a').href = '/acompanhar/' + (api ? '?api=' + encodeURIComponent(api) : '') + '#' + ult.id + '.' + ult.k;
-      form.parentNode.insertBefore(aviso, form);
+    if (ult && ult.id && ult.k) {
+      antigo = ult;
+      var card = document.getElementById('continuar'), hero = document.querySelector('.cg-hero');
+      document.getElementById('continuar-nome').textContent = ult.negocio || 'seu negócio';
+      document.getElementById('continuar-ir').href = '/acompanhar/' + (api ? '?api=' + encodeURIComponent(api) : '') + '#' + ult.id + '.' + ult.k;
+      card.parentNode.insertBefore(card, card.parentNode.firstChild);
+      card.hidden = false; form.hidden = true; if (hero) hero.hidden = true;
+      document.getElementById('continuar-outro').onclick = function () {
+        form.hidden = false; if (hero) hero.hidden = false; this.hidden = true;
+        document.getElementById('continuar-aviso').hidden = false;
+        botao.textContent = 'Fazer o pedido novo (substitui o anterior)';
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
     }
   } catch (e) { /* sem localStorage */ }
 
@@ -54,18 +62,20 @@
     botao.disabled = true; botao.textContent = 'Enviando…';
     CG.chamar('/pedido', { metodo: 'POST', corpo: {
       negocio: v('negocio'), ramo: v('ramo'), cidade: v('cidade'), tipo: d.get('tipo') === 'cardapio' ? 'Cardápio digital' : 'site', quer: v('quer'), servicos: v('servicos'),
-      cores: v('cores'), whatsapp: v('whatsapp'), email: v('email'), instagram: v('instagram'), site_url: v('site_url'), t0: t0, aceite: true, fotos: fotos
+      cores: v('cores'), whatsapp: v('whatsapp'), email: v('email'), instagram: v('instagram'), site_url: v('site_url'), t0: t0, aceite: true, fotos: fotos,
+      precisa: d.getAll('precisa').map(String).slice(0, 6),
+      substitui: antigo && !form.hidden && !document.getElementById('continuar-aviso').hidden ? { id: antigo.id, k: antigo.k } : undefined
     } }).then(function (r) {
       if (r.isca) { botao.textContent = 'Recebido!'; return; }
       try {
-        var l = JSON.parse(localStorage.getItem('cg_pedidos') || '[]').filter(function (x) { return x.id !== r.id; });
+        var l = JSON.parse(localStorage.getItem('cg_pedidos') || '[]').filter(function (x) { return x.id !== r.id && !(antigo && x.id === antigo.id); });
         l.unshift({ id: r.id, k: r.k, negocio: v('negocio'), em: Date.now() });
         localStorage.setItem('cg_pedidos', JSON.stringify(l.slice(0, 5)));
       } catch (e) { /* sem localStorage: o link vai no endereço */ }
       location.href = '/acompanhar/' + (api ? '?api=' + encodeURIComponent(api) : '') + '#' + r.id + '.' + r.k;
     }).catch(function (e) {
       mostrarErro(e.message || 'Não deu para enviar agora. Tente de novo em instantes.');
-      botao.disabled = false; botao.textContent = 'Quero meu esboço grátis';
+      botao.disabled = false; botao.textContent = antigo ? 'Fazer o pedido novo (substitui o anterior)' : 'Quero meu esboço grátis';
     });
   });
 })();
