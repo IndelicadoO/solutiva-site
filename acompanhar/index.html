@@ -31,7 +31,33 @@
       <div class="cg-passos-txt"><span>Pedido</span><span>Esboço</span><span>Aprovado</span><span>Sinal</span><span>No ar</span></div>
       <button type="button" class="cg-resumo-pac" id="resumo-pac" hidden><span>Seu pacote</span><b id="resumo-pac-t"></b><i>ver pacotes ↓</i></button>
       <div class="cg-status" id="status"><div class="cg-giro" id="giro"></div><div><b id="status-t">Pedido recebido</b><span id="status-s">Estamos preparando o seu esboço.</span></div></div>
+      <details class="cg-como" id="como" hidden>
+        <summary>Como funciona: prévia grátis → sinal → site final</summary>
+        <ol>
+          <li><b>Ajuste a prévia grátis.</b> É uma versão de prévia, com textos e fotos de exemplo, que fica no ar só por 7 dias. Você ajusta com o dedo ou pela conversa, sem pagar nada.</li>
+          <li><b>Aprove e pague o sinal de 50% do pacote.</b> O Pix aparece aqui na página, no nome da ClickGo (CNPJ 50.522.870/0001-07).</li>
+          <li><b>Receba o site final completo.</b> Caprichado, com os seus dados e fotos reais, no ar de vez, com o seu domínio e a sala do site para pedir mudanças. Você vê o site pronto antes de pagar o restante: os outros 50% só na entrega.</li>
+        </ol>
+      </details>
     </div>
+
+    <section class="cg-projeto" id="projeto" aria-label="Sala do projeto" hidden>
+      <div class="cg-cartao">
+        <h2>Sala do seu projeto</h2>
+        <p class="cg-sub" id="proj-sub">Responda as perguntas na conversa, mande documentos de exemplo e gere um protótipo clicável. Nada é cobrado aqui: o orçamento vem depois, pela conversa.</p>
+        <div class="cg-proj-barra" aria-hidden="true"><i id="proj-barra"></i></div>
+        <p class="cg-proj-etapa" id="proj-etapa"></p>
+        <ul class="cg-proj-resumo" id="proj-resumo"></ul>
+        <h3>Documentos de exemplo <small id="proj-arq-cont"></small></h3>
+        <ul class="cg-proj-arqs" id="proj-arqs"></ul>
+        <label class="cg-btn cg-btn-linha" id="proj-enviar">Enviar PDF<input type="file" accept="application/pdf,.pdf" hidden id="proj-pdf"></label>
+        <p class="cg-dica">Só PDF, até 1,5 MB cada. Os arquivos ficam só com a ClickGo: não aparecem no protótipo nem em nenhum link.</p>
+        <div class="cg-proj-gerar">
+          <button type="button" class="cg-btn cg-btn-prim" id="proj-gerar" disabled>Gerar protótipo</button>
+          <small id="proj-rodadas"></small>
+        </div>
+      </div>
+    </section>
 
     <section class="cg-pix" id="pix" aria-live="polite" hidden>
       <div class="cg-pix-preparando" id="pix-preparando"><div class="cg-giro"></div><div><b id="pix-prep-t">Aprovado! Preparando o seu Pix…</b><span id="pix-prep-s">Leva só alguns segundos. Os dados do pagamento aparecem aqui mesmo.</span></div></div>
@@ -40,7 +66,12 @@
         <div class="cg-pix-valor"><span>Sinal (50%)</span><b id="pix-valor"></b></div>
         <div class="cg-pix-chave" id="pix-chave-box"><span>Chave Pix</span><code id="pix-chave"></code><button type="button" class="cg-btn cg-btn-prim" id="pix-copiar">Copiar chave Pix</button></div>
         <p class="cg-pix-sem" id="pix-sem" hidden>A chave Pix está na conversa.</p>
-        <p class="cg-pix-nota">Os outros 50% só na entrega do site. Pagou? Mande o comprovante (print ou foto) e a gente confirma.</p>
+        <ul class="cg-pix-garante">
+          <li>O sinal garante o seu site final: caprichado, com os seus dados e fotos reais, no ar de vez.</li>
+          <li>Você vê o site pronto antes de pagar o restante: os outros 50% só na entrega.</li>
+          <li>Pagamento para a ClickGo, CNPJ 50.522.870/0001-07.</li>
+        </ul>
+        <p class="cg-pix-nota">Pagou? Mande o comprovante (print ou foto) e a gente confirma.</p>
         <button type="button" class="cg-btn cg-btn-linha" id="pix-comprovante">Enviar comprovante</button>
       </div>
     </section>
@@ -151,5 +182,6 @@
 <script src="/cg-comum.js"></script>
 <script src="/acompanhar.js"></script>
 <script src="/sala.js"></script>
+<script src="/projeto.js"></script>
 </body>
 </html>
