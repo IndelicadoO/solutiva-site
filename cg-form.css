@@ -203,3 +203,39 @@ h1, h2, h3, p { margin: 0; }
 .cg-resumo-pac span { color: var(--txt-3); }
 .cg-resumo-pac i { margin-left: auto; font-style: normal; color: var(--ciano); font-weight: 700; }
 .cg-pacotes { scroll-margin-top: 96px; }
+/* SALA DO SEU SITE (pós-venda): pedir mudança, mudanças do mês, domínio próprio */
+.cg-sala { margin: 6px 0 18px; }
+.cg-sala-guarde { font-size: .92rem; color: var(--txt); padding: 12px 14px; border-radius: 14px; background: rgba(63, 210, 255, .08); border: 1px solid var(--borda-forte); }
+.cg-sala-guarde b { color: var(--ceu); }
+.cg-sala-grade { display: grid; gap: 0 18px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 980px) { .cg-sala-grade { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+.cg-sala-no-ar { font-size: .9rem; color: var(--txt-2); overflow-wrap: anywhere; }
+.cg-sala-cota { font-weight: 700; color: var(--agua); margin: 6px 0 10px; }
+.cg-sala-form { display: grid; gap: 10px; margin-bottom: 10px; }
+.cg-sala-form textarea, .cg-sala-form input { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--borda-forte); background: rgba(2, 5, 12, .55); color: var(--txt); font: 400 1rem/1.4 'Onest', system-ui, sans-serif; resize: vertical; }
+.cg-sala-form textarea:focus, .cg-sala-form input:focus { outline: none; border-color: var(--ciano); box-shadow: 0 0 0 4px rgba(63, 210, 255, .15); }
+.cg-sala-form textarea:disabled { opacity: .55; }
+.cg-sala-acoes { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.cg-sala-acoes label { cursor: pointer; }
+.cg-cartao h3 { font: 700 .95rem/1.2 var(--titulo); margin: 12px 0 6px; }
+.cg-sala-pedidos { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.cg-sala-ped { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: .86rem; padding: 8px 10px; border-radius: 12px; border: 1px solid var(--borda); }
+.cg-sala-txt { color: var(--txt-2); overflow-wrap: anywhere; }
+.cg-sala-ped small { color: var(--txt-3); }
+.cg-sala-est { font-size: .74rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: rgba(63, 210, 255, .12); color: var(--ceu); white-space: nowrap; }
+.cg-sala-ped.feito .cg-sala-est { background: rgba(52, 224, 192, .15); color: var(--ok); }
+.cg-sala-ped.erro .cg-sala-est, .cg-sala-ped.limite .cg-sala-est { background: rgba(255, 138, 155, .14); color: var(--erro); }
+.cg-dom-status { display: grid; gap: 2px; padding: 10px 12px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--borda-forte); font-size: .9rem; }
+.cg-dom-status span { color: var(--txt-2); }
+.cg-dom-status.ativo { border-color: rgba(52, 224, 192, .5); background: rgba(52, 224, 192, .08); }
+.cg-dom-status.parado { border-color: rgba(255, 138, 155, .4); }
+.cg-dom-ol { padding-left: 20px; font-size: .88rem; color: var(--txt-2); display: grid; gap: 6px; margin: 6px 0 10px; }
+.cg-dom-tab { overflow-x: auto; margin-bottom: 10px; }
+.cg-dom-tab table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+.cg-dom-tab th, .cg-dom-tab td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--borda); }
+.cg-dom-tab th { color: var(--txt-3); font-weight: 600; }
+.cg-dom-tab td:nth-child(3) { font-family: ui-monospace, Consolas, monospace; font-size: .8rem; overflow-wrap: anywhere; }
+.cg-sala .cg-aviso-off { margin: 10px 0 0; }
+.cg-btn-copiar { min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--borda-forte); background: transparent; color: var(--ceu); font: 600 .8rem/1 'Onest', system-ui, sans-serif; cursor: pointer; }
+.cg-dom-sem { font-size: .88rem; color: var(--txt-2); margin-top: 8px; }
+.cg-dom-sem summary { cursor: pointer; color: var(--ceu); font-weight: 600; min-height: 32px; }
