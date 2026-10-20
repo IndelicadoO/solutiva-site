@@ -28,6 +28,7 @@
       <p id="sub">Esta página é só sua: guarde o link.</p>
       <ol class="cg-passos" id="passos" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li></ol>
       <div class="cg-passos-txt"><span>Pedido</span><span>Esboço</span><span>Aprovado</span><span>Sinal</span><span>No ar</span></div>
+      <button type="button" class="cg-resumo-pac" id="resumo-pac" hidden><span>Seu pacote</span><b id="resumo-pac-t"></b><i>ver pacotes ↓</i></button>
       <div class="cg-status" id="status"><div class="cg-giro" id="giro"></div><div><b id="status-t">Pedido recebido</b><span id="status-s">Estamos preparando o seu esboço.</span></div></div>
     </div>
 
@@ -78,6 +79,12 @@
         </form>
       </section>
     </div>
+
+    <section class="cg-pacotes" id="pacotes" aria-labelledby="pacotes-t" hidden>
+      <div class="cg-pacotes-cab"><h2 id="pacotes-t">Escolha o seu pacote</h2><p id="pacotes-s">O esboço é feito no nível do pacote escolhido. Você só paga depois de aprovar.</p></div>
+      <div class="cg-pacotes-lista" id="pacotes-lista"></div>
+      <p class="cg-pacotes-nota" id="pacotes-nota"></p>
+    </section>
   </div>
 </main>
 <div class="cg-cta" id="cta" hidden><div class="cg-cta-in"><button class="cg-btn cg-btn-prim" id="aprovar" type="button">Aprovar e garantir meu site</button><small id="cta-s">Você só paga o sinal de 50% depois de aprovar. O resto, na entrega.</small></div></div>
