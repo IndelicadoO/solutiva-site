@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seu esboço | ClickGo</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#02050c">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Onest:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/cg-form.css">
+</head>
+<body>
+<header class="cg-topo">
+  <a class="cg-marca" href="/"><img src="/assets/logo-clickgo.webp" width="30" height="30" alt="">ClickGo</a>
+  <span class="cg-pill" id="online">conectando…</span>
+</header>
+<main class="cg-app">
+  <div id="sem-pedido" class="cg-wrap" hidden>
+    <div class="cg-cartao"><h2>Não achei o seu pedido</h2><p class="cg-sub">Abra pelo link que você recebeu (ele é só seu) ou peça um esboço novo.</p><a class="cg-btn cg-btn-prim" href="/esboco/">Pedir meu esboço grátis</a></div>
+  </div>
+  <div id="tudo" hidden>
+    <div class="cg-cab">
+      <h1 id="titulo">Seu esboço</h1>
+      <p id="sub">Esta página é só sua: guarde o link.</p>
+      <ol class="cg-passos" id="passos" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li></ol>
+      <div class="cg-passos-txt"><span>Pedido</span><span>Esboço</span><span>Aprovado</span><span>Sinal</span><span>No ar</span></div>
+      <div class="cg-status" id="status"><div class="cg-giro" id="giro"></div><div><b id="status-t">Pedido recebido</b><span id="status-s">Estamos preparando o seu esboço.</span></div></div>
+    </div>
+
+    <nav class="cg-abas" role="tablist" aria-label="Seções">
+      <button role="tab" aria-selected="true" data-aba="previa">Prévia</button>
+      <button role="tab" aria-selected="false" data-aba="editor" id="aba-editor" hidden>Editar</button>
+      <button role="tab" aria-selected="false" data-aba="conversa">Conversa<span class="cg-badge" id="badge" hidden>0</span></button>
+    </nav>
+
+    <div class="cg-grade">
+      <section id="painel-previa" class="cg-cartao" aria-label="Prévia">
+        <div class="cg-tel"><div class="cg-vazio" id="previa-vazia"><div class="cg-giro"></div><p id="previa-msg">O esboço aparece aqui assim que ficar pronto.</p></div><iframe id="previa" title="Prévia do seu site" hidden loading="lazy" referrerpolicy="no-referrer"></iframe></div>
+        <div class="cg-acoes" id="previa-acoes" hidden>
+          <a class="cg-btn cg-btn-linha" id="abrir" target="_blank" rel="noopener">Abrir em tela cheia</a>
+          <button class="cg-btn cg-btn-linha" id="ir-editar" type="button">Ajustar com o dedo</button>
+        </div>
+      </section>
+
+      <section id="painel-editor" class="cg-cartao" aria-label="Editor" hidden>
+        <h2>Ajuste você mesmo</h2>
+        <p class="cg-sub" id="ed-sub">Toque numa ferramenta e depois no site. O que for mais complexo, peça na conversa.</p>
+        <div class="cg-ferr" role="toolbar" aria-label="Ferramentas">
+          <button type="button" data-ferr="texto" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V5h16v2M9 19h6M12 5v14"/></svg>Texto</button>
+          <button type="button" data-ferr="cor" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18c1.5 0 2-1 2-2s-1-1.5-1-2.5S14 15 15 15h2a4 4 0 0 0 4-4c0-4.4-4-8-9-8z"/></svg>Cor</button>
+          <button type="button" data-ferr="foto" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-8 8"/></svg>Foto</button>
+          <button type="button" data-ferr="secoes" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Seções</button>
+          <button type="button" data-ferr="zap" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19l1.3-3.8A8 8 0 1 1 9 18.6z"/></svg>WhatsApp</button>
+        </div>
+        <div id="ed-painel"></div>
+        <div class="cg-tel"><iframe id="ed-frame" title="Editor do seu site" sandbox="allow-same-origin"></iframe></div>
+        <div class="cg-rodape-ed">
+          <button class="cg-btn cg-btn-linha" id="desfazer" type="button" disabled>Desfazer</button>
+          <button class="cg-btn cg-btn-prim" id="salvar" type="button" disabled>Salvar ajustes</button>
+        </div>
+        <p class="cg-rodadas" id="rodadas"></p>
+      </section>
+
+      <section id="painel-conversa" class="cg-cartao cg-chat" aria-label="Conversa" hidden>
+        <div class="cg-chat-cab"><img src="/assets/logo-clickgo.webp" alt=""><div><b>Atendimento ClickGo</b><small id="chat-estado">responde aqui mesmo</small></div></div>
+        <div class="cg-msgs" id="msgs" aria-live="polite"></div>
+        <p class="cg-aviso-off" id="aviso-off" hidden>Nosso atendimento está fora agora. Pode mandar: sua mensagem fica guardada e a resposta chega aqui em breve.</p>
+        <div class="cg-sugestoes" id="sugestoes"></div>
+        <div class="cg-anexos-prev" id="anexos"></div>
+        <form class="cg-envio" id="envio">
+          <label class="cg-redondo cg-anexo" aria-label="Mandar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 12-8.5 8.5a5 5 0 0 1-7-7L14 5a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 8"/></svg><input type="file" accept="image/*" multiple hidden id="anexo-input"></label>
+          <textarea id="texto" rows="1" maxlength="1500" placeholder="Escreva sua mensagem…" aria-label="Mensagem"></textarea>
+          <button class="cg-redondo cg-enviar" type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+        </form>
+      </section>
+    </div>
+  </div>
+</main>
+<div class="cg-cta" id="cta" hidden><div class="cg-cta-in"><button class="cg-btn cg-btn-prim" id="aprovar" type="button">Aprovar e garantir meu site</button><small id="cta-s">Você só paga o sinal de 50% depois de aprovar. O resto, na entrega.</small></div></div>
+<div class="cg-toast" id="toast" role="status" hidden></div>
+<script src="/cg-comum.js"></script>
+<script src="/acompanhar.js"></script>
+</body>
+</html>

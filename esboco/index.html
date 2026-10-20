@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Esboço grátis do seu site | ClickGo</title>
+<meta name="description" content="Peça o esboço grátis do site do seu negócio. Você vê no celular, ajusta com o dedo e só paga se aprovar.">
+<meta name="theme-color" content="#02050c">
+<link rel="canonical" href="https://clickgo.dev.br/esboco/">
+<meta property="og:title" content="Esboço grátis do seu site | ClickGo">
+<meta property="og:description" content="Você vê o site do seu negócio no celular antes de pagar qualquer coisa.">
+<meta property="og:image" content="https://clickgo.dev.br/assets/og-cover.jpg">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Onest:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/cg-form.css">
+</head>
+<body>
+<header class="cg-topo">
+  <a class="cg-marca" href="/"><img src="/assets/logo-clickgo.webp" width="30" height="30" alt="">ClickGo</a>
+</header>
+<main class="cg-wrap">
+  <div class="cg-hero">
+    <h1>Veja o site do seu negócio <em>antes de pagar</em></h1>
+    <p>Conta rapidinho como é o seu negócio. Em poucos minutos o esboço aparece no seu celular, você ajusta com o dedo e só paga se aprovar.</p>
+    <ul class="cg-selos"><li>Esboço grátis</li><li>Pronto em minutos</li><li>Você mesmo ajusta</li></ul>
+  </div>
+
+  <form id="form" class="cg-cartao" novalidate>
+    <h2>Seu negócio</h2>
+    <p class="cg-sub">Leva menos de 2 minutos.</p>
+    <label class="cg-campo"><span>Nome do negócio</span><input name="negocio" required maxlength="80" autocomplete="organization" placeholder="Ex.: Barbearia Dois Irmãos"></label>
+    <div class="cg-dupla">
+      <label class="cg-campo"><span>Ramo</span><input name="ramo" required maxlength="60" list="ramos" placeholder="Ex.: barbearia"></label>
+      <label class="cg-campo"><span>Cidade</span><input name="cidade" required maxlength="80" autocomplete="address-level2" placeholder="Ex.: Brasília - DF"></label>
+    </div>
+    <datalist id="ramos"><option>Barbearia</option><option>Salão de beleza</option><option>Clínica</option><option>Odontologia</option><option>Restaurante</option><option>Lanchonete</option><option>Loja de roupas</option><option>Academia</option><option>Pet shop</option><option>Advocacia</option><option>Contabilidade</option><option>Oficina</option><option>Imobiliária</option><option>Estética</option></datalist>
+    <div class="cg-campo"><span>O que você precisa</span>
+      <div class="cg-chips" role="radiogroup" aria-label="Tipo">
+        <label class="cg-chip"><input type="radio" name="tipo" value="site" checked><span>Site do negócio</span></label>
+        <label class="cg-chip"><input type="radio" name="tipo" value="cardapio"><span>Cardápio digital</span></label>
+      </div>
+    </div>
+    <label class="cg-campo"><span>O que não pode faltar no site? <i>(opcional)</i></span><textarea name="quer" maxlength="1500" placeholder="Ex.: mostrar os cortes e preços, botão para agendar no WhatsApp, fotos do espaço"></textarea></label>
+    <div class="cg-dupla">
+      <label class="cg-campo"><span>Serviços e preços <i>(opcional)</i></span><input name="servicos" maxlength="1200" placeholder="Ex.: corte R$ 40, barba R$ 30"></label>
+      <label class="cg-campo"><span>Cores da marca <i>(opcional)</i></span><input name="cores" maxlength="120" placeholder="Ex.: preto e dourado"></label>
+    </div>
+
+    <h2 style="margin-top:8px">Fotos <i style="font-style:normal;color:var(--txt-3);font-weight:400;font-size:.9rem">(opcional, até 3)</i></h2>
+    <p class="cg-sub">Logo, fachada, equipe ou trabalhos. Sem foto, o esboço usa imagens ilustrativas.</p>
+    <div class="cg-fotos" id="fotos">
+      <label class="cg-foto-add" id="foto-add"><b>+</b>Adicionar<input type="file" accept="image/*" multiple hidden id="foto-input"></label>
+    </div>
+
+    <h2 style="margin-top:18px">Onde te avisamos</h2>
+    <p class="cg-sub">Deixe pelo menos um. O esboço também fica numa página só sua.</p>
+    <div class="cg-dupla">
+      <label class="cg-campo"><span>WhatsApp</span><input name="whatsapp" type="tel" inputmode="tel" maxlength="20" autocomplete="tel" placeholder="(61) 99999-9999"></label>
+      <label class="cg-campo"><span>E-mail</span><input name="email" type="email" maxlength="120" autocomplete="email" placeholder="voce@email.com"></label>
+    </div>
+    <label class="cg-campo"><span>Instagram do negócio <i>(opcional)</i></span><input name="instagram" maxlength="60" placeholder="@seunegocio"></label>
+    <div class="cg-isca" aria-hidden="true"><label>Site<input name="site_url" tabindex="-1" autocomplete="off"></label></div>
+
+    <label class="cg-aceite"><input type="checkbox" name="aceite" required><span>Concordo que a ClickGo use esses dados só para montar o esboço e falar comigo sobre ele. <a href="/privacidade.html" target="_blank" rel="noopener">Privacidade</a></span></label>
+    <p class="cg-erro" id="erro" role="alert" hidden></p>
+    <button class="cg-btn cg-btn-prim" id="enviar" type="submit">Quero meu esboço grátis</button>
+    <p class="cg-lgpd">LGPD: usamos seus dados só para este pedido. Você pode pedir para apagar tudo a qualquer momento pelo chat da sua página ou por clickgo.bsb@gmail.com.</p>
+  </form>
+</main>
+<script src="/cg-comum.js"></script>
+<script src="/esboco.js"></script>
+</body>
+</html>
