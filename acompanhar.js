@@ -160,7 +160,7 @@
   function sugestoes() {
     var i = estado.info || {}, s = $('sugestoes'); s.innerHTML = '';
     var lista = i.publicado ? ['Quero mudar uma coisa no site'] : i.pixLiberado ? ['Já paguei o sinal', 'Qual é a chave Pix?'] : i.versao ? ['Quanto fica?', 'Como funciona o pagamento?', 'Quanto tempo para ficar no ar?'] : ['Quanto custa um site?', 'Em quanto tempo fica pronto?'];
-    lista.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function () { if (i.publicado && $('sala-texto')) { $('sala-mudar').scrollIntoView({ behavior: 'smooth' }); $('sala-texto').focus(); } else mandar(t); }; s.appendChild(b); });
+    lista.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function () { if (i.publicado && $('sala-texto') && !$('sala-mudar').hidden && !$('sala').hidden) { $('sala-mudar').scrollIntoView({ behavior: 'smooth' }); $('sala-texto').focus(); } else mandar(t); }; s.appendChild(b); });
   }
 
   // ---------- conversa ----------
