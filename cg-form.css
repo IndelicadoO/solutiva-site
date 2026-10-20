@@ -239,3 +239,25 @@ h1, h2, h3, p { margin: 0; }
 .cg-btn-copiar { min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--borda-forte); background: transparent; color: var(--ceu); font: 600 .8rem/1 'Onest', system-ui, sans-serif; cursor: pointer; }
 .cg-dom-sem { font-size: .88rem; color: var(--txt-2); margin-top: 8px; }
 .cg-dom-sem summary { cursor: pointer; color: var(--ceu); font-weight: 600; min-height: 32px; }
+
+/* copiar o link da página + cartão do Pix (fixo, aparece em qualquer aba) + selo de mensagem nova */
+.cg-copiar-link { min-height: 36px; padding: 0 12px; font-size: .8rem; white-space: nowrap; }
+.cg-copiar-link.ok { color: #021019; background: var(--agua); border-color: transparent; }
+@media (max-width: 420px) { .cg-topo .cg-pill { display: none; } .cg-copiar-link { margin-left: auto; } }
+.cg-pix { margin-top: 14px; padding: 16px; border-radius: 20px; border: 2px solid var(--agua); background: linear-gradient(160deg, rgba(52, 245, 197, .12), rgba(63, 210, 255, .06)); box-shadow: 0 0 28px rgba(52, 245, 197, .15); }
+.cg-pix h2 { margin: 0 0 12px; font-size: 1.15rem; }
+.cg-pix-preparando { display: flex; gap: 12px; align-items: center; }
+.cg-pix-preparando b { display: block; font-size: 1rem; }
+.cg-pix-preparando span { color: var(--txt-2); font-size: .88rem; }
+.cg-pix-valor { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--borda); }
+.cg-pix-valor span, .cg-pix-chave > span { color: var(--txt-2); font-size: .85rem; }
+.cg-pix-valor b { font-size: 1.5rem; color: var(--agua); }
+.cg-pix-chave { display: grid; gap: 8px; padding: 12px 0; }
+.cg-pix-chave code { display: block; padding: 10px 12px; border-radius: 12px; background: rgba(2, 5, 12, .6); border: 1px solid var(--borda); font-size: .95rem; word-break: break-all; user-select: all; }
+.cg-pix-nota { color: var(--txt-2); font-size: .86rem; margin: 4px 0 12px; }
+.cg-pix-sem { color: var(--txt-2); }
+.cg-pix .cg-btn { width: 100%; }
+.cg-abas .cg-badge:not([hidden]) { top: -6px; right: 4px; min-width: 22px; height: 22px; line-height: 22px; border-radius: 11px; font-size: .78rem; font-weight: 800; background: #ff4d6d; color: #fff; box-shadow: 0 0 0 3px rgba(255, 77, 109, .3); animation: cgPulsa 1.4s ease-in-out infinite; }
+.cg-abas button.tem-nova:not([aria-selected="true"]) { color: #fff; box-shadow: inset 0 0 0 2px #ff4d6d; }
+@keyframes cgPulsa { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+@media (prefers-reduced-motion: reduce) { .cg-abas .cg-badge:not([hidden]) { animation: none; } }
