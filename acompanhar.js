@@ -90,23 +90,24 @@
     if (window.CGSala) window.CGSala.desenhar(r, { mandar: mandar, toast: toast });
   }
   // ---------- aprovação + cartão do Pix (fixo, visível em qualquer aba) ----------
-  var aprovadoAqui = 0, pixRapido = null;
+  var aprovadoAqui = 0;
   function aprovacaoPendente() {
     var i = estado.info || {};
     if (i.pixLiberado || i.sinalRecebido || i.publicado || i.cancelado) return false;
-    if (aprovadoAqui && Date.now() - aprovadoAqui < 10 * 60000) return true;
-    var ms = estado.mensagens || [], ult = null;
-    for (var j = ms.length - 1; j >= 0; j--) if (ms[j].de === 'cliente') { ult = ms[j]; break; }
-    return !!(ult && ult.tipo === 'aprovar' && Date.now() - (Date.parse(ult.em) || 0) < 10 * 60000);
+    // aprovou (aqui ou antes, de qualquer aparelho) e o Pix ainda não saiu: fica "aprovado" sem prazo (nunca aprova 2 vezes)
+    if (aprovadoAqui) return aprovadoAqui;
+    var ms = estado.mensagens || [];
+    for (var j = ms.length - 1; j >= 0; j--) if (ms[j].de === 'cliente' && ms[j].tipo === 'aprovar') return Date.parse(ms[j].em) || 1;
+    return 0;
   }
   function desenharPix(prep) {
     var i = estado.info || {}, mostra = !!(i.pixLiberado && !i.sinalRecebido && !i.publicado && !i.cancelado);
     $('pix').hidden = !(mostra || prep);
     $('pix-preparando').hidden = mostra || !prep;
+    if (prep && !mostra) { var demora = Date.now() - prep > 60000; $('pix-prep-t').textContent = demora ? 'Aprovação recebida!' : 'Aprovado! Preparando o seu Pix…'; $('pix-prep-s').textContent = demora ? 'Estamos confirmando a sua aprovação. Os dados do Pix aparecem aqui (e na conversa) assim que saírem.' : 'Leva só alguns segundos. Os dados do pagamento aparecem aqui mesmo.'; }
     $('pix-pronto').hidden = !mostra;
     if (prep && !mostra) { $('giro').hidden = true; $('status-t').textContent = 'Esboço aprovado!'; $('status-s').textContent = 'Obrigado! O pagamento do sinal aparece logo abaixo.'; }
     if (!mostra) return;
-    if (pixRapido) { clearInterval(pixRapido); pixRapido = null; }
     var sinal = Number(i.sinal) || 0, chave = String(i.pixChave || '');
     $('pix-valor').parentNode.hidden = !sinal;
     $('pix-valor').textContent = brl(sinal);
@@ -265,10 +266,7 @@
     $('pix').scrollIntoView({ behavior: 'smooth', block: 'center' });
     mandar('', { tipo: 'aprovar' }).then(function () {
       toast('Aprovado! Preparando o seu Pix…');
-      // até o Pix chegar, confere a cada 3 s (no máximo 3 min)
-      if (pixRapido) clearInterval(pixRapido);
-      var ate = Date.now() + 180000;
-      pixRapido = setInterval(function () { if (Date.now() > ate) { clearInterval(pixRapido); pixRapido = null; return; } carregar(); }, 3000);
+      ciclo();
     }).catch(function () { aprovadoAqui = 0; $('aprovar').disabled = false; if (estado) desenhar(); });
   };
 
@@ -474,7 +472,7 @@
     if (!estado) return true;
     var i = estado.info || {}, ms = estado.mensagens || [], ult = ms[ms.length - 1];
     if (/fila|fazendo|ajustando|montando|publicando|aplicando|preparando|gerando/i.test(estado.situacaoTexto || '')) return true;
-    if (aprovacaoPendente() || (i.projeto && estado.projeto && estado.projeto.gerando)) return true;
+    var ap = aprovacaoPendente(); if ((ap && Date.now() - ap < 10 * 60000) || (i.projeto && estado.projeto && estado.projeto.gerando)) return true;
     return !!(ult && Date.now() - (Date.parse(ult.em) || 0) < 5 * 60000);
   }
   var proxima = null;
