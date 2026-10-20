@@ -50,7 +50,7 @@
     var fazendo = /fila|fazendo|ajustando|montando/i.test(r.situacaoTexto || '') || (!i.versao && !i.publicado);
     $('giro').hidden = !fazendo;
     $('status-t').textContent = r.situacaoTexto || 'Pedido recebido';
-    $('status-s').textContent = i.publicado ? 'Seu site está no ar. Pedidos de mudança, é só falar na conversa.'
+    $('status-s').textContent = i.publicado ? 'Seu site está no ar. Para mudar alguma coisa, use "Pedir uma mudança" logo abaixo.'
       : i.sinalRecebido ? 'Recebemos o sinal. Mande na conversa o que faltar para o site final.'
       : i.pixLiberado ? 'O Pix do sinal está na conversa. Assim que cair, começamos o site final.'
       : i.posicao ? (i.posicao > 1 ? 'Tem ' + (i.posicao - 1) + ' na sua frente. ' : 'É o próximo! ') + 'Enquanto isso, pode tirar dúvidas na conversa.'
@@ -84,6 +84,8 @@
     // conversa
     desenharMsgs();
     sugestoes();
+    // site no ar: a página vira a SALA DO SITE (sala.js)
+    if (window.CGSala) window.CGSala.desenhar(r, { mandar: mandar, toast: toast });
   }
   function brl(v) { var n = Number(v) || 0; return 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
   var pacotesDesenhados = '', rolouPacote = false;
@@ -158,7 +160,7 @@
   function sugestoes() {
     var i = estado.info || {}, s = $('sugestoes'); s.innerHTML = '';
     var lista = i.publicado ? ['Quero mudar uma coisa no site'] : i.pixLiberado ? ['Já paguei o sinal', 'Qual é a chave Pix?'] : i.versao ? ['Quanto fica?', 'Como funciona o pagamento?', 'Quanto tempo para ficar no ar?'] : ['Quanto custa um site?', 'Em quanto tempo fica pronto?'];
-    lista.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function () { mandar(t); }; s.appendChild(b); });
+    lista.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function () { if (i.publicado && $('sala-texto')) { $('sala-mudar').scrollIntoView({ behavior: 'smooth' }); $('sala-texto').focus(); } else mandar(t); }; s.appendChild(b); });
   }
 
   // ---------- conversa ----------
