@@ -29,9 +29,23 @@
   $('ir-editar').onclick = function () { if (ehLargo()) { $('painel-editor').hidden = false; abrirEditor(); $('painel-editor').scrollIntoView({ behavior: 'smooth' }); } else abrirAba('editor'); };
 
   // ---------- estado ----------
+  // Pedido apagado (Excluir/lixeira) ou link errado: a nuvem responde 404. Com a página já aberta, mostra NA HORA "Este pedido
+  // foi encerrado", para de atualizar e não aceita mais mensagem (nada fica "concluído" num pedido que não existe).
+  var encerrado = false;
+  function ehSumiu(e) { return e && (e.status === 404 || /não encontrado|nao encontrado/i.test(e.message || '')); }
+  function pedidoSumiu() {
+    var ja = !!estado;
+    encerrado = true; clearTimeout(proxima); proxima = null;
+    $('tudo').hidden = true; $('sem-pedido').hidden = false;
+    $('sem-pedido-t').textContent = ja ? 'Este pedido foi encerrado' : 'Não achei o seu pedido';
+    $('sem-pedido-s').textContent = ja ? 'Ele não recebe mais mensagens nem aprovações. Se ainda quiser o seu site, faça um pedido novo: leva um minuto e o esboço é grátis.' : 'Abra pelo link que você recebeu (ele é só seu) ou peça um esboço novo.';
+    $('sem-pedido-b').textContent = ja ? 'Fazer um novo pedido' : 'Pedir meu esboço grátis';
+    try { $('texto').disabled = true; $('envio').querySelector('button[type=submit]').disabled = true; } catch (_) {}
+  }
   function carregar() {
+    if (encerrado) return Promise.resolve();
     return CG.chamar('/pedido/' + encodeURIComponent(ID), { chave: K }).then(function (r) { estado = r; desenhar(); }).catch(function (e) {
-      if (/não encontrado|nao encontrado/i.test(e.message)) { $('tudo').hidden = true; $('sem-pedido').hidden = false; }
+      if (ehSumiu(e)) { pedidoSumiu(); return; }
       $('online').textContent = 'sem conexão'; $('online').className = 'cg-pill off';
     });
   }
@@ -66,6 +80,10 @@
       f.hidden = false; $('previa-vazia').hidden = true; $('previa-acoes').hidden = false; $('abrir').href = r.previaUrl;
       edCarregado = '';
     }
+    // prévia fica no ar 2 h; vencida, um toque republica por mais 2 h (o esboço continua guardado)
+    var exp = !!(i.previaExpirada && !i.publicado);
+    $('previa-expirou').hidden = !exp;
+    if (exp) { $('previa').hidden = true; $('previa-acoes').hidden = true; $('previa-vazia').hidden = true; previaAtual = ''; }
     $('previa-msg').textContent = proj ? 'O protótipo clicável aparece aqui depois que você tocar em "Gerar protótipo".' : i.posicao ? 'Seu esboço está na fila (posição ' + i.posicao + ', ~' + i.minutos + ' min).' : 'O esboço aparece aqui assim que ficar pronto.';
     // editor
     var editavel = !!(i.editavel && r.previaUrl);
@@ -216,7 +234,7 @@
       var m = ms[j], d = document.createElement('div');
       d.className = 'cg-msg ' + (m.de === 'cliente' ? 'meu' : 'dele');
       linkificar(d, (m.texto || '') + (m.fotos ? (m.texto ? '\n' : '') + '📷 ' + m.fotos + (m.fotos > 1 ? ' fotos' : ' foto') : ''));
-      var t = document.createElement('time'); t.textContent = hora(m.em); d.appendChild(t);
+      var t = document.createElement('time'); t.textContent = hora(m.em) + (m.via === 'whatsapp' ? ' · pelo WhatsApp' : m.via === 'instagram' ? ' · pelo direct' : ''); d.appendChild(t);
       box.appendChild(d);
     }
     desenhadas = ms.length;
@@ -246,14 +264,18 @@
 
   // ---------- conversa ----------
   function mandar(texto, extra) {
-    if (enviando) return Promise.resolve();
+    if (enviando || encerrado) return encerrado ? Promise.reject(new Error('Este pedido foi encerrado.')) : Promise.resolve();
     enviando = true;
     var corpo = Object.assign({ texto: texto || '', fotos: anexos.slice() }, extra || {});
     return CG.chamar('/pedido/' + encodeURIComponent(ID) + '/mensagem', { metodo: 'POST', chave: K, corpo: corpo }).then(function (r) {
       estado = r; anexos = []; $('anexos').innerHTML = ''; desenhar();
       if (!r.appOnline) toast('Mensagem guardada. A resposta chega aqui em breve.');
-    }).catch(function (e) { toast(e.message); throw e; }).finally(function () { enviando = false; });
+    }).catch(function (e) { if (ehSumiu(e)) pedidoSumiu(); else toast(e.message); throw e; }).finally(function () { enviando = false; });
   }
+  $('ver-de-novo').onclick = function () {
+    var b = this; b.disabled = true; b.textContent = 'Publicando de novo…';
+    mandar('', { tipo: 'reabrir' }).then(function () { toast('Pronto! Em instantes a prévia volta aqui, por mais 2 horas.'); }).catch(function () {}).finally(function () { setTimeout(function () { b.disabled = false; b.textContent = 'Ver a prévia de novo'; }, 8000); });
+  };
   $('envio').addEventListener('submit', function (ev) {
     ev.preventDefault();
     var t = $('texto').value.trim();
@@ -489,7 +511,7 @@
   function ciclo() {
     clearTimeout(proxima); proxima = null;
     if (document.hidden) return;
-    carregar().finally(function () { if (!document.hidden) { clearTimeout(proxima); proxima = setTimeout(ciclo, emAndamento() ? 3000 : 15000); } });
+    carregar().finally(function () { if (!document.hidden && !encerrado) { clearTimeout(proxima); proxima = setTimeout(ciclo, emAndamento() ? 3000 : 15000); } });
   }
   // outro pedido aberto na mesma aba (link novo colado): recarrega com o pedido certo
   window.addEventListener('hashchange', function () { location.reload(); });
