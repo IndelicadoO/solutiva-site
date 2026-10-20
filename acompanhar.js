@@ -38,7 +38,10 @@
   function desenhar() {
     var r = estado, i = r.info || {};
     $('tudo').hidden = false;
-    $('titulo').textContent = 'Esboço de ' + r.negocio;
+    var proj = !!i.projeto;
+    $('titulo').textContent = (proj ? 'Sala do projeto · ' : 'Esboço de ') + r.negocio;
+    $('passos').hidden = proj; document.querySelector('.cg-passos-txt').hidden = proj;
+    $('como').hidden = proj || !!i.publicado || !!i.cancelado || !!i.sinalRecebido;
     $('online').textContent = r.appOnline ? 'atendimento online' : 'resposta em breve';
     $('online').className = 'cg-pill' + (r.appOnline ? '' : ' off');
     $('aviso-off').hidden = !!r.appOnline;
@@ -47,7 +50,7 @@
     var passo = i.publicado ? 5 : i.sinalRecebido ? 4 : i.pixLiberado ? 3 : (i.versao ? 2 : 1);
     Array.prototype.forEach.call($('passos').children, function (li, n) { li.className = n + 1 < passo ? 'feito' : n + 1 === passo ? 'agora' : ''; });
     // status
-    var fazendo = /fila|fazendo|ajustando|montando|publicando/i.test(r.situacaoTexto || '') || (!i.versao && !i.publicado);
+    var fazendo = /fila|fazendo|ajustando|montando|publicando/i.test(r.situacaoTexto || '') || (!proj && !i.versao && !i.publicado);
     $('giro').hidden = !fazendo;
     $('status-t').textContent = r.situacaoTexto || 'Pedido recebido';
     $('status-s').textContent = i.publicado ? 'Seu site está no ar. Para mudar alguma coisa, use "Pedir uma mudança" logo abaixo.'
@@ -63,7 +66,7 @@
       f.hidden = false; $('previa-vazia').hidden = true; $('previa-acoes').hidden = false; $('abrir').href = r.previaUrl;
       edCarregado = '';
     }
-    $('previa-msg').textContent = i.posicao ? 'Seu esboço está na fila (posição ' + i.posicao + ', ~' + i.minutos + ' min).' : 'O esboço aparece aqui assim que ficar pronto.';
+    $('previa-msg').textContent = proj ? 'O protótipo clicável aparece aqui depois que você tocar em "Gerar protótipo".' : i.posicao ? 'Seu esboço está na fila (posição ' + i.posicao + ', ~' + i.minutos + ' min).' : 'O esboço aparece aqui assim que ficar pronto.';
     // editor
     var editavel = !!(i.editavel && r.previaUrl);
     $('aba-editor').hidden = !editavel; $('ir-editar').hidden = !editavel;
@@ -88,6 +91,13 @@
     sugestoes();
     // site no ar: a página vira a SALA DO SITE (sala.js)
     if (window.CGSala) window.CGSala.desenhar(r, { mandar: mandar, toast: toast });
+    // sistema sob medida: a página vira a SALA DO PROJETO (projeto.js); nada de pacote, aprovar, editor ou Pix
+    if (proj) {
+      cta.hidden = true; $('pacotes').hidden = true; $('resumo-pac').hidden = true; $('aba-editor').hidden = true; $('ir-editar').hidden = true; $('pix').hidden = true;
+      $('sugestoes').innerHTML = '';
+      $('status-s').textContent = (r.projeto && r.projeto.pergunta) ? 'Responda na conversa: ' + r.projeto.pergunta : r.projeto && r.projeto.gerando ? 'Leva alguns minutos; o protótipo aparece aqui sozinho.' : r.projeto && r.projeto.rodada ? 'Navegue no protótipo. Quer mudar algo? Escreva na conversa.' : 'Toque em "Gerar protótipo".';
+    }
+    if (window.CGProjeto) window.CGProjeto.desenhar(r, { mandar: mandar, toast: toast, abrirConversa: function () { if (ehLargo()) $('painel-conversa').scrollIntoView({ behavior: 'smooth' }); else abrirAba('conversa'); } });
   }
   // ---------- aprovação + cartão do Pix (fixo, visível em qualquer aba) ----------
   var aprovadoAqui = 0;
