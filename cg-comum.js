@@ -34,7 +34,7 @@
     var h = { 'Content-Type': 'application/json' };
     if (opcoes.chave) h['X-Pedido-Chave'] = opcoes.chave;
     return fetch(api + caminho, { method: opcoes.metodo || 'GET', headers: h, body: opcoes.corpo ? JSON.stringify(opcoes.corpo) : undefined, cache: 'no-store' })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.erro || 'Não consegui falar com o servidor (' + r.status + ').'); return j; }); });
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) { var er = new Error(j.erro || 'Não consegui falar com o servidor (' + r.status + ').'); er.status = r.status; throw er; } return j; }); });
   }
   window.CG = { api: api, comprimir: comprimir, chamar: chamar };
 })();
