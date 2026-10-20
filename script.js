@@ -8,6 +8,7 @@
    ===================================================================== */
 const CONTATO = {
   principal: 'https://ig.me/m/clickgo.dev',
+  esboco: '/esboco/',   // pedir esboço grátis: formulário (resposta na página de acompanhamento)
   secundario: 'https://www.linkedin.com/in/erinaldo-gomes-a30442264/',
   whatsapp: '',
   mensagemWhatsapp: 'Olá! Vi o site da ClickGo e quero um orçamento.'
@@ -23,7 +24,8 @@ const CONTATO = {
     ? 'https://wa.me/' + CONTATO.whatsapp + '?text=' + encodeURIComponent(CONTATO.mensagemWhatsapp)
     : CONTATO.principal;
   document.querySelectorAll('[data-contato]').forEach(function (a) {
-    a.href = a.getAttribute('data-contato') === 'secundario' ? CONTATO.secundario : principal;
+    var tipo = a.getAttribute('data-contato');
+    a.href = tipo === 'secundario' ? CONTATO.secundario : tipo === 'esboco' ? CONTATO.esboco : principal;
   });
   if (usaZap) {
     document.querySelectorAll('[data-rotulo-canal]').forEach(function (el) { el.textContent = 'WhatsApp'; });
