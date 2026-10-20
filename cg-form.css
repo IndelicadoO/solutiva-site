@@ -263,3 +263,21 @@ h1, h2, h3, p { margin: 0; }
 @media (prefers-reduced-motion: reduce) { .cg-abas .cg-badge:not([hidden]) { animation: none; } }
 .cg-nova-msg { position: fixed; left: 50%; transform: translateX(-50%); top: calc(64px + env(safe-area-inset-top)); white-space: nowrap; z-index: 45; min-height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: #ff4d6d; color: #fff; font: 800 .92rem/1 'Onest', sans-serif; box-shadow: 0 10px 30px rgba(0, 0, 0, .45), 0 0 0 4px rgba(255, 77, 109, .25); cursor: pointer; animation: cgSobe .25s ease-out; }
 @keyframes cgSobe { from { opacity: 0; transform: translate(-50%, -12px); } to { opacity: 1; transform: translate(-50%, 0); } }
+/* como funciona (prévia -> sinal -> final) e sala do projeto */
+.cg-como { margin-top: 12px; padding: 12px 16px; border-radius: 16px; border: 1px solid var(--borda); background: rgba(2, 5, 12, .35); font-size: .9rem; }
+.cg-como summary { cursor: pointer; font-weight: 700; color: var(--ceu); min-height: 28px; }
+.cg-como ol { margin: 10px 0 2px; padding-left: 20px; display: grid; gap: 8px; color: var(--txt-2); }
+.cg-como b { color: var(--txt, #fff); }
+.cg-pix-garante { margin: 6px 0 4px; padding-left: 18px; display: grid; gap: 4px; font-size: .86rem; color: var(--txt-2); }
+.cg-projeto { margin-top: 14px; }
+.cg-projeto h2 { margin: 0 0 6px; }
+.cg-projeto h3 { margin: 16px 0 8px; font-size: 1rem; }
+.cg-projeto h3 small { color: var(--txt-2); font-weight: 500; }
+.cg-proj-barra { height: 8px; border-radius: 99px; background: rgba(63, 210, 255, .12); overflow: hidden; }
+.cg-proj-barra i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--ceu), var(--agua)); transition: width .4s; }
+.cg-proj-etapa { margin: 8px 0; font-size: .9rem; color: var(--txt-2); }
+.cg-proj-resumo, .cg-proj-arqs { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: .88rem; }
+.cg-proj-resumo li b { color: var(--ceu); }
+.cg-proj-arqs li { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--borda); background: rgba(2, 5, 12, .4); word-break: break-word; }
+.cg-proj-gerar { margin-top: 14px; display: grid; gap: 6px; }
+.cg-proj-gerar small { color: var(--txt-2); text-align: center; }
