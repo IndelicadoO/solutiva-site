@@ -17,6 +17,7 @@
 <header class="cg-topo">
   <a class="cg-marca" href="/"><img src="/assets/logo-clickgo.webp" width="30" height="30" alt="">ClickGo</a>
   <span class="cg-pill" id="online">conectando…</span>
+  <button type="button" class="cg-btn cg-btn-linha cg-copiar-link" id="copiar-link" hidden>Copiar meu link</button>
 </header>
 <main class="cg-app">
   <div id="sem-pedido" class="cg-wrap" hidden>
@@ -31,6 +32,18 @@
       <button type="button" class="cg-resumo-pac" id="resumo-pac" hidden><span>Seu pacote</span><b id="resumo-pac-t"></b><i>ver pacotes ↓</i></button>
       <div class="cg-status" id="status"><div class="cg-giro" id="giro"></div><div><b id="status-t">Pedido recebido</b><span id="status-s">Estamos preparando o seu esboço.</span></div></div>
     </div>
+
+    <section class="cg-pix" id="pix" aria-live="polite" hidden>
+      <div class="cg-pix-preparando" id="pix-preparando"><div class="cg-giro"></div><div><b>Aprovado! Preparando o seu Pix…</b><span>Leva só alguns segundos. Os dados do pagamento aparecem aqui mesmo.</span></div></div>
+      <div id="pix-pronto" hidden>
+        <h2>Pague o sinal e garanta o seu site</h2>
+        <div class="cg-pix-valor"><span>Sinal (50%)</span><b id="pix-valor"></b></div>
+        <div class="cg-pix-chave" id="pix-chave-box"><span>Chave Pix</span><code id="pix-chave"></code><button type="button" class="cg-btn cg-btn-prim" id="pix-copiar">Copiar chave Pix</button></div>
+        <p class="cg-pix-sem" id="pix-sem" hidden>A chave Pix está na conversa.</p>
+        <p class="cg-pix-nota">Os outros 50% só na entrega do site. Pagou? Mande o comprovante (print ou foto) e a gente confirma.</p>
+        <button type="button" class="cg-btn cg-btn-linha" id="pix-comprovante">Enviar comprovante</button>
+      </div>
+    </section>
 
     <section class="cg-sala" id="sala" aria-label="Sala do seu site" hidden>
       <p class="cg-sala-guarde" id="sala-guarde"><b>Guarde este link: é a sala do seu site.</b> Por aqui você pede mudanças, vê quantas restam no mês e liga o seu domínio próprio.</p>
