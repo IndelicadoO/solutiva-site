@@ -74,9 +74,62 @@
     cta.hidden = !(i.podeAprovar || (i.versao && !i.pixLiberado && !i.posicao));
     $('aprovar').disabled = !i.podeAprovar;
     $('cta-s').textContent = i.rodadasRestantes === 0 ? 'Ajustes do esboço usados. Aprove e o resto entra no site final, depois do sinal.' : 'Você só paga o sinal de 50% depois de aprovar. O resto, na entrega.';
+    // pacotes (valores vêm da tabela da ClickGo, mandados pelo app)
+    desenharPacotes();
+    // pedido substituído por um novo deste aparelho
+    if (i.cancelado || r.situacao === 'cancelado') {
+      $('giro').hidden = true; cta.hidden = true; $('pacotes').hidden = true; $('resumo-pac').hidden = true; $('aba-editor').hidden = true; $('ir-editar').hidden = true;
+      $('status-s').innerHTML = 'Nada foi cobrado. <a href="/esboco/">Abrir o pedido novo</a>';
+    }
     // conversa
     desenharMsgs();
     sugestoes();
+  }
+  function brl(v) { var n = Number(v) || 0; return 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
+  var pacotesDesenhados = '', rolouPacote = false;
+  $('resumo-pac').onclick = function () { $('pacotes').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  function desenharPacotes() {
+    var ps = (estado && estado.pacotes) || [], i = estado.info || {}, box = $('pacotes-lista');
+    $('pacotes').hidden = !ps.length || !!i.publicado;
+    if (!ps.length) return;
+    var esc = ps.filter(function (p) { return p.escolhido; })[0];
+    $('resumo-pac').hidden = !esc || !!i.publicado || !!i.cancelado;
+    if (esc) $('resumo-pac-t').textContent = esc.pacote + ' · ' + (esc.implantacao ? brl(esc.implantacao) + (esc.mensalidade ? ' + ' + brl(esc.mensalidade) + '/mês' : '') : brl(esc.mensalidade) + '/mês') + (esc.recomendado ? ' ★' : '');
+    var trava = !i.podeTrocarPacote;
+    var assin = JSON.stringify([ps, trava, i.rodadasRestantes, i.versao]);
+    if (assin === pacotesDesenhados) return;
+    pacotesDesenhados = assin;
+    box.innerHTML = '';
+    ps.forEach(function (p) {
+      var c = document.createElement('article');
+      c.className = 'cg-pac' + (p.recomendado ? ' rec' : '') + (p.escolhido ? ' esc' : '');
+      c.innerHTML = '<div class="cg-pac-selos"></div><h3></h3><div class="cg-pac-preco"><b></b><span></span></div><small class="cg-pac-prazo"></small><ul></ul><button type="button" class="cg-btn"></button>';
+      var selos = c.querySelector('.cg-pac-selos');
+      if (p.recomendado) { var s1 = document.createElement('span'); s1.className = 'rec'; s1.textContent = '★ Recomendado para você'; selos.appendChild(s1); }
+      if (p.escolhido) { var s2 = document.createElement('span'); s2.className = 'esc'; s2.textContent = '✓ Seu pacote'; selos.appendChild(s2); }
+      c.querySelector('h3').textContent = p.pacote;
+      c.querySelector('.cg-pac-preco b').textContent = p.implantacao ? brl(p.implantacao) : brl(p.mensalidade) + '/mês';
+      c.querySelector('.cg-pac-preco span').textContent = p.implantacao ? (p.mensalidade ? 'implantação + ' + brl(p.mensalidade) + '/mês' : 'pagamento único') : '';
+      c.querySelector('.cg-pac-prazo').textContent = p.prazo ? 'Prazo: ' + p.prazo : '';
+      var ul = c.querySelector('ul');
+      (p.inclui || []).forEach(function (t) { var li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+      if (p.mensalidadeInclui && p.mensalidade) { var li = document.createElement('li'); li.className = 'mens'; li.textContent = 'Mensalidade: ' + p.mensalidadeInclui; ul.appendChild(li); }
+      var b = c.querySelector('button');
+      if (p.escolhido) { b.className = 'cg-btn cg-btn-linha'; b.textContent = 'Pacote escolhido'; b.disabled = true; }
+      else {
+        b.className = 'cg-btn ' + (p.recomendado ? 'cg-btn-prim' : 'cg-btn-linha'); b.textContent = 'Escolher este'; b.disabled = trava;
+        b.onclick = function () {
+          var aviso = !i.versao ? 'O esboço já sai nesse nível.' : i.rodadasRestantes > 0 ? 'O esboço é refeito nesse nível (usa 1 das ' + i.rodadasTotal + ' rodadas de ajuste).' : 'As rodadas de ajuste acabaram: o esboço fica como está e o site final sai nesse nível.';
+          if (!confirm('Trocar para o pacote ' + p.pacote + '? ' + aviso + ' Você só paga depois de aprovar.')) return;
+          b.disabled = true; b.textContent = 'Trocando…';
+          mandar('', { tipo: 'pacote', pacote: p.pacote }).then(function () { toast('Pedido de troca enviado! A resposta chega na conversa.'); }).catch(function () { b.disabled = false; b.textContent = 'Escolher este'; });
+        };
+      }
+      box.appendChild(c);
+    });
+    $('pacotes-nota').textContent = trava ? 'O esboço já foi aprovado: para trocar de pacote, fale na conversa.' : 'Pagamento: 50% depois de aprovar o esboço, 50% na entrega. Mensalidade sem fidelidade.';
+    // no celular, já mostra o recomendado/escolhido
+    if (!rolouPacote) { rolouPacote = true; var alvo = box.querySelector('.cg-pac.esc') || box.querySelector('.cg-pac.rec'); if (alvo && box.scrollWidth > box.clientWidth) box.scrollLeft = alvo.offsetLeft - box.offsetLeft - 16; }
   }
   function linkificar(el, texto) {
     var partes = String(texto).split(/((?:https:\/\/|http:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?\/)[^\s)]+)/g);
