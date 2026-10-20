@@ -21,7 +21,7 @@
 </header>
 <main class="cg-app">
   <div id="sem-pedido" class="cg-wrap" hidden>
-    <div class="cg-cartao"><h2>Não achei o seu pedido</h2><p class="cg-sub">Abra pelo link que você recebeu (ele é só seu) ou peça um esboço novo.</p><a class="cg-btn cg-btn-prim" href="/esboco/">Pedir meu esboço grátis</a></div>
+    <div class="cg-cartao"><h2 id="sem-pedido-t">Não achei o seu pedido</h2><p class="cg-sub" id="sem-pedido-s">Abra pelo link que você recebeu (ele é só seu) ou peça um esboço novo.</p><a class="cg-btn cg-btn-prim" id="sem-pedido-b" href="/esboco/">Pedir meu esboço grátis</a></div>
   </div>
   <div id="tudo" hidden>
     <div class="cg-cab">
@@ -34,7 +34,7 @@
       <details class="cg-como" id="como" hidden>
         <summary>Como funciona: prévia grátis → sinal → site final</summary>
         <ol>
-          <li><b>Ajuste a prévia grátis.</b> É uma versão de prévia, com textos e fotos de exemplo, que fica no ar só por 7 dias. Você ajusta com o dedo ou pela conversa, sem pagar nada.</li>
+          <li><b>Ajuste a prévia grátis.</b> É uma versão de prévia, com textos e fotos de exemplo, que fica no ar por 2 horas de cada vez (depois é só tocar em "Ver a prévia de novo"). Você ajusta com o dedo ou pela conversa, sem pagar nada.</li>
           <li><b>Aprove e pague o sinal de 50% do pacote.</b> O Pix aparece aqui na página, no nome da ClickGo (CNPJ 50.522.870/0001-07).</li>
           <li><b>Receba o site final completo.</b> Caprichado, com os seus dados e fotos reais, no ar de vez, com o seu domínio e a sala do site para pedir mudanças. Você vê o site pronto antes de pagar o restante: os outros 50% só na entrega.</li>
         </ol>
@@ -129,7 +129,7 @@
 
     <div class="cg-grade">
       <section id="painel-previa" class="cg-cartao" aria-label="Prévia">
-        <div class="cg-tel"><div class="cg-vazio" id="previa-vazia"><div class="cg-giro"></div><p id="previa-msg">O esboço aparece aqui assim que ficar pronto.</p></div><iframe id="previa" title="Prévia do seu site" hidden loading="lazy" referrerpolicy="no-referrer"></iframe></div>
+        <div class="cg-tel"><div class="cg-vazio" id="previa-vazia"><div class="cg-giro"></div><p id="previa-msg">O esboço aparece aqui assim que ficar pronto.</p></div><div class="cg-vazio" id="previa-expirou" hidden><p><b>Sua prévia expirou</b><br>Ela fica no ar por 2 horas. O seu esboço continua guardado.</p><button class="cg-btn cg-btn-prim" id="ver-de-novo" type="button">Ver a prévia de novo</button></div><iframe id="previa" title="Prévia do seu site" hidden loading="lazy" referrerpolicy="no-referrer"></iframe></div>
         <div class="cg-acoes" id="previa-acoes" hidden>
           <a class="cg-btn cg-btn-linha" id="abrir" target="_blank" rel="noopener">Abrir em tela cheia</a>
           <button class="cg-btn cg-btn-linha" id="ir-editar" type="button">Ajustar com o dedo</button>
