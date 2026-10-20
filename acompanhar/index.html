@@ -32,6 +32,51 @@
       <div class="cg-status" id="status"><div class="cg-giro" id="giro"></div><div><b id="status-t">Pedido recebido</b><span id="status-s">Estamos preparando o seu esboço.</span></div></div>
     </div>
 
+    <section class="cg-sala" id="sala" aria-label="Sala do seu site" hidden>
+      <p class="cg-sala-guarde" id="sala-guarde"><b>Guarde este link: é a sala do seu site.</b> Por aqui você pede mudanças, vê quantas restam no mês e liga o seu domínio próprio.</p>
+      <p class="cg-aviso-off" id="sala-off" hidden>Nossa equipe está fora agora. Pode mandar o pedido: ele fica na fila e fazemos assim que possível.</p>
+      <div class="cg-sala-grade">
+        <div class="cg-cartao" id="sala-mudar">
+          <h2>Pedir uma mudança</h2>
+          <p class="cg-sala-no-ar">Seu site no ar: <a id="sala-link" target="_blank" rel="noopener"></a></p>
+          <p class="cg-sala-cota" id="sala-cota"></p>
+          <form id="sala-form" class="cg-sala-form">
+            <textarea id="sala-texto" rows="3" maxlength="600" placeholder="Ex.: trocar o telefone para (61) 99999-0000" aria-label="O que você quer mudar"></textarea>
+            <div class="cg-anexos-prev" id="sala-fotos"></div>
+            <div class="cg-sala-acoes">
+              <label class="cg-btn cg-btn-linha">Anexar foto<input type="file" accept="image/*" multiple hidden id="sala-foto"></label>
+              <button class="cg-btn cg-btn-prim" id="sala-enviar" type="submit">Pedir mudança</button>
+            </div>
+          </form>
+          <p class="cg-dica" id="sala-dica"></p>
+          <h3 id="sala-pedidos-t" hidden>Seus pedidos</h3>
+          <ul class="cg-sala-pedidos" id="sala-pedidos"></ul>
+        </div>
+        <div class="cg-cartao" id="sala-dominio">
+          <h2>Usar meu domínio</h2>
+          <p class="cg-sub">Quer que o site abra em <b>seunegocio.com.br</b>? Você registra o domínio no seu nome e aponta para o seu site; o resto é com a gente.</p>
+          <div class="cg-dom-status" id="dom-status" hidden><b id="dom-status-t"></b><span id="dom-status-s"></span></div>
+          <form id="dom-form" class="cg-sala-form">
+            <input id="dom-host" type="text" inputmode="url" autocomplete="off" maxlength="120" placeholder="seunegocio.com.br" aria-label="Seu domínio">
+            <button class="cg-btn cg-btn-prim" id="dom-enviar" type="submit">Usar este domínio</button>
+          </form>
+          <div id="dom-passos" hidden>
+            <ol class="cg-dom-ol">
+              <li>Entre no painel onde o domínio foi registrado (no <b>registro.br</b>: "Meus domínios" → o domínio → "Editar zona" / "DNS"; em outros, procure "DNS", "Zona" ou "Gerenciar registros").</li>
+              <li>Apague registros antigos do tipo A ou CNAME com o mesmo nome (@ ou www), se houver.</li>
+              <li>Crie estes registros, copiando os valores:</li>
+            </ol>
+            <div class="cg-dom-tab"><table><thead><tr><th>Tipo</th><th>Nome</th><th>Valor</th><th></th></tr></thead><tbody id="dom-registros"></tbody></table></div>
+            <p class="cg-dica">"@" é o próprio domínio (alguns painéis pedem o campo vazio). A mudança leva de minutos a 24 h para valer; a gente confere sozinho e avisa aqui quando ativar.</p>
+          </div>
+          <details class="cg-dom-sem">
+            <summary>Ainda não tenho domínio</summary>
+            <p>Domínios <b>.com.br</b> são registrados no <a href="https://registro.br" target="_blank" rel="noopener">registro.br</a>, no seu nome ou CNPJ; o pagamento é feito direto lá (o valor é do registro.br, não da ClickGo). Depois de registrar, volte aqui, escreva o domínio acima e siga o passo a passo.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <nav class="cg-abas" role="tablist" aria-label="Seções">
       <button role="tab" aria-selected="true" data-aba="previa">Prévia</button>
       <button role="tab" aria-selected="false" data-aba="editor" id="aba-editor" hidden>Editar</button>
@@ -91,5 +136,6 @@
 <div class="cg-toast" id="toast" role="status" hidden></div>
 <script src="/cg-comum.js"></script>
 <script src="/acompanhar.js"></script>
+<script src="/sala.js"></script>
 </body>
 </html>
