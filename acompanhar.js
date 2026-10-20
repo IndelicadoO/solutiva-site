@@ -22,7 +22,7 @@
     $('painel-previa').hidden = nome !== 'previa';
     $('painel-editor').hidden = nome !== 'editor';
     $('painel-conversa').hidden = nome !== 'conversa';
-    if (nome === 'conversa') { vistas = (estado && estado.mensagens.length) || 0; $('badge').hidden = true; $('badge').textContent = '0'; var ac = document.querySelector('.cg-abas button[data-aba="conversa"]'); if (ac) ac.classList.remove('tem-nova'); rolarChat(); }
+    if (nome === 'conversa') { $('nova-msg').hidden = true; vistas = (estado && estado.mensagens.length) || 0; $('badge').hidden = true; $('badge').textContent = '0'; var ac = document.querySelector('.cg-abas button[data-aba="conversa"]'); if (ac) ac.classList.remove('tem-nova'); rolarChat(); }
     if (nome === 'editor') abrirEditor();
   }
   Array.prototype.forEach.call(document.querySelectorAll('.cg-abas button'), function (b) { b.onclick = function () { abrirAba(b.dataset.aba); }; });
@@ -210,14 +210,22 @@
     }
     desenhadas = ms.length;
     var aberta = ehLargo() || !$('painel-conversa').hidden;
-    if (aberta) { vistas = ms.length; rolarChat(); }
+    if (aberta) {
+      if (!primeira && ms.length > vistas && ms.slice(vistas).some(function (x) { return x.de !== 'cliente'; })) { var rc = $('painel-conversa').getBoundingClientRect(); if (rc.bottom < 60 || rc.top > innerHeight - 60) avisoNova(ms.slice(vistas).filter(function (x) { return x.de !== 'cliente'; }).length); }
+      vistas = ms.length; rolarChat();
+    }
     else {
       var novas = ms.slice(vistas).filter(function (x) { return x.de !== 'cliente'; }).length;
-      if (!primeira && novas > (Number($('badge').textContent) || 0)) toast(novas > 1 ? novas + ' mensagens novas na Conversa' : 'Nova mensagem na Conversa');
+      if (!primeira && novas > (Number($('badge').textContent) || 0)) avisoNova(novas);
       $('badge').textContent = novas; $('badge').hidden = !novas;
     }
     var abaConv = document.querySelector('.cg-abas button[data-aba="conversa"]'); if (abaConv) abaConv.classList.toggle('tem-nova', !$('badge').hidden);
   }
+  function avisoNova(novas) {
+    var a = $('nova-msg'); a.textContent = novas > 1 ? novas + ' novas mensagens · ver' : 'Nova mensagem · ver'; a.hidden = false;
+    clearTimeout(avisoNova.t); avisoNova.t = setTimeout(function () { a.hidden = true; }, 20000);
+  }
+  $('nova-msg').onclick = function () { this.hidden = true; if (ehLargo()) $('painel-conversa').scrollIntoView({ behavior: 'smooth' }); else abrirAba('conversa'); };
   function rolarChat() { var b = $('msgs'); b.scrollTop = b.scrollHeight; }
   function sugestoes() {
     var i = estado.info || {}, s = $('sugestoes'); s.innerHTML = '';
@@ -460,8 +468,24 @@
   };
 
   // ---------- relógio ----------
-  function ciclo() { carregar().finally(function () { setTimeout(ciclo, document.hidden ? 30000 : 8000); }); }
-  document.addEventListener('visibilitychange', function () { if (!document.hidden) carregar(); });
+  // atualiza sozinha: ~3 s com algo andando (gerando, aprovado esperando o Pix, conversa recente), ~15 s parada;
+  // aba oculta = pausa; ao voltar, atualiza na hora
+  function emAndamento() {
+    if (!estado) return true;
+    var i = estado.info || {}, ms = estado.mensagens || [], ult = ms[ms.length - 1];
+    if (/fila|fazendo|ajustando|montando|publicando|aplicando|preparando|gerando/i.test(estado.situacaoTexto || '')) return true;
+    if (aprovacaoPendente() || (i.projeto && estado.projeto && estado.projeto.gerando)) return true;
+    return !!(ult && Date.now() - (Date.parse(ult.em) || 0) < 5 * 60000);
+  }
+  var proxima = null;
+  function ciclo() {
+    clearTimeout(proxima); proxima = null;
+    if (document.hidden) return;
+    carregar().finally(function () { if (!document.hidden) { clearTimeout(proxima); proxima = setTimeout(ciclo, emAndamento() ? 3000 : 15000); } });
+  }
+  // outro pedido aberto na mesma aba (link novo colado): recarrega com o pedido certo
+  window.addEventListener('hashchange', function () { location.reload(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) ciclo(); else { clearTimeout(proxima); proxima = null; } });
   if (ehLargo()) { $('painel-conversa').hidden = false; }
   ciclo();
 })();
