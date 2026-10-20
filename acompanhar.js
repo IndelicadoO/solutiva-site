@@ -22,7 +22,7 @@
     $('painel-previa').hidden = nome !== 'previa';
     $('painel-editor').hidden = nome !== 'editor';
     $('painel-conversa').hidden = nome !== 'conversa';
-    if (nome === 'conversa') { vistas = (estado && estado.mensagens.length) || 0; $('badge').hidden = true; rolarChat(); }
+    if (nome === 'conversa') { vistas = (estado && estado.mensagens.length) || 0; $('badge').hidden = true; $('badge').textContent = '0'; var ac = document.querySelector('.cg-abas button[data-aba="conversa"]'); if (ac) ac.classList.remove('tem-nova'); rolarChat(); }
     if (nome === 'editor') abrirEditor();
   }
   Array.prototype.forEach.call(document.querySelectorAll('.cg-abas button'), function (b) { b.onclick = function () { abrirAba(b.dataset.aba); }; });
@@ -47,12 +47,12 @@
     var passo = i.publicado ? 5 : i.sinalRecebido ? 4 : i.pixLiberado ? 3 : (i.versao ? 2 : 1);
     Array.prototype.forEach.call($('passos').children, function (li, n) { li.className = n + 1 < passo ? 'feito' : n + 1 === passo ? 'agora' : ''; });
     // status
-    var fazendo = /fila|fazendo|ajustando|montando/i.test(r.situacaoTexto || '') || (!i.versao && !i.publicado);
+    var fazendo = /fila|fazendo|ajustando|montando|publicando/i.test(r.situacaoTexto || '') || (!i.versao && !i.publicado);
     $('giro').hidden = !fazendo;
     $('status-t').textContent = r.situacaoTexto || 'Pedido recebido';
     $('status-s').textContent = i.publicado ? 'Seu site está no ar. Para mudar alguma coisa, use "Pedir uma mudança" logo abaixo.'
       : i.sinalRecebido ? 'Recebemos o sinal. Mande na conversa o que faltar para o site final.'
-      : i.pixLiberado ? 'O Pix do sinal está na conversa. Assim que cair, começamos o site final.'
+      : i.pixLiberado ? 'Os dados do Pix estão logo abaixo. Assim que o sinal cair, começamos o site final.'
       : i.posicao ? (i.posicao > 1 ? 'Tem ' + (i.posicao - 1) + ' na sua frente. ' : 'É o próximo! ') + 'Enquanto isso, pode tirar dúvidas na conversa.'
       : i.versao ? (i.rodadasRestantes > 0 ? 'Gostou? Aprove. Quer mudar? Ajuste com o dedo ou peça na conversa.' : 'Ajustes do esboço usados: o que faltar entra no site final, depois do sinal.')
       : 'Estamos preparando o seu esboço. Pode tirar dúvidas na conversa.';
@@ -71,7 +71,9 @@
     $('rodadas').textContent = i.rodadasTotal ? 'Rodada de ajuste ' + Math.min(i.rodadasTotal, (i.rodadasTotal - i.rodadasRestantes) + 1) + ' de ' + i.rodadasTotal + ' no esboço. Depois do sinal, o site final recebe o resto.' : '';
     // compra sempre à vista
     var cta = $('cta');
-    cta.hidden = !(i.podeAprovar || (i.versao && !i.pixLiberado && !i.posicao));
+    var prep = aprovacaoPendente();
+    cta.hidden = prep || !(i.podeAprovar || (i.versao && !i.pixLiberado && !i.posicao));
+    desenharPix(prep);
     $('aprovar').disabled = !i.podeAprovar;
     $('cta-s').textContent = i.rodadasRestantes === 0 ? 'Ajustes do esboço usados. Aprove e o resto entra no site final, depois do sinal.' : 'Você só paga o sinal de 50% depois de aprovar. O resto, na entrega.';
     // pacotes (valores vêm da tabela da ClickGo, mandados pelo app)
@@ -87,6 +89,61 @@
     // site no ar: a página vira a SALA DO SITE (sala.js)
     if (window.CGSala) window.CGSala.desenhar(r, { mandar: mandar, toast: toast });
   }
+  // ---------- aprovação + cartão do Pix (fixo, visível em qualquer aba) ----------
+  var aprovadoAqui = 0, pixRapido = null;
+  function aprovacaoPendente() {
+    var i = estado.info || {};
+    if (i.pixLiberado || i.sinalRecebido || i.publicado || i.cancelado) return false;
+    if (aprovadoAqui && Date.now() - aprovadoAqui < 10 * 60000) return true;
+    var ms = estado.mensagens || [], ult = null;
+    for (var j = ms.length - 1; j >= 0; j--) if (ms[j].de === 'cliente') { ult = ms[j]; break; }
+    return !!(ult && ult.tipo === 'aprovar' && Date.now() - (Date.parse(ult.em) || 0) < 10 * 60000);
+  }
+  function desenharPix(prep) {
+    var i = estado.info || {}, mostra = !!(i.pixLiberado && !i.sinalRecebido && !i.publicado && !i.cancelado);
+    $('pix').hidden = !(mostra || prep);
+    $('pix-preparando').hidden = mostra || !prep;
+    $('pix-pronto').hidden = !mostra;
+    if (prep && !mostra) { $('giro').hidden = true; $('status-t').textContent = 'Esboço aprovado!'; $('status-s').textContent = 'Obrigado! O pagamento do sinal aparece logo abaixo.'; }
+    if (!mostra) return;
+    if (pixRapido) { clearInterval(pixRapido); pixRapido = null; }
+    var sinal = Number(i.sinal) || 0, chave = String(i.pixChave || '');
+    $('pix-valor').parentNode.hidden = !sinal;
+    $('pix-valor').textContent = brl(sinal);
+    $('pix-chave-box').hidden = !chave; $('pix-sem').hidden = !!chave;
+    $('pix-chave').textContent = chave;
+  }
+  function copiarTexto(t) {
+    var velho = function () { return new Promise(function (ok, falha) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var deu = false; try { deu = document.execCommand('copy'); } catch (e) { /* */ }
+      document.body.removeChild(ta); deu ? ok() : falha(new Error('sem cópia'));
+    }); };
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t).catch(velho);
+    return velho();
+  }
+  $('pix-copiar').onclick = function () {
+    var b = this, t = $('pix-chave').textContent;
+    copiarTexto(t).then(function () { b.textContent = 'Chave copiada!'; toast('Chave Pix copiada. É só colar no app do seu banco.'); setTimeout(function () { b.textContent = 'Copiar chave Pix'; }, 2500); })
+      .catch(function () { toast('Não consegui copiar: segure o dedo sobre a chave para copiar.'); });
+  };
+  $('pix-comprovante').onclick = function () {
+    if (ehLargo()) $('painel-conversa').scrollIntoView({ behavior: 'smooth' }); else abrirAba('conversa');
+    toast('Escolha o print ou a foto do comprovante e toque em enviar.');
+    setTimeout(function () { $('anexo-input').click(); }, 250);
+  };
+  // link da página (é só do cliente): copiar, ou compartilhar no celular
+  $('copiar-link').hidden = false;
+  $('copiar-link').onclick = function () {
+    var b = this, url = location.href;
+    var feito = function () { b.textContent = 'Link copiado!'; b.classList.add('ok'); toast('Link copiado! Guarde nos favoritos ou mande para você mesmo.'); setTimeout(function () { b.textContent = 'Copiar meu link'; b.classList.remove('ok'); }, 2500); };
+    copiarTexto(url).then(feito).catch(function () {
+      if (navigator.share) navigator.share({ title: 'Meu pedido na ClickGo', url: url }).catch(function () {});
+      else window.prompt('Copie o seu link:', url);
+    });
+  };
+
   function brl(v) { var n = Number(v) || 0; return 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
   var pacotesDesenhados = '', rolouPacote = false;
   $('resumo-pac').onclick = function () { $('pacotes').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
@@ -142,7 +199,7 @@
   }
   var desenhadas = 0;
   function desenharMsgs() {
-    var ms = estado.mensagens || [], box = $('msgs');
+    var ms = estado.mensagens || [], box = $('msgs'), primeira = desenhadas === 0;
     if (ms.length < desenhadas) { box.innerHTML = ''; desenhadas = 0; }
     for (var j = desenhadas; j < ms.length; j++) {
       var m = ms[j], d = document.createElement('div');
@@ -154,7 +211,12 @@
     desenhadas = ms.length;
     var aberta = ehLargo() || !$('painel-conversa').hidden;
     if (aberta) { vistas = ms.length; rolarChat(); }
-    else { var novas = ms.slice(vistas).filter(function (x) { return x.de !== 'cliente'; }).length; $('badge').textContent = novas; $('badge').hidden = !novas; }
+    else {
+      var novas = ms.slice(vistas).filter(function (x) { return x.de !== 'cliente'; }).length;
+      if (!primeira && novas > (Number($('badge').textContent) || 0)) toast(novas > 1 ? novas + ' mensagens novas na Conversa' : 'Nova mensagem na Conversa');
+      $('badge').textContent = novas; $('badge').hidden = !novas;
+    }
+    var abaConv = document.querySelector('.cg-abas button[data-aba="conversa"]'); if (abaConv) abaConv.classList.toggle('tem-nova', !$('badge').hidden);
   }
   function rolarChat() { var b = $('msgs'); b.scrollTop = b.scrollHeight; }
   function sugestoes() {
@@ -191,7 +253,15 @@
   $('aprovar').onclick = function () {
     if (!confirm('Aprovar o esboço? Em seguida mandamos aqui o Pix do sinal (50%). O restante só na entrega do site.')) return;
     $('aprovar').disabled = true;
-    mandar('', { tipo: 'aprovar' }).then(function () { if (!ehLargo()) abrirAba('conversa'); toast('Aprovado! O Pix do sinal chega na conversa.'); }).catch(function () { $('aprovar').disabled = false; });
+    aprovadoAqui = Date.now(); if (estado) desenhar();
+    $('pix').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    mandar('', { tipo: 'aprovar' }).then(function () {
+      toast('Aprovado! Preparando o seu Pix…');
+      // até o Pix chegar, confere a cada 3 s (no máximo 3 min)
+      if (pixRapido) clearInterval(pixRapido);
+      var ate = Date.now() + 180000;
+      pixRapido = setInterval(function () { if (Date.now() > ate) { clearInterval(pixRapido); pixRapido = null; return; } carregar(); }, 3000);
+    }).catch(function () { aprovadoAqui = 0; $('aprovar').disabled = false; if (estado) desenhar(); });
   };
 
   // ---------- EDITOR (controlado) ----------
