@@ -27,6 +27,15 @@
     <ul class="cg-selos"><li>Esboço grátis</li><li>Pronto em minutos</li><li>Você mesmo ajusta</li></ul>
   </div>
 
+  <section id="continuar" class="cg-cartao cg-continuar" hidden aria-labelledby="continuar-t">
+    <span class="cg-continuar-selo">Seu pedido está guardado</span>
+    <h2 id="continuar-t">Você já pediu o esboço de <b id="continuar-nome">seu negócio</b></h2>
+    <p class="cg-sub">Não gostou de algo? Peça mudanças ou troque o pacote na sua página: lá você ajusta com o dedo e conversa com a gente.</p>
+    <a class="cg-btn cg-btn-prim" id="continuar-ir" href="/acompanhar/">Continuar de onde parei</a>
+    <button type="button" class="cg-link-outro" id="continuar-outro">fazer outro pedido</button>
+    <p class="cg-continuar-aviso" id="continuar-aviso" hidden>Atenção: o pedido novo <b>substitui</b> o anterior deste aparelho. O antigo é cancelado sem cobrar nada e a prévia dele sai do ar.</p>
+  </section>
+
   <form id="form" class="cg-cartao" novalidate>
     <h2>Seu negócio</h2>
     <p class="cg-sub">Leva menos de 2 minutos.</p>
@@ -41,6 +50,17 @@
         <label class="cg-chip"><input type="radio" name="tipo" value="site" checked><span>Site do negócio</span></label>
         <label class="cg-chip"><input type="radio" name="tipo" value="cardapio"><span>Cardápio digital</span></label>
       </div>
+    </div>
+    <div class="cg-campo"><span>O que o seu site precisa fazer? <i>(marque quantos quiser)</i></span>
+      <div class="cg-chips cg-precisa" role="group" aria-label="O que o site precisa fazer">
+        <label class="cg-chip"><input type="checkbox" name="precisa" value="contato"><span><b aria-hidden="true">💬</b>Mostrar o negócio e receber contato no WhatsApp</span></label>
+        <label class="cg-chip"><input type="checkbox" name="precisa" value="agendar"><span><b aria-hidden="true">📅</b>Agendar horário</span></label>
+        <label class="cg-chip"><input type="checkbox" name="precisa" value="vender"><span><b aria-hidden="true">🛒</b>Vender online (loja/carrinho)</span></label>
+        <label class="cg-chip"><input type="checkbox" name="precisa" value="catalogo"><span><b aria-hidden="true">📚</b>Catálogo ou cardápio com muitos itens</span></label>
+        <label class="cg-chip"><input type="checkbox" name="precisa" value="paginas"><span><b aria-hidden="true">🗂️</b>Várias páginas (sobre, serviços, blog)</span></label>
+        <label class="cg-chip"><input type="checkbox" name="precisa" value="login"><span><b aria-hidden="true">🔐</b>Área do cliente / login</span></label>
+      </div>
+      <small class="cg-nota">O esboço já sai com isso funcionando de demonstração, e na sua página você vê o pacote que encaixa, com o valor.</small>
     </div>
     <label class="cg-campo"><span>O que não pode faltar no site? <i>(opcional)</i></span><textarea name="quer" maxlength="1500" placeholder="Ex.: mostrar os cortes e preços, botão para agendar no WhatsApp, fotos do espaço"></textarea></label>
     <div class="cg-dupla">
