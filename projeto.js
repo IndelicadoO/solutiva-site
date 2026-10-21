@@ -39,7 +39,7 @@
     });
     $('proj-gerar').onclick = function () {
       var b = this; b.disabled = true; b.textContent = 'Pedindo o protótipo…';
-      api.mandar('', { tipo: 'prototipo' }).then(function () { api.toast('Pedido! O protótipo aparece aqui em alguns minutos.'); })
+      api.mandar('', { tipo: 'prototipo' }).then(function () { api.toast('Pedido! Nossa equipe já começou o protótipo; ele aparece aqui quando ficar pronto.'); })
         .catch(function () { b.disabled = false; b.textContent = 'Gerar protótipo'; });
     };
   }
@@ -111,7 +111,7 @@
     $('proj-arq-cont').textContent = '(' + n + ' de ' + max + ')';
     $('proj-enviar').hidden = n >= max;
     var g = $('proj-gerar');
-    if (v.gerando) { g.disabled = true; g.textContent = v.posicao > 1 ? 'Na fila para montar…' : 'Montando o protótipo…'; }
+    if (v.gerando) { g.disabled = true; g.textContent = (r.info && r.info.naFila) ? 'Na fila de produção…' : 'Em produção: montando o protótipo…'; }
     else { g.disabled = !v.podeGerar; g.textContent = v.rodada ? 'Gerar de novo (com o que você pediu)' : 'Gerar protótipo'; }
     var tot = v.rodadasTotal || 3;
     $('proj-rodadas').textContent = v.aviso ? v.aviso : v.rodada >= tot ? 'As ' + tot + ' rodadas de protótipo foram usadas. A equipe continua com você pela conversa.'
