@@ -3,6 +3,8 @@
 // "Gerar protótipo" (tipo "prototipo", até 3 rodadas). O protótipo aparece na própria prévia da página.
 // ORÇAMENTO (21/10/2026): depois que a equipe aprova, o app manda projeto.orcamento (valor, inclui, prazo, sinal/restante) e o
 // cartão mostra "Pagar sinal" (link do Mercado Pago, Pix ou cartão) ou, sem o link, a chave Pix + "Mandar o comprovante".
+// CONSTRUÇÃO e SALA DO SISTEMA (21/10/2026): projeto.sistema traz só as etapas que a equipe aprovou (texto) e, depois do sistema
+// entregue e pago, os ajustes do mês (pedidos pela conversa). Seção #sis.
 // acompanhar.js chama window.CGProjeto.desenhar(estado, { mandar, toast, abrirConversa }) a cada atualização.
 (function () {
   'use strict';
@@ -70,10 +72,29 @@
     $('orc-sem').hidden = mp || !!o.pixChave;
   }
 
+  var ESTADO_AJ = { fazendo: 'em andamento', feito: 'feito', orcamento: 'orçamento à parte', limite: 'fica para o próximo mês', equipe: 'com a equipe' };
+  function desenharSis(s) {
+    var box = $('sis'); if (!box) return;
+    box.hidden = !s;
+    if (!s) return;
+    $('sis-titulo').textContent = s.sala ? 'Sala do seu sistema' : s.concluida ? 'Seu sistema está pronto' : 'Construção do seu sistema';
+    $('sis-sub').textContent = s.sala ? 'Seu sistema foi entregue. Aqui ficam as etapas entregues e os ajustes do mês.' : s.construindo ? 'A equipe ClickGo constrói o seu sistema em etapas. Cada etapa pronta aparece aqui.' : '';
+    var ul = $('sis-entregas'); ul.innerHTML = '';
+    (s.entregas || []).forEach(function (x) { var li = el('li'); li.appendChild(el('b', 'Etapa ' + x.n + ': ')); li.appendChild(document.createTextNode(x.texto)); ul.appendChild(li); });
+    if (!(s.entregas || []).length) ul.appendChild(el('li', 'A primeira etapa aparece aqui assim que ficar pronta.'));
+    $('sis-sala').hidden = !s.sala;
+    if (!s.sala) return;
+    $('sis-conta').textContent = '(' + s.sala.usadas + ' de ' + s.sala.total + ' · renova em ' + s.sala.renovaEm + ')';
+    var pd = $('sis-pedidos'); pd.innerHTML = '';
+    (s.sala.pedidos || []).forEach(function (x) { pd.appendChild(el('li', x.texto + ' · ' + (ESTADO_AJ[x.estado] || 'com a equipe'))); });
+    if (!(s.sala.pedidos || []).length) pd.appendChild(el('li', 'Nenhum pedido ainda.'));
+  }
+
   function desenhar(r, a) {
     var i = (r && r.info) || {}, v = (r && r.projeto) || null;
     $('projeto').hidden = !i.projeto;
-    if (!i.projeto) { $('orc').hidden = true; return; }
+    if (!i.projeto) { $('orc').hidden = true; desenharSis(null); return; }
+    desenharSis(v && v.sistema || null);
     api = a; ligar();
     v = v || { etapa: 0, etapas: 5, arquivos: [], resumo: [], rodada: 0, rodadasTotal: 3, maxArquivos: 6, maxBytes: 1572864 };
     window.__cgProjMax = v.maxBytes || 1572864;
