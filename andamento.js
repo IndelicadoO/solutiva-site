@@ -138,6 +138,7 @@
   }
   function responder(txt, p, btns) {
     if (!api) return;
+    if (api.ocupado && api.ocupado()) { api.toast('Um instante: ainda estamos enviando a sua mensagem anterior.'); return; }
     respondida = p.texto;
     btns.forEach(function (b) { b.disabled = true; });
     api.mandar(txt).then(function () { api.toast('Resposta enviada! Nossa equipe segue por aqui.'); }).catch(function () { respondida = ''; assPerg = ''; btns.forEach(function (b) { b.disabled = false; }); });
