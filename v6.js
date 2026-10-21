@@ -6,7 +6,12 @@
   var temIO = 'IntersectionObserver' in window;
   var NS = 'http://www.w3.org/2000/svg';
 
-  /* ================= MAPA DOS SISTEMAS (linhas finas, só texto) ================= */
+  /* ================= MAPA DOS SISTEMAS em dois níveis (21/10) =================
+     Nível 1: o Orbit no centro conversando com cada app (pulsos de luz indo e voltando nas linhas).
+     Nível 2: o app "abre" e mostra os próprios galhos (agentes, robôs, etapas) acendendo um a um.
+     Os galhos vêm da lista ao lado (ul.galhos), que também é o texto legível sem animação.
+     Passar o mouse/focar/tocar abre; sozinho, em sequência, enquanto o mapa está na tela.
+     prefers-reduced-motion: sem pulsos e sem sequência sozinha; abrir continua funcionando, sem movimento. */
   var mapa = document.getElementById('mapa');
   var svg = mapa && mapa.querySelector('.mapa-svg');
   // posições num quadro de 520 x 420; o Orbit fica no centro
@@ -19,6 +24,7 @@
     lyra:    ['LYRA', 260, 395]
   };
   var ARESTAS = [['orbit', 'orbix'], ['orbit', 'certeza'], ['orbit', 'nexo'], ['orbit', 'clickgo'], ['orbit', 'lyra'], ['orbix', 'nexo'], ['certeza', 'clickgo']];
+  var ORDEM = ['orbix', 'certeza', 'nexo', 'clickgo', 'lyra', 'orbit'];
 
   function el(tag, at, pai) {
     var e = document.createElementNS(NS, tag);
@@ -28,34 +34,147 @@
   }
 
   if (svg) {
-    var linhas = el('g', {}, svg), nos = el('g', {}, svg);
-    ARESTAS.forEach(function (a) {
+    var itens = {};
+    document.querySelectorAll('.sis-lista > div').forEach(function (d) {
+      var k = d.getAttribute('data-no');
+      itens[k] = { div: d, galhos: Array.prototype.map.call(d.querySelectorAll('.galhos li'), function (li) { return li.textContent.trim(); }) };
+    });
+
+    /* ---- nível 1 ---- */
+    var n1 = el('g', { 'class': 'm-n1' }, svg);
+    var linhas = el('g', {}, n1), pulsos = el('g', { 'class': 'm-pulsos', 'aria-hidden': 'true' }, n1), nos = el('g', {}, n1);
+    var trilhas = [];
+    ARESTAS.forEach(function (a, i) {
       var A = NOS[a[0]], B = NOS[a[1]];
       // a linha para um pouco antes do texto
       var dx = B[1] - A[1], dy = B[2] - A[2], d = Math.sqrt(dx * dx + dy * dy), fa = (a[0] === 'orbit' ? 34 : 22) / d, fb = 22 / d;
-      el('line', { x1: (A[1] + dx * fa).toFixed(1), y1: (A[2] + dy * fa).toFixed(1), x2: (B[1] - dx * fb).toFixed(1), y2: (B[2] - dy * fb).toFixed(1), 'class': 'm-linha', 'data-a': a[0], 'data-b': a[1], pathLength: '1' }, linhas);
+      var p = [A[1] + dx * fa, A[2] + dy * fa, B[1] - dx * fb, B[2] - dy * fb];
+      el('line', { x1: p[0].toFixed(1), y1: p[1].toFixed(1), x2: p[2].toFixed(1), y2: p[3].toFixed(1), 'class': 'm-linha', 'data-a': a[0], 'data-b': a[1], pathLength: '1' }, linhas);
+      // dois pulsos por linha: um vai, outro volta (conversa)
+      trilhas.push({ p: p, a: a[0], b: a[1], ida: el('circle', { r: 3, 'class': 'm-pulso' }, pulsos), volta: el('circle', { r: 2.4, 'class': 'm-pulso volta' }, pulsos), fase: i * 0.37 });
     });
     Object.keys(NOS).forEach(function (k) {
-      var n = NOS[k], g = el('g', { 'class': 'm-no' + (k === 'orbit' ? ' centro' : ''), 'data-no': k }, nos);
+      var n = NOS[k], g = el('g', { 'class': 'm-no' + (k === 'orbit' ? ' centro' : ''), 'data-no': k, tabindex: '-1' }, nos);
       if (k === 'orbit') el('circle', { cx: n[1], cy: n[2], r: 30, 'class': 'm-aro' }, g);
+      // área de toque maior que o texto
+      el('rect', { x: n[1] - 70, y: n[2] - 24, width: 140, height: 40, 'class': 'm-toque' }, g);
       var t = el('text', { x: n[1], y: n[2] + 6, 'text-anchor': 'middle', 'class': 'm-nome' }, g);
       t.textContent = n[0];
+      g.addEventListener('click', function (e) { e.stopPropagation(); usuario(); abrir(k); });
     });
-    var foco = function (k) {
-      mapa.classList.toggle('foco', !!k);
-      svg.querySelectorAll('.m-linha').forEach(function (l) { l.classList.toggle('lig', !!k && (l.getAttribute('data-a') === k || l.getAttribute('data-b') === k)); });
-      svg.querySelectorAll('.m-no').forEach(function (n) { n.classList.toggle('ativo', n.getAttribute('data-no') === k); });
-    };
-    document.querySelectorAll('.sis-lista > div').forEach(function (d) {
-      d.addEventListener('pointerenter', function () { foco(d.getAttribute('data-no')); });
-      d.addEventListener('pointerleave', function () { foco(null); });
-    });
-    // as linhas se desenham uma vez quando o mapa aparece
-    if (!reduz && temIO) {
-      mapa.classList.add('desenha');
-      var mo = new IntersectionObserver(function (e) { if (e[0].isIntersecting) { mapa.classList.add('visto'); mo.disconnect(); } }, { threshold: .3 });
-      mo.observe(mapa);
+
+    /* ---- nível 2: o app no meio da esquerda, galhos em leque à direita ---- */
+    var n2 = el('g', { 'class': 'm-n2', 'aria-hidden': 'true' }, svg);
+    var ramos = [];
+    var aberto = null, t0 = 0, abertoEm = 0;
+    function montarGalhos(k) {
+      while (n2.firstChild) n2.removeChild(n2.firstChild);
+      ramos = [];
+      var gs = (itens[k] && itens[k].galhos) || [];
+      var cx = 96, cy = 222, x1 = 262;
+      var topo = 42, base = 404, passo = gs.length > 1 ? Math.min(52, (base - topo) / (gs.length - 1)) : 0;
+      var y0 = cy - (passo * (gs.length - 1)) / 2;
+      // o Orbit em cima, ligado ao app (menos quando o aberto é o próprio Orbit)
+      if (k !== 'orbit') {
+        el('path', { d: 'M' + cx + ' 70 L' + cx + ' ' + (cy - 30), 'class': 'm-ramo base' }, n2);
+        var o = el('text', { x: cx, y: 58, 'text-anchor': 'middle', 'class': 'm-orbit-mini' }, n2);
+        o.textContent = 'Orbit';
+      }
+      el('circle', { cx: cx, cy: cy, r: 34, 'class': 'm-aro' }, n2);
+      var nome = el('text', { x: cx, y: cy + 6, 'text-anchor': 'middle', 'class': 'm-nome m-nome-2' }, n2);
+      var partes = NOS[k][0].split(' ');
+      if (partes.length > 1) {
+        // nome comprido em duas linhas dentro do aro
+        nome.setAttribute('font-size', '14'); nome.setAttribute('y', cy - 3);
+        partes.forEach(function (p, i) { var ts = el('tspan', { x: cx, dy: i ? '16' : '0' }, nome); ts.textContent = p; });
+      } else nome.textContent = NOS[k][0];
+      gs.forEach(function (txt, i) {
+        var y = y0 + i * passo, xa = cx + 36, mx = (xa + x1) / 2;
+        var d = 'M' + xa + ' ' + cy + ' C' + mx + ' ' + cy + ' ' + mx + ' ' + y + ' ' + (x1 - 8) + ' ' + y;
+        var linha = el('path', { d: d, 'class': 'm-ramo', pathLength: '1' }, n2);
+        var ponto = el('circle', { cx: x1, cy: y, r: 5, 'class': 'm-ponto' }, n2);
+        var rot = el('text', { x: x1 + 14, y: y + 6, 'class': 'm-galho' }, n2);
+        rot.textContent = txt;
+        ramos.push({ linha: linha, ponto: ponto, rot: rot, pulso: el('circle', { r: 2.6, 'class': 'm-pulso' }, n2), comp: linha.getTotalLength ? linha : null });
+      });
     }
+    function abrir(k) {
+      if (!k || !itens[k] && k !== 'orbit') { fechar(); return; }
+      if (aberto === k) return;
+      aberto = k;
+      montarGalhos(k);
+      t0 = agora(); abertoEm = t0;
+      mapa.classList.add('nivel2');
+      Object.keys(itens).forEach(function (j) { itens[j].div.classList.toggle('ativo', j === k); });
+      if (reduz) ramos.forEach(function (r) { r.linha.style.strokeDashoffset = '0'; r.ponto.classList.add('aceso'); r.rot.classList.add('aceso'); });
+      ligar();
+    }
+    function fechar() {
+      aberto = null;
+      mapa.classList.remove('nivel2');
+      Object.keys(itens).forEach(function (j) { itens[j].div.classList.remove('ativo'); });
+    }
+    svg.addEventListener('click', function () { usuario(); fechar(); });
+
+    /* ---- quem manda: a pessoa (mouse, foco, toque) ou a sequência sozinha ---- */
+    var ultimoUso = -1e9;
+    function usuario() { ultimoUso = agora(); }
+    Object.keys(itens).forEach(function (k) {
+      var d = itens[k].div;
+      d.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { usuario(); abrir(k); } });
+      d.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') { usuario(); fechar(); } });
+      d.addEventListener('focus', function () { usuario(); abrir(k); });
+      d.addEventListener('click', function () { usuario(); if (aberto === k && agora() - abertoEm > 0.35) fechar(); else abrir(k); });
+    });
+
+    /* ---- animação (só com o mapa na tela e a aba visível) ---- */
+    function agora() { return (window.performance && performance.now ? performance.now() : Date.now()) / 1000; }
+    var visivel = !temIO, rodando = false, seq = { i: -1, ate: 0 };
+    function ligar() { if (!rodando && !reduz && visivel && !document.hidden) { rodando = true; requestAnimationFrame(quadro); } }
+    function ponto(p, u) { return [p[0] + (p[2] - p[0]) * u, p[1] + (p[3] - p[1]) * u]; }
+    function quadro() {
+      if (!visivel || document.hidden || reduz) { rodando = false; return; }
+      var t = agora();
+      // sequência sozinha: nível 1 (2,5 s) → um app aberto (5 s) → nível 1 → o próximo...
+      if (t - ultimoUso > 10 && t > seq.ate) {
+        if (aberto) { fechar(); seq.ate = t + 2.5; }
+        else { seq.i = (seq.i + 1) % ORDEM.length; abrir(ORDEM[seq.i]); seq.ate = t + 5.2; }
+      }
+      // pulsos do nível 1
+      trilhas.forEach(function (r) {
+        var u = ((t * 0.45 + r.fase) % 1 + 1) % 1, v = ((t * 0.45 + r.fase + 0.5) % 1 + 1) % 1;
+        var a = ponto(r.p, u), b = ponto(r.p, 1 - v);
+        r.ida.setAttribute('cx', a[0].toFixed(1)); r.ida.setAttribute('cy', a[1].toFixed(1));
+        r.volta.setAttribute('cx', b[0].toFixed(1)); r.volta.setAttribute('cy', b[1].toFixed(1));
+        var op = (Math.sin(u * Math.PI)).toFixed(2), op2 = (Math.sin(v * Math.PI)).toFixed(2);
+        r.ida.setAttribute('opacity', op); r.volta.setAttribute('opacity', op2);
+      });
+      // galhos do nível 2 acendendo um a um, depois um pulso correndo em cada galho aceso
+      if (aberto) {
+        var dt = t - t0;
+        ramos.forEach(function (r, i) {
+          var p = Math.max(0, Math.min(1, (dt - 0.15 - i * 0.28) / 0.45));
+          r.linha.style.strokeDashoffset = String(1 - p);
+          r.ponto.classList.toggle('aceso', p >= 1);
+          r.rot.classList.toggle('aceso', p >= 1);
+          if (p >= 1 && r.comp) {
+            var L = r.linha.getTotalLength(), u = ((dt * 0.6 + i * 0.21) % 1);
+            var q = r.linha.getPointAtLength(L * u);
+            r.pulso.setAttribute('cx', q.x.toFixed(1)); r.pulso.setAttribute('cy', q.y.toFixed(1));
+            r.pulso.setAttribute('opacity', Math.sin(u * Math.PI).toFixed(2));
+          } else r.pulso.setAttribute('opacity', '0');
+        });
+      }
+      requestAnimationFrame(quadro);
+    }
+    if (temIO) {
+      var vio = new IntersectionObserver(function (e) { visivel = e[0].isIntersecting; if (visivel) { mapa.classList.add('visto'); ligar(); } }, { threshold: .25 });
+      vio.observe(mapa);
+    }
+    document.addEventListener('visibilitychange', ligar);
+    // as linhas se desenham uma vez quando o mapa aparece
+    if (!reduz && temIO) mapa.classList.add('desenha');
+    if (reduz) mapa.classList.add('parado');
   }
 
   /* ================= FITA DE VÍDEOS (03) ================= */
