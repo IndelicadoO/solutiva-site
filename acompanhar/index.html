@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Onest:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/cg-form.css?v=and2">
+<link rel="stylesheet" href="/cg-form.css?v=ag1">
 </head>
 <body>
 <header class="cg-topo">
@@ -35,7 +35,7 @@
       <div class="cg-status" id="status"><div class="cg-giro" id="giro"></div><div><b id="status-t">Pedido recebido</b><span id="status-s">Nossa equipe está preparando o seu esboço.</span></div></div>
       <div class="cg-obra-slot" id="obra-slot" hidden></div>
       <div class="cg-pergunta" id="pergunta" aria-live="polite" hidden></div>
-      <a class="cg-agenda" id="agenda" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>Agendar uma conversa por vídeo</a>
+      <section class="cg-agenda-box" id="agenda" aria-label="Agendar uma conversa" aria-live="polite" hidden></section>
       <button type="button" class="cg-aviso-pag" id="aviso-pag" hidden><b id="aviso-pag-t"></b><span id="aviso-pag-s"></span></button>
       <details class="cg-como" id="como" hidden>
         <summary>Como funciona: prévia grátis → sinal → site final</summary>
@@ -227,8 +227,9 @@
 <button type="button" class="cg-nova-msg" id="nova-msg" hidden>Nova mensagem · ver</button>
 <div class="cg-toast" id="toast" role="status" hidden></div>
 <script src="/cg-comum.js"></script>
-<script src="/andamento.js?v=and2"></script>
-<script src="/acompanhar.js?v=and2"></script>
+<script src="/agenda.js?v=ag1"></script>
+<script src="/andamento.js?v=ag1"></script>
+<script src="/acompanhar.js?v=ag1"></script>
 <script src="/sala.js"></script>
 <script src="/projeto.js?v=and2"></script>
 </body>
