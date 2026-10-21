@@ -115,3 +115,6 @@ html:not(.js-reel) .reel { overflow-x: auto; -webkit-mask-image: none; mask-imag
 @media (prefers-reduced-motion: reduce) {
   .js-reel .reel-faixa { animation: none !important; }
 }
+
+/* atributo hidden vence o display das cenas/links (21/10/2026: cena do robô de WhatsApp escondida) */
+[hidden] { display: none !important; }
