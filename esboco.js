@@ -1,95 +1,575 @@
-/* ClickGo: formulário do esboço grátis -> fila pública -> página de acompanhamento só do cliente (#id.chave) */
+/* ClickGo: formulário do esboço v2 (passo a passo + prévia ao vivo) -> fila pública (/api/clickgo/pedido) -> página só do
+   cliente (/acompanhar/#id.chave). Contrato da API igual ao v1: negocio, ramo, cidade, tipo, quer, servicos, cores, whatsapp,
+   email, instagram, site_url (isca), t0, aceite, fotos (até 3, CG.comprimir), precisa (lista fechada), substitui {id,k}. */
 (function () {
-  var form = document.getElementById('form');
+  'use strict';
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var form = $('#form');
   var t0 = Date.now();
-  var fotos = [];
-  var caixa = document.getElementById('fotos'), add = document.getElementById('foto-add'), input = document.getElementById('foto-input');
-  var erro = document.getElementById('erro'), botao = document.getElementById('enviar');
   var api = new URLSearchParams(location.search).get('api');
+  var menosMov = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fotos = [];
+  var passos = $$('.ps', form);
+  var ordem = passos.map(function (p) { return p.getAttribute('data-p'); });
+  var atual = 0, daRevisao = false, waOficial = false, enviando = false;
+  var erro = $('#erro'), botao = $('#enviar'), botaoTxt = $('#enviar-txt'), voltar = $('#voltar');
+  var RASCUNHO = 'cg_rascunho';
+  var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { /* cheio ou bloqueado */ } }, del: function (k) { try { localStorage.removeItem(k); } catch (e) { /* bloqueado */ } } };
 
-  // já pediu neste aparelho: cartão grande no topo "Continuar de onde parei" (sem redirecionar sozinho). "Fazer outro pedido"
-  // mostra o formulário; o pedido novo SUBSTITUI o antigo (id + chave do antigo vão junto; a fila confere a chave).
-  var antigo = null;
+  /* ---------- ícones (traço 24x24) ---------- */
+  var IC = {
+    tesoura: 'M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12',
+    dente: 'M12 5.5C10 4 7 3.5 5.5 5S4 10 5.5 13c.8 1.6 1 4 1.5 6 .3 1.3 1.8 1.3 2.2 0l1-3.5c.4-1.2 3.2-1.2 3.6 0l1 3.5c.4 1.3 1.9 1.3 2.2 0 .5-2 .7-4.4 1.5-6C20 10 20 6.5 18.5 5S14 4 12 5.5z',
+    cruz: 'M9 3h6v6h6v6h-6v6H9v-6H3V9h6z',
+    garfo: 'M7 3v8M4 3v5a3 3 0 0 0 6 0V3M7 11v10M17 21V3c-2.5 1.5-4 4.5-4 8h4',
+    cafe: 'M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 9h1.5a2.5 2.5 0 0 1 0 5H17M8 2v3M12 2v3',
+    pizza: 'M12 3 3 20c6 2 12 2 18 0zM9 12h.01M14 15h.01M12 8.5 9 14',
+    haltere: 'M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11',
+    pata: 'M12 20c-3 0-5-1.5-5-3.5S9.5 12 12 12s5 2.5 5 4.5-2 3.5-5 3.5zM6 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM9.5 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM14.5 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+    balanca: 'M12 3v18M7 21h10M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z',
+    grafico: 'M3 3v18h18M7 15l4-4 3 3 5-6',
+    chave: 'M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z',
+    casa: 'M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6',
+    brilho: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z',
+    sacola: 'M6 7h12l1 14H5zM9 7V6a3 3 0 0 1 6 0v1',
+    livro: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7',
+    predio: 'M4 21V4h10v17M14 9h6v12M8 8h2M8 12h2M8 16h2M17 13h1M17 17h1M3 21h18',
+    loja: 'M3 9l1.5-5h15L21 9M3 9v1a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0V9M5 12v8h14v-8M10 20v-5h4v5'
+  };
+  var REGRAS = [
+    [/barb|cabel|sal[aã]o/i, 'tesoura'], [/odont|dent/i, 'dente'], [/cl[ií]nic|m[eé]dic|sa[uú]de|fisio|psic|nutri|hospital|farm/i, 'cruz'],
+    [/pizz/i, 'pizza'], [/caf[eé]|padar|doce|confeit|bolo|sorvet|a[cç]a[ií]/i, 'cafe'], [/restaur|lanch|hamb|comida|marmit|food|bar\b|churras|sushi|espeto/i, 'garfo'],
+    [/academ|crossfit|pilates|yoga|fit|esporte/i, 'haltere'], [/pet|vet|banho e tosa/i, 'pata'], [/advoc|jur[ií]d|direito/i, 'balanca'],
+    [/contab|financ|consult/i, 'grafico'], [/oficin|mec[aâ]n|auto|carro|moto|borrach/i, 'chave'], [/imobili|im[oó]v|constru|arquitet|reforma/i, 'casa'],
+    [/est[eé]tic|beleza|unha|manicure|maqui|spa|sobrancelha|depil/i, 'brilho'], [/loja|roupa|moda|boutique|cal[cç]ad|presente|joia/i, 'sacola'],
+    [/escola|curso|aula|ingl[eê]s|idioma|professor/i, 'livro'], [/escrit|empresa|ind[uú]stria|log[ií]stic/i, 'predio']
+  ];
+  function iconeDe(ramo) { for (var i = 0; i < REGRAS.length; i++) if (REGRAS[i][0].test(ramo || '')) return REGRAS[i][1]; return 'loja'; }
+  function svgIc(nome) { return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + IC[nome] + '"/></svg>'; }
+
+  var RAMOS = {
+    site: ['Barbearia', 'Salão de beleza', 'Clínica', 'Odontologia', 'Estética', 'Academia', 'Pet shop', 'Advocacia', 'Contabilidade', 'Oficina', 'Imobiliária', 'Loja de roupas'],
+    cardapio: ['Restaurante', 'Lanchonete', 'Pizzaria', 'Hamburgueria', 'Açaí', 'Cafeteria', 'Doceria', 'Marmitaria'],
+    sistema: ['Clínica', 'Escritório', 'Contabilidade', 'Advocacia', 'Escola', 'Loja', 'Imobiliária', 'Indústria']
+  };
+  RAMOS.automacao = RAMOS.sistema;
+  var EXEMPLOS = {
+    automacao: ['Quando chegar um pedido, avisar o cliente no WhatsApp e anotar numa planilha', 'Lembrete automático do horário marcado', 'Cobrança e recibo enviados sozinhos'],
+    sistema: ['Ler meus contratos em PDF e responder dúvidas da equipe', 'Controle de clientes e agenda da equipe', 'Área para o cliente acompanhar o pedido']
+  };
+  var PALETAS = [
+    ['Azul e noite', '#3fd2ff', '#0a1426'], ['Preto e dourado', '#d4af37', '#111111'], ['Vinho e creme', '#9b1d3a', '#f5e6d3'], ['Verde e floresta', '#2fbf71', '#0f2a1d'],
+    ['Rosa e ameixa', '#ff6fa5', '#2a0f1e'], ['Laranja e café', '#ff7a1a', '#1c130b'], ['Lilás e noite', '#9b8cff', '#140f2a'], ['Vermelho e branco', '#e63946', '#ffffff']
+  ];
+  var NOMES_COR = { preto: '#111111', branco: '#ffffff', dourado: '#d4af37', ouro: '#d4af37', prata: '#c0c7d0', cinza: '#7a8594', azul: '#2f6fed', marinho: '#13294b', ciano: '#3fd2ff', turquesa: '#22c3b8', verde: '#2fbf71', 'verde-escuro': '#14532d', vermelho: '#e63946', vinho: '#7b1e3a', bordo: '#7b1e3a', rosa: '#ff6fa5', pink: '#ff4f9a', roxo: '#7c4dff', lilas: '#b39ddb', 'lilás': '#b39ddb', laranja: '#ff7a1a', amarelo: '#ffc928', marrom: '#7a4a2a', bege: '#e8d8bf', creme: '#f5e6d3', nude: '#e3c4a8' };
+  var CARDAPIO = { whats: ['contato', 'Pedido no WhatsApp'], entrega: ['vender', 'Entrega com taxa por bairro'], qr: ['', 'QR Code na mesa'], muitos: ['catalogo', 'Muitos itens (mais de 30)'] };
+  var ROT_PRECISA = { contato: 'Contato no WhatsApp', agendar: 'Agendar horário', vender: 'Vender online', catalogo: 'Catálogo com muitos itens', paginas: 'Várias páginas', login: 'Área do cliente' };
+
+  /* ---------- leitura do formulário ---------- */
+  function val(nome) { var el = form.elements[nome]; if (!el) return ''; if (el.length !== undefined && !el.tagName) { var r = $$('[name="' + nome + '"]:checked', form)[0]; return r ? r.value : ''; } return String(el.value || '').trim(); }
+  function marcados(nome) { return $$('[name="' + nome + '"]:checked', form).map(function (i) { return i.value; }); }
+  function oque() { return val('oque'); }
+  function projeto() { var t = oque(); return t === 'sistema' || t === 'automacao'; }
+
+  /* ---------- fundo vivo: malha de pontos (pausa com a aba oculta e com menos movimento) ---------- */
+  (function fundo() {
+    var cv = $('#fundo'); if (!cv || !cv.getContext) return;
+    var cx = cv.getContext('2d'), pts = [], w = 0, h = 0, dpr = 1, raf = 0, mx = -999, my = -999;
+    function medir() {
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5); w = innerWidth; h = innerHeight;
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var n = Math.max(26, Math.min(70, Math.round(w * h / 19000)));
+      pts = []; for (var i = 0; i < n; i++) pts.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22, r: Math.random() * 1.4 + .5 });
+    }
+    function quadro() {
+      cx.clearRect(0, 0, w, h);
+      var lim = 128 * 128;
+      for (var i = 0; i < pts.length; i++) {
+        var p = pts[i];
+        if (!menosMov) { p.x += p.vx; p.y += p.vy; if (p.x < -20) p.x = w + 20; else if (p.x > w + 20) p.x = -20; if (p.y < -20) p.y = h + 20; else if (p.y > h + 20) p.y = -20; }
+        var dxm = p.x - mx, dym = p.y - my, dm = dxm * dxm + dym * dym;
+        if (dm < 22000 && !menosMov) { p.x += dxm * .004; p.y += dym * .004; }
+        for (var j = i + 1; j < pts.length; j++) {
+          var q = pts[j], dx = p.x - q.x, dy = p.y - q.y, d = dx * dx + dy * dy;
+          if (d < lim) { cx.strokeStyle = 'rgba(110,200,255,' + (0.13 * (1 - d / lim)).toFixed(3) + ')'; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(q.x, q.y); cx.stroke(); }
+        }
+        cx.fillStyle = 'rgba(166,230,255,.55)'; cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 6.283); cx.fill();
+      }
+      if (!menosMov) raf = requestAnimationFrame(quadro);
+    }
+    function ligar() { cancelAnimationFrame(raf); if (!document.hidden) raf = requestAnimationFrame(quadro); }
+    medir(); ligar();
+    var tm; addEventListener('resize', function () { clearTimeout(tm); tm = setTimeout(function () { medir(); if (menosMov) quadro(); }, 150); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) cancelAnimationFrame(raf); else ligar(); });
+    addEventListener('pointermove', function (e) { mx = e.clientX; my = e.clientY; }, { passive: true });
+  })();
+
+  /* ---------- mascote ---------- */
+  var roboPs = $('#robo-ps');
+  function robo(classe, el) {
+    el = el || roboPs; if (!el) return;
+    el.classList.remove('r-acena', 'r-ok', 'r-nao', 'r-festa');
+    void el.getBoundingClientRect();
+    el.classList.add(classe);
+  }
+
+  /* ---------- prévia ao vivo ---------- */
+  var tel = $('#tel'), tela = $('#tela'), ms = $('#ms'), sx = $('#sx'), au = $('#au');
+  var prevAbre = $('#prev-abre'), prevBox = $('#prev');
+  var visiveis = {};
+  function corDe(txt) {
+    var hex = String(txt || '').match(/#[0-9a-f]{6}\b/ig);
+    if (hex && hex.length) return [hex[0], hex[1] || null];
+    var achadas = [], t = String(txt || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    Object.keys(NOMES_COR).forEach(function (n) { var nn = n.normalize('NFD').replace(/[̀-ͯ]/g, ''); var i = t.search(new RegExp('\\b' + nn + '\\b')); if (i >= 0) achadas.push([i, NOMES_COR[n]]); });
+    achadas.sort(function (a, b) { return a[0] - b[0]; });
+    return achadas.length ? [achadas[0][1], achadas[1] ? achadas[1][1] : null] : [null, null];
+  }
+  function luz(hex) { var n = parseInt(hex.slice(1), 16); return (0.299 * (n >> 16) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255; }
+  function misturar(hex, fator) { var n = parseInt(hex.slice(1), 16); var r = Math.round((n >> 16) * fator), g = Math.round((n >> 8 & 255) * fator), b = Math.round((n & 255) * fator); return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
+  function itensDe(txt) {
+    return String(txt || '').split(/[,;\n]+/).map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 4).map(function (s) {
+      var m = s.match(/^(.*?)(?:[:\-–]\s*)?(R\$\s*[\d.,]+|\d+[.,]?\d*\s*(?:reais)?)\s*$/i);
+      return m && m[1].trim() ? [m[1].trim(), /R\$/i.test(m[2]) ? m[2].replace(/\s+/, ' ') : 'R$ ' + m[2].replace(/\s*reais/i, '')] : [s, ''];
+    });
+  }
+  function mostrar(bloco, on) {
+    var els = $$('[data-b="' + bloco + '"]', tela);
+    var era = !!visiveis[bloco]; visiveis[bloco] = !!on;
+    els.forEach(function (el) { el.classList.toggle('on', !!on); });
+    if (on && !era) {
+      var el = els[0];
+      if (el && el.offsetTop && !el.classList.contains('ms-zap')) setTimeout(function () { ms.scrollTop = Math.max(0, el.offsetTop - 60); }, 60);
+      avisarPrevia();
+    }
+  }
+  var ultimoAviso = 0;
+  function avisarPrevia() {
+    if (Date.now() - ultimoAviso < 600) return; ultimoAviso = Date.now();
+    tel.classList.remove('pisca'); void tel.offsetWidth; tel.classList.add('pisca');
+    if (prevAbre) { prevAbre.classList.remove('novo'); void prevAbre.offsetWidth; prevAbre.classList.add('novo'); }
+  }
+  var iconeAtual = '';
+  function atualizarPrevia() {
+    var tipo = oque() || 'site', nome = val('negocio'), ramo = val('ramo'), cidade = val('cidade');
+    // cores
+    var c = corDe(val('cores')), p = c[0] || '#3fd2ff', s = c[1] || (luz(p) > .6 ? '#0f1726' : '#0a1426');
+    if (c[1] && luz(c[1]) > .75 && luz(p) > .75) s = '#0f1726';
+    tel.style.setProperty('--p', p); tel.style.setProperty('--s', s); tel.style.setProperty('--pt', luz(p) > .55 ? '#0b1220' : '#ffffff');
+    document.documentElement.style.setProperty('--p', p);
+    ms.classList.toggle('claro', luz(s) > .6);
+    // ícone do ramo
+    var ic = iconeDe(ramo + ' ' + nome);
+    if (ic !== iconeAtual) { iconeAtual = ic; $('#ms-logo').innerHTML = svgIc(ic); $('#sx-logo').innerHTML = svgIc(ic); $('#au-logo').innerHTML = svgIc(ic); }
+    // sistema / automação x site/cardápio
+    sx.hidden = tipo !== 'sistema'; au.hidden = tipo !== 'automacao'; ms.hidden = projeto();
+    $('#sx-nome').textContent = nome ? 'Sistema ' + nome : 'Seu sistema';
+    var faz = val('sis_faz'), curto = function (t, n) { return t.length > n ? t.slice(0, n - 2) + '…' : t; };
+    $('#sx-pergunta').textContent = faz ? curto(faz, 60) : 'Qual o prazo deste contrato?';
+    $('#au-nome').textContent = nome || 'Sua automação';
+    $('#au-gatilho').textContent = faz ? curto(faz.replace(/^quando\s+/i, ''), 70) : 'chega um pedido';
+    var env = marcados('sis_env'), demo = !env.length;
+    $$('.au-no[data-env]', au).forEach(function (n) {
+      var k = n.getAttribute('data-env'), on = demo ? (k === 'WhatsApp' || k === 'planilha') : env.indexOf(k) >= 0;
+      if (on && !n.classList.contains('on')) avisarPrevia();
+      n.classList.toggle('on', on); n.classList.toggle('demo', demo);
+    });
+    if (projeto()) return;
+    var nm = $('#ms-nome'), tt = $('#ms-tit');
+    nm.textContent = nome || 'Seu negócio'; tt.textContent = nome || 'Seu negócio';
+    nm.classList.toggle('vazio', !nome); tt.classList.toggle('vazio', !nome);
+    $('#ms-ramo').textContent = [ramo || (tipo === 'cardapio' ? 'Cardápio' : 'Seu ramo'), cidade].filter(Boolean).join(' · ');
+    var precisa = tipo === 'cardapio' ? [] : marcados('precisa'), cpx = tipo === 'cardapio' ? marcados('cpx') : [];
+    $('#ms-cta').textContent = tipo === 'cardapio' ? (cpx.indexOf('whats') >= 0 ? 'Pedir no WhatsApp' : 'Ver cardápio') : precisa.indexOf('agendar') >= 0 ? 'Agendar agora' : precisa.indexOf('vender') >= 0 ? 'Ver a loja' : 'Chamar no WhatsApp';
+    // lista de serviços / itens
+    var itens = itensDe(val('servicos'));
+    if (!itens.length && tipo === 'cardapio') itens = [['Prato da casa', 'R$ --'], ['Bebidas', 'R$ --'], ['Sobremesa', 'R$ --']];
+    $('#ms-lista-t').textContent = tipo === 'cardapio' ? 'Cardápio' : 'Serviços';
+    var ul = $('#ms-lista'), html = itens.map(function (it) { return '<li><span></span><b></b></li>'; }).join('');
+    if (ul.getAttribute('data-n') !== JSON.stringify(itens)) {
+      ul.innerHTML = html; $$('li', ul).forEach(function (li, i) { li.firstChild.textContent = itens[i][0]; li.lastChild.textContent = itens[i][1]; li.style.animationDelay = (i * 60) + 'ms'; });
+      ul.setAttribute('data-n', JSON.stringify(itens));
+    }
+    $('#ms-loja-t').textContent = tipo === 'cardapio' ? 'Peça agora' : 'Loja';
+    mostrar('paginas', precisa.indexOf('paginas') >= 0);
+    mostrar('agendar', precisa.indexOf('agendar') >= 0);
+    mostrar('lista', itens.length > 0);
+    mostrar('vender', precisa.indexOf('vender') >= 0);
+    mostrar('entrega', cpx.indexOf('entrega') >= 0);
+    mostrar('catalogo', precisa.indexOf('catalogo') >= 0 || cpx.indexOf('muitos') >= 0);
+    mostrar('qr', cpx.indexOf('qr') >= 0);
+    mostrar('login', precisa.indexOf('login') >= 0);
+    mostrar('contato', precisa.indexOf('contato') >= 0 || cpx.indexOf('whats') >= 0);
+    mostrar('cidade', !!cidade);
+    $('#ms-cidade').textContent = cidade; $('#ms-insta').textContent = val('instagram');
+    // fotos: a 1ª vira o fundo do topo, as outras vão na galeria
+    var hero = $('#ms-hero');
+    if (fotos[0]) { hero.style.backgroundImage = 'url("' + fotos[0] + '")'; hero.classList.add('foto'); } else { hero.style.backgroundImage = ''; hero.classList.remove('foto'); }
+    var gal = $('#ms-gal'), chave = fotos.length + ':' + fotos.map(function (f) { return f.length; }).join(',');
+    if (gal.getAttribute('data-n') !== chave) { gal.innerHTML = ''; fotos.forEach(function (f) { var im = document.createElement('img'); im.alt = ''; im.src = f; gal.appendChild(im); }); gal.setAttribute('data-n', chave); }
+    mostrar('fotos', fotos.length > 1);
+  }
+  var agPrev = 0;
+  function previaJa() { cancelAnimationFrame(agPrev); agPrev = requestAnimationFrame(atualizarPrevia); }
+  // prévia no celular
+  function abrirPrev(sim) {
+    prevBox.classList.toggle('aberta', sim); document.body.classList.toggle('prev-on', sim);
+    prevAbre.setAttribute('aria-expanded', String(sim));
+    if (sim) $('#prev-fechar').focus(); else prevAbre.focus();
+  }
+  prevAbre.addEventListener('click', function () { abrirPrev(true); });
+  $('#prev-fechar').addEventListener('click', function () { abrirPrev(false); });
+  document.addEventListener('click', function (e) { if (document.body.classList.contains('prev-on') && !prevBox.contains(e.target) && e.target !== prevAbre && !prevAbre.contains(e.target)) abrirPrev(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.body.classList.contains('prev-on')) abrirPrev(false); });
+
+  /* ---------- montagem dinâmica dos passos ---------- */
+  var sug = $('#ramos'), ramoIn = $('#ramo');
+  function desenharRamos() {
+    var lista = RAMOS[oque() || 'site'];
+    sug.innerHTML = '';
+    lista.forEach(function (r) {
+      var b = document.createElement('button'); b.type = 'button'; b.innerHTML = svgIc(iconeDe(r)) + '<span></span>'; b.lastChild.textContent = r;
+      b.setAttribute('aria-pressed', String(ramoIn.value.trim().toLowerCase() === r.toLowerCase()));
+      b.addEventListener('click', function () { ramoIn.value = r; marcarRamo(); salvar(); previaJa(); robo('r-ok'); ramoIn.focus(); });
+      sug.appendChild(b);
+    });
+  }
+  function marcarExs() { var v = form.elements.sis_faz.value; $$('#exs button').forEach(function (b) { b.setAttribute('aria-pressed', String(v.indexOf(b.textContent) >= 0)); }); }
+  form.elements.sis_faz.addEventListener('input', function () { marcarExs(); });
+  function marcarRamo() { $$('button', sug).forEach(function (b) { b.setAttribute('aria-pressed', String(b.textContent.toLowerCase() === ramoIn.value.trim().toLowerCase())); }); }
+  ramoIn.addEventListener('input', marcarRamo);
+
+  function ajustarTipo() {
+    var t = oque() || 'site';
+    var pj = t === 'sistema' || t === 'automacao';
+    $$('[data-para]', form).forEach(function (el) { el.hidden = el.getAttribute('data-para').split(' ').indexOf(t) < 0; });
+    $('#t-precisa').textContent = t === 'cardapio' ? 'O que o cardápio precisa ter?' : t === 'sistema' ? 'Conta um pouco do sistema' : t === 'automacao' ? 'O que você quer automatizar?' : 'O que o site precisa fazer?';
+    $('#d-precisa').textContent = pj ? 'Com as suas palavras. Pode tocar num exemplo.' : 'Marque quantos quiser.';
+    $('#r-sisfaz').textContent = t === 'automacao' ? 'O que deve acontecer sozinho?' : 'O que o sistema precisa fazer?';
+    var exs = $('#exs'); exs.innerHTML = '';
+    (EXEMPLOS[t] || []).forEach(function (tx) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = tx; b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () { var ta = form.elements.sis_faz, atual = ta.value.trim(); ta.value = atual && atual.indexOf(tx) < 0 ? (atual + '. ' + tx).slice(0, 600) : tx; marcarExs(); salvar(); previaJa(); atualizarBotao(); robo('r-ok'); });
+      exs.appendChild(b);
+    });
+    marcarExs();
+    $('#r-quer').textContent = t === 'cardapio' ? 'Algo especial no cardápio?' : pj ? 'Mais alguma coisa que a gente precisa saber?' : 'O que não pode faltar?';
+    form.elements.quer.placeholder = t === 'cardapio' ? 'Combos, horário de funcionamento, foto dos pratos' : pj ? 'O que mais atrapalha hoje, que programas você já usa' : 'Fotos do espaço, botão para agendar';
+    $('#cp-servicos').hidden = pj;
+    $('#r-servicos').textContent = t === 'cardapio' ? 'Alguns itens e preços' : 'Serviços e preços';
+    form.elements.servicos.placeholder = t === 'cardapio' ? 'X-burger R$ 25, batata R$ 15' : 'Corte R$ 40, barba R$ 30';
+    $('#t-fotos').textContent = pj ? 'Tem prints ou fotos?' : 'Tem fotos?';
+    desenharRamos();
+  }
+
+  // paletas
+  var paletasBox = $('#paletas'), coresIn = $('#cores'), cor1 = $('#cor1'), cor2 = $('#cor2');
+  PALETAS.forEach(function (pl) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'paleta'; b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', pl[0]); b.title = pl[0];
+    b.innerHTML = '<i></i>'; b.firstChild.style.setProperty('--a', pl[1]); b.firstChild.style.setProperty('--b', pl[2]);
+    b.addEventListener('click', function () { coresIn.value = pl[0] + ' (' + pl[1] + ', ' + pl[2] + ')'; cor1.value = pl[1]; cor2.value = pl[2]; marcarPaleta(); salvar(); previaJa(); robo('r-ok'); });
+    paletasBox.appendChild(b);
+  });
+  function marcarPaleta() { var v = coresIn.value; $$('.paleta', paletasBox).forEach(function (b, i) { b.setAttribute('aria-pressed', String(v.indexOf(PALETAS[i][1]) >= 0 && v.indexOf(PALETAS[i][2]) >= 0)); }); }
+  function corLivre() { coresIn.value = ('Cores ' + cor1.value + ' e ' + cor2.value).slice(0, 120); marcarPaleta(); salvar(); previaJa(); }
+  cor1.addEventListener('input', corLivre); cor2.addEventListener('input', corLivre);
+  coresIn.addEventListener('input', marcarPaleta);
+
+  /* ---------- fotos: arrastar/soltar, até 3 ---------- */
+  var drop = $('#drop'), fInput = $('#foto-input'), caixa = $('#fotos'), cont = $('#foto-cont');
+  function desenharFotos() {
+    caixa.innerHTML = '';
+    fotos.forEach(function (url, i) {
+      var d = document.createElement('div'); d.className = 'mi';
+      d.innerHTML = '<img alt=""><button type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>';
+      d.firstChild.src = url; d.firstChild.alt = 'Foto ' + (i + 1);
+      d.lastChild.setAttribute('aria-label', 'Tirar a foto ' + (i + 1));
+      d.lastChild.addEventListener('click', function () { fotos.splice(i, 1); desenharFotos(); previaJa(); });
+      caixa.appendChild(d);
+    });
+    if (fotos.length && fotos.length < 3) { var a = document.createElement('button'); a.type = 'button'; a.className = 'mi-add'; a.setAttribute('aria-label', 'Adicionar mais fotos'); a.textContent = '+'; a.addEventListener('click', function () { fInput.click(); }); caixa.appendChild(a); }
+    drop.classList.toggle('cheio', fotos.length > 0);
+    cont.textContent = fotos.length + ' de 3';
+    atualizarBotao();
+  }
+  function receber(lista) {
+    lista = Array.prototype.slice.call(lista || []).filter(function (f) { return /^image\//.test(f.type); }).slice(0, 3 - fotos.length);
+    if (!lista.length) return;
+    Promise.all(lista.map(function (f) { return CG.comprimir(f).catch(function () { return null; }); })).then(function (urls) {
+      var n = 0; urls.forEach(function (u) { if (u && fotos.length < 3) { fotos.push(u); n++; } });
+      fInput.value = ''; desenharFotos(); previaJa(); if (n) robo('r-ok'); else mostrarErro('Não consegui ler essa foto. Tente outra.');
+    });
+  }
+  fInput.addEventListener('change', function () { receber(fInput.files); });
+  ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('sobre'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('sobre'); }); });
+  drop.addEventListener('drop', function (e) { receber(e.dataTransfer && e.dataTransfer.files); });
+  // soltar foto em qualquer lugar do passo de fotos
+  document.addEventListener('dragover', function (e) { if (ordem[atual] === 'fotos') e.preventDefault(); });
+  document.addEventListener('drop', function (e) { if (ordem[atual] === 'fotos' && !drop.contains(e.target)) { e.preventDefault(); receber(e.dataTransfer && e.dataTransfer.files); } });
+
+  /* ---------- rascunho local ---------- */
+  var CAMPOS = ['negocio', 'ramo', 'cidade', 'quer', 'servicos', 'cores', 'whatsapp', 'email', 'instagram', 'sis_faz'];
+  var agSalvar = 0;
+  function salvar() {
+    clearTimeout(agSalvar);
+    agSalvar = setTimeout(function () {
+      var r = { v: 2, passo: atual, oque: oque(), precisa: marcados('precisa'), cpx: marcados('cpx'), sis_quem: val('sis_quem'), sis_env: marcados('sis_env') };
+      CAMPOS.forEach(function (k) { r[k] = form.elements[k].value; });
+      store.set(RASCUNHO, JSON.stringify(r));
+    }, 250);
+  }
+  function restaurar() {
+    var r; try { r = JSON.parse(store.get(RASCUNHO) || 'null'); } catch (e) { r = null; }
+    if (!r || r.v !== 2) return 0;
+    CAMPOS.forEach(function (k) { if (typeof r[k] === 'string') form.elements[k].value = r[k]; });
+    var marca = function (nome, lista) { $$('[name="' + nome + '"]', form).forEach(function (i) { i.checked = (lista || []).indexOf(i.value) >= 0; }); };
+    marca('oque', [r.oque]); marca('precisa', r.precisa); marca('cpx', r.cpx); marca('sis_quem', [r.sis_quem]); marca('sis_env', r.sis_env);
+    marcarPaleta();
+    var hex = String(r.cores || '').match(/#[0-9a-f]{6}\b/ig); if (hex) { cor1.value = hex[0]; if (hex[1]) cor2.value = hex[1]; }
+    return Math.max(0, Math.min(Number(r.passo) || 0, ordem.indexOf('revisao')));
+  }
+
+  /* ---------- validação por passo ---------- */
+  function campoErro(nome, msg) {
+    var el = form.elements[nome]; var cp = el && el.closest ? el.closest('.cp, .aceite') : null;
+    if (cp) { cp.classList.add('cp-err'); el.setAttribute('aria-invalid', 'true'); setTimeout(function () { el.focus(); }, 30); }
+    return msg;
+  }
+  function limparErros() { $$('.cp-err', form).forEach(function (c) { c.classList.remove('cp-err'); }); $$('[aria-invalid]', form).forEach(function (i) { i.removeAttribute('aria-invalid'); }); }
+  var emailOk = function () { return /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(val('email')); };
+  function validar(p) {
+    switch (p) {
+      case 'oque': return oque() ? '' : 'Escolha uma das opções.';
+      case 'negocio':
+        if (!val('negocio')) return campoErro('negocio', 'Diga o nome do negócio.');
+        if (!val('ramo')) return campoErro('ramo', 'Diga o ramo (ex.: barbearia, clínica, restaurante).');
+        return '';
+      case 'cidade': return val('cidade') ? '' : campoErro('cidade', 'Diga a cidade.');
+      case 'precisa': return projeto() && !val('sis_faz') ? campoErro('sis_faz', 'Conta em poucas palavras o que precisa (ou toque num exemplo).') : '';
+      case 'contato':
+        var zap = val('whatsapp').replace(/\D/g, '');
+        if (val('email') && !emailOk()) return campoErro('email', 'Esse e-mail parece incompleto.');
+        if (!waOficial && !emailOk()) return campoErro('email', 'Deixe o seu e-mail: é por ele que a gente te avisa do pedido.');
+        if (zap.length < 10 && !emailOk()) return campoErro('whatsapp', 'Deixe um WhatsApp (com DDD) ou um e-mail para a gente te avisar.');
+        return '';
+      case 'revisao': return form.elements.aceite.checked ? '' : campoErro('aceite', 'Marque que concorda com o uso dos dados para montar o esboço.');
+    }
+    return '';
+  }
+  function mostrarErro(msg) { erro.textContent = msg || ''; erro.hidden = !msg; if (msg) { var r = erro.getBoundingClientRect(), nav = $('#nav').getBoundingClientRect(); if (r.bottom > nav.top - 8 || r.top < 0) erro.scrollIntoView({ block: 'center', behavior: menosMov ? 'auto' : 'smooth' }); } }
+
+  /* ---------- navegação ---------- */
+  var OPCIONAIS = { precisa: 1, detalhes: 1, fotos: 1 };
+  function temAlgo(p) {
+    if (p === 'precisa') { var t = oque(); return t === 'cardapio' ? marcados('cpx').length > 0 : projeto() ? true : marcados('precisa').length > 0; }
+    if (p === 'detalhes') return !!(val('quer') || val('servicos') || val('cores'));
+    if (p === 'fotos') return fotos.length > 0;
+    return true;
+  }
+  function atualizarBotao() {
+    var p = ordem[atual];
+    botao.classList.toggle('enviar', p === 'revisao');
+    if (p === 'revisao') botaoTxt.textContent = antigo && trocar ? 'Enviar pedido novo' : 'Pedir meu esboço';
+    else if (daRevisao) botaoTxt.textContent = 'Voltar à revisão';
+    else botaoTxt.textContent = OPCIONAIS[p] && !temAlgo(p) ? 'Pular' : 'Continuar';
+  }
+  function irPara(i, volta) {
+    if (i < 0 || i >= passos.length) return;
+    limparErros(); mostrarErro('');
+    passos[atual].hidden = true;
+    atual = i;
+    var ps = passos[i]; ps.hidden = false;
+    ps.classList.toggle('volta', !!volta);
+    ps.style.animation = 'none'; void ps.offsetWidth; ps.style.animation = '';
+    var n = i + 1, total = passos.length;
+    $('#prog-barra').style.transform = 'scaleX(' + (n / total) + ')';
+    $('#prog').setAttribute('aria-valuenow', String(n)); $('#prog').setAttribute('aria-valuemax', String(total));
+    $('#passo-txt').textContent = 'Passo ' + n + ' de ' + total;
+    voltar.hidden = i === 0;
+    $('#lgpd').hidden = ordem[i] !== 'revisao';
+    if (ordem[i] === 'revisao') { daRevisao = false; montarRevisao(); }
+    atualizarBotao();
+    salvar();
+    var t = ps.querySelector('.ps-t');
+    if (window.scrollY > 80) window.scrollTo({ top: 0, behavior: menosMov ? 'auto' : 'smooth' });
+    if (t) t.focus({ preventScroll: true });
+    var primeiro = ps.querySelector('input:not([type=radio]):not([type=checkbox]):not([type=file]):not([type=color]), textarea');
+    if (primeiro && matchMedia('(hover: hover)').matches && !primeiro.value) setTimeout(function () { primeiro.focus({ preventScroll: true }); }, 380);
+  }
+  function avancar() {
+    var p = ordem[atual], msg = validar(p);
+    if (msg) { mostrarErro(msg); robo('r-nao'); return; }
+    if (p === 'revisao') return enviar();
+    if (daRevisao) { irPara(ordem.indexOf('revisao')); return; }
+    robo('r-ok');
+    irPara(atual + 1);
+  }
+  form.addEventListener('submit', function (e) { e.preventDefault(); if (!enviando) avancar(); });
+  voltar.addEventListener('click', function () { daRevisao = false; irPara(atual - 1, true); });
+  // Enter avança (textarea mantém a quebra de linha; Ctrl/Cmd+Enter avança também)
+  form.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' || e.isComposing) return;
+    var t = e.target;
+    if (t.tagName === 'TEXTAREA' && !(e.ctrlKey || e.metaKey)) return;
+    if (t.tagName === 'BUTTON' || t.tagName === 'A' || t.type === 'file') return;
+    e.preventDefault(); if (!enviando) avancar();
+  });
+  // escolher o tipo já leva ao próximo passo
+  $$('[name="oque"]', form).forEach(function (r) {
+    r.addEventListener('change', function () {
+      ajustarTipo(); previaJa(); salvar(); robo('r-ok');
+      setTimeout(function () { if (ordem[atual] === 'oque' && r.checked) avancar(); }, menosMov ? 0 : 420);
+    });
+    // tocar de novo no cartão já escolhido também avança
+    var gc = r.closest('.gc'), ja = false;
+    gc.addEventListener('pointerdown', function () { ja = r.checked; });
+    gc.addEventListener('click', function (e) { if (ja && e.detail > 0 && ordem[atual] === 'oque') { ja = false; setTimeout(avancar, 120); } });
+  });
+  // brilho que segue o dedo/mouse nos cartões grandes
+  $$('.gc-in').forEach(function (c) { c.addEventListener('pointermove', function (e) { var r = c.getBoundingClientRect(); c.style.setProperty('--mx', (e.clientX - r.left) + 'px'); c.style.setProperty('--my', (e.clientY - r.top) + 'px'); }); });
+  form.addEventListener('input', function (e) { if (e.target.closest('.cp-err')) { e.target.closest('.cp-err').classList.remove('cp-err'); e.target.removeAttribute('aria-invalid'); mostrarErro(''); } previaJa(); salvar(); atualizarBotao(); });
+  form.addEventListener('change', function () { previaJa(); salvar(); atualizarBotao(); });
+
+  /* ---------- revisão ---------- */
+  var ROT_OQUE = { site: 'Site do negócio', cardapio: 'Cardápio digital', sistema: 'Sistema sob medida', automacao: 'Automação' };
+  function resumoPrecisa() {
+    var t = oque();
+    if (t === 'cardapio') return marcados('cpx').map(function (k) { return CARDAPIO[k][1]; }).join(', ');
+    if (projeto()) return [val('sis_faz'), marcados('sis_env').length && 'Envolve: ' + marcados('sis_env').join(', '), val('sis_quem') && 'Pessoas: ' + val('sis_quem')].filter(Boolean).join(' · ');
+    return marcados('precisa').map(function (k) { return ROT_PRECISA[k]; }).join(', ');
+  }
+  function montarRevisao() {
+    var linhas = [
+      ['O que', ROT_OQUE[oque()] || '', 'oque'],
+      ['Negócio', [val('negocio'), val('ramo')].filter(Boolean).join(' · '), 'negocio'],
+      ['Cidade', val('cidade'), 'cidade'],
+      [oque() === 'sistema' ? 'O sistema' : oque() === 'automacao' ? 'A automação' : 'Precisa', resumoPrecisa(), 'precisa'],
+      ['Detalhes', [val('quer'), val('servicos'), val('cores')].filter(Boolean).join(' · '), 'detalhes'],
+      ['Fotos', fotos.length ? fotos.length + (fotos.length > 1 ? ' fotos' : ' foto') : '', 'fotos'],
+      ['Contato', [val('email'), val('whatsapp'), val('instagram')].filter(Boolean).join(' · '), 'contato']
+    ];
+    var dl = $('#rev'); dl.innerHTML = '';
+    linhas.forEach(function (l, i) {
+      var d = document.createElement('div'); d.style.animationDelay = (i * 40) + 'ms';
+      var dt = document.createElement('dt'); dt.textContent = l[0];
+      var dd = document.createElement('dd'); var tx = l[1].length > 160 ? l[1].slice(0, 158) + '…' : l[1]; dd.textContent = tx || 'Nada'; if (!tx) dd.className = 'vazio';
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Alterar'; b.setAttribute('aria-label', 'Alterar ' + l[0].toLowerCase());
+      b.addEventListener('click', function () { daRevisao = true; irPara(ordem.indexOf(l[2]), true); });
+      d.appendChild(dt); d.appendChild(dd); d.appendChild(b); dl.appendChild(d);
+    });
+  }
+
+  /* ---------- "continuar de onde parei" e pedido novo que substitui o antigo ---------- */
+  var antigo = null, trocar = false;
   try {
     var ult = JSON.parse(localStorage.getItem('cg_pedidos') || '[]')[0];
     if (ult && ult.id && ult.k) {
       antigo = ult;
-      var card = document.getElementById('continuar'), hero = document.querySelector('.cg-hero');
-      document.getElementById('continuar-nome').textContent = ult.negocio || 'seu negócio';
-      document.getElementById('continuar-ir').href = '/acompanhar/' + (api ? '?api=' + encodeURIComponent(api) : '') + '#' + ult.id + '.' + ult.k;
-      card.parentNode.insertBefore(card, card.parentNode.firstChild);
-      card.hidden = false; form.hidden = true; if (hero) hero.hidden = true;
-      document.getElementById('continuar-outro').onclick = function () {
-        form.hidden = false; if (hero) hero.hidden = false; this.hidden = true;
-        document.getElementById('continuar-aviso').hidden = false;
-        botao.textContent = 'Fazer o pedido novo (substitui o anterior)';
-        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      };
+      var card = $('#continuar');
+      $('#continuar-nome').textContent = ult.negocio || 'seu negócio';
+      $('#continuar-ir').href = '/acompanhar/' + (api ? '?api=' + encodeURIComponent(api) : '') + '#' + ult.id + '.' + ult.k;
+      card.hidden = false; form.hidden = true;
+      prevBox.hidden = true; prevAbre.hidden = true;
+      $('#palco').classList.add('so-cont');
+      $('#continuar-outro').addEventListener('click', function () {
+        trocar = true; card.hidden = true; form.hidden = false; prevBox.hidden = false; prevAbre.hidden = false;
+        $('#palco').classList.remove('so-cont');
+        $('#continuar-aviso').hidden = false;
+        irPara(0); robo('r-acena');
+      });
     }
   } catch (e) { /* sem localStorage */ }
 
-  function desenhar() {
-    Array.prototype.slice.call(caixa.querySelectorAll('.cg-foto')).forEach(function (n) { n.remove(); });
-    fotos.forEach(function (url, i) {
-      var d = document.createElement('div'); d.className = 'cg-foto';
-      d.innerHTML = '<img alt=""><button type="button" aria-label="Tirar foto">×</button>';
-      d.querySelector('img').src = url;
-      d.querySelector('button').onclick = function () { fotos.splice(i, 1); desenhar(); };
-      caixa.insertBefore(d, add);
-    });
-    add.hidden = fotos.length >= 3;
-  }
-  input.addEventListener('change', function () {
-    var lista = Array.prototype.slice.call(input.files || []).slice(0, 3 - fotos.length);
-    Promise.all(lista.map(function (f) { return CG.comprimir(f).catch(function () { return null; }); })).then(function (urls) {
-      urls.forEach(function (u) { if (u) fotos.push(u); });
-      input.value = ''; desenhar();
-    });
-  });
-
-  // WhatsApp oficial (a API diz em /config): DESLIGADO = e-mail obrigatório (padrão seguro, inclusive se a consulta falhar);
-  // LIGADO = WhatsApp ou e-mail, qualquer um basta. A fila confere a mesma regra.
-  var waOficial = false;
+  /* ---------- WhatsApp oficial (a API diz em /config): DESLIGADO = e-mail obrigatório; LIGADO = qualquer um dos dois ---------- */
   CG.chamar('/config').then(function (c) {
     if (!c || !c.whatsappOficial) return;
     waOficial = true;
-    document.getElementById('avisos-sub').textContent = 'Deixe pelo menos um. O esboço também fica numa página só sua.';
-    document.getElementById('rot-email').textContent = 'E-mail';
-    document.getElementById('rot-whats').textContent = 'WhatsApp';
-    form.querySelector('[name=email]').required = false;
+    $('#avisos-sub').textContent = 'Deixe pelo menos um dos dois.';
+    $('#rot-email').innerHTML = 'E-mail'; $('#rot-whats').innerHTML = 'WhatsApp';
+    form.elements.email.required = false;
   }).catch(function () { /* fica o padrão: e-mail obrigatório */ });
 
-  function mostrarErro(msg) { erro.textContent = msg; erro.hidden = !msg; if (msg) erro.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
-  form.addEventListener('submit', function (ev) {
-    ev.preventDefault();
-    var d = new FormData(form);
-    var v = function (k) { return String(d.get(k) || '').trim(); };
-    if (!v('negocio')) return mostrarErro('Diga o nome do negócio.');
-    if (!v('ramo')) return mostrarErro('Diga o ramo (ex.: barbearia, clínica, restaurante).');
-    if (!v('cidade')) return mostrarErro('Diga a cidade.');
-    var zap = v('whatsapp').replace(/\D/g, '');
-    var emailOk = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v('email'));
-    if (!waOficial && !emailOk) return mostrarErro('Deixe o seu e-mail: é por ele que a gente te avisa do pedido.');
-    if (zap.length < 10 && !emailOk) return mostrarErro('Deixe um WhatsApp (com DDD) ou um e-mail para a gente te avisar.');
-    if (!d.get('aceite')) return mostrarErro('Marque que concorda com o uso dos dados para montar o esboço.');
+  /* ---------- enviar ---------- */
+  function montarQuer() {
+    var t = oque(), extra = [];
+    if (t === 'cardapio') { var l = marcados('cpx').map(function (k) { return CARDAPIO[k][1]; }); if (l.length) extra.push('No cardápio: ' + l.join(', ') + '.'); }
+    // projeto sob medida: a 1ª linha diz o tipo (Automação ou Sistema) para o dono distinguir na tela Projetos
+    if (projeto()) {
+      extra.push('Tipo de projeto: ' + (t === 'automacao' ? 'Automação' : 'Sistema sob medida') + '.');
+      if (val('sis_faz')) extra.push((t === 'automacao' ? 'O que deve acontecer sozinho: ' : 'O sistema precisa: ') + val('sis_faz'));
+      if (marcados('sis_env').length) extra.push('Envolve: ' + marcados('sis_env').join(', ') + '.');
+      if (val('sis_quem')) extra.push('Pessoas que usam: ' + val('sis_quem') + '.');
+    }
+    return extra.concat(val('quer') ? [val('quer')] : []).join('\n').slice(0, 1500);
+  }
+  function montarPrecisa() {
+    var t = oque();
+    if (projeto()) return ['sistema']; // a API tem lista fechada: 'sistema' abre a sala do projeto (vale para automação também)
+    if (t === 'cardapio') { var s = []; marcados('cpx').forEach(function (k) { var v = CARDAPIO[k][0]; if (v && s.indexOf(v) < 0) s.push(v); }); return s; }
+    return marcados('precisa').map(String).slice(0, 6);
+  }
+  var mt = $('#montando'), mtLista = $$('#mt-lista li'), mtRobo = $('.mt-tel .robo');
+  function montando() {
+    mt.hidden = false; mt.classList.remove('pronto'); $('#mt-t').textContent = 'Montando seu pedido';
+    mtLista.forEach(function (li) { li.className = ''; });
+    var i = 0, passo = menosMov ? 150 : 650;
+    return new Promise(function (ok) {
+      (function prox() {
+        if (i > 0) mtLista[i - 1].className = 'ok';
+        if (i < mtLista.length) { mtLista[i].className = 'vez'; i++; setTimeout(prox, passo); } else ok();
+      })();
+    });
+  }
+  function enviar() {
+    for (var i = 0; i < ordem.length; i++) { var m = validar(ordem[i]); if (m) { if (i !== atual) { irPara(i, true); m = validar(ordem[i]); } mostrarErro(m); robo('r-nao'); return; } }
     mostrarErro('');
-    botao.disabled = true; botao.textContent = 'Enviando…';
-    CG.chamar('/pedido', { metodo: 'POST', corpo: {
-      negocio: v('negocio'), ramo: v('ramo'), cidade: v('cidade'), tipo: d.get('tipo') === 'cardapio' ? 'Cardápio digital' : 'site', quer: v('quer'), servicos: v('servicos'),
-      cores: v('cores'), whatsapp: v('whatsapp'), email: v('email'), instagram: v('instagram'), site_url: v('site_url'), t0: t0, aceite: true, fotos: fotos,
-      precisa: d.getAll('precisa').map(String).slice(0, 6),
-      substitui: antigo && !form.hidden && !document.getElementById('continuar-aviso').hidden ? { id: antigo.id, k: antigo.k } : undefined
-    } }).then(function (r) {
-      if (r.isca) { botao.textContent = 'Recebido!'; return; }
+    enviando = true; botao.disabled = true; botaoTxt.textContent = 'Enviando…';
+    var corpo = {
+      negocio: val('negocio'), ramo: val('ramo'), cidade: val('cidade'), tipo: oque() === 'cardapio' ? 'Cardápio digital' : 'site', quer: montarQuer(), servicos: projeto() ? '' : val('servicos'),
+      cores: val('cores'), whatsapp: val('whatsapp'), email: val('email'), instagram: val('instagram'), site_url: val('site_url'), t0: t0, aceite: true, fotos: fotos,
+      precisa: montarPrecisa(),
+      substitui: antigo && trocar ? { id: antigo.id, k: antigo.k } : undefined
+    };
+    var animacao = montando();
+    var pedido = CG.chamar('/pedido', { metodo: 'POST', corpo: corpo });
+    Promise.all([pedido, animacao]).then(function (res) {
+      var r = res[0];
+      mtLista.forEach(function (li) { li.className = 'ok'; });
+      if (r.isca) { $('#mt-t').textContent = 'Recebido!'; return; }
       try {
         var l = JSON.parse(localStorage.getItem('cg_pedidos') || '[]').filter(function (x) { return x.id !== r.id && !(antigo && x.id === antigo.id); });
-        l.unshift({ id: r.id, k: r.k, negocio: v('negocio'), em: Date.now() });
+        l.unshift({ id: r.id, k: r.k, negocio: val('negocio'), em: Date.now() });
         localStorage.setItem('cg_pedidos', JSON.stringify(l.slice(0, 5)));
       } catch (e) { /* sem localStorage: o link vai no endereço */ }
-      location.href = '/acompanhar/' + (api ? '?api=' + encodeURIComponent(api) : '') + '#' + r.id + '.' + r.k;
+      store.del(RASCUNHO);
+      mt.classList.add('pronto'); $('#mt-t').textContent = 'Pedido feito! Abrindo sua página';
+      robo('r-festa', mtRobo); confete();
+      setTimeout(function () { location.href = '/acompanhar/' + (api ? '?api=' + encodeURIComponent(api) : '') + '#' + r.id + '.' + r.k; }, menosMov ? 300 : 1700);
     }).catch(function (e) {
-      mostrarErro(e.message || 'Não deu para enviar agora. Tente de novo em instantes.');
-      botao.disabled = false; botao.textContent = antigo ? 'Fazer o pedido novo (substitui o anterior)' : 'Quero meu esboço grátis';
+      mt.hidden = true; enviando = false; botao.disabled = false; atualizarBotao();
+      mostrarErro(e.message || 'Não deu para enviar agora. Tente de novo em instantes.'); robo('r-nao');
     });
-  });
+  }
+
+  /* ---------- confete discreto ---------- */
+  function confete() {
+    if (menosMov) return;
+    var cv = $('#confete'), cx = cv.getContext('2d'), dpr = Math.min(window.devicePixelRatio || 1, 1.5), w = innerWidth, h = innerHeight;
+    cv.width = w * dpr; cv.height = h * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var cores = ['#a6e6ff', '#3fd2ff', '#34e0c0', '#3a86ff', '#ffffff'], ps = [], ini = performance.now();
+    for (var i = 0; i < 110; i++) { var a = -Math.PI / 2 + (Math.random() - .5) * 1.6, v = 7 + Math.random() * 8; ps.push({ x: w / 2, y: h * .42, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: Math.random() * 6.28, vr: (Math.random() - .5) * .3, s: 4 + Math.random() * 5, c: cores[i % cores.length] }); }
+    (function q(t) {
+      var dt = (t - ini) / 1000; cx.clearRect(0, 0, w, h);
+      ps.forEach(function (p) { p.vy += .32; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr; cx.save(); cx.globalAlpha = Math.max(0, 1 - dt / 1.8); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); cx.restore(); });
+      if (dt < 1.8) requestAnimationFrame(q); else cx.clearRect(0, 0, w, h);
+    })(ini);
+  }
+
+  /* ---------- início ---------- */
+  var inicio = restaurar();
+  ajustarTipo(); desenharFotos(); marcarRamo();
+  if (!form.hidden) { irPara(inicio); if (inicio === 0) robo('r-acena'); }
+  atualizarPrevia();
 })();
