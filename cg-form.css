@@ -259,6 +259,8 @@ h1, h2, h3, p { margin: 0; }
 .cg-pix-cartao { display: block; width: 100%; margin: 8px 0 4px; padding: 6px 0; background: none; border: 0; color: var(--txt-2); font: inherit; font-size: .86rem; text-align: left; cursor: pointer; }
 .cg-pix-cartao u { color: var(--agua); text-underline-offset: 3px; }
 .cg-pix-cartao:disabled { cursor: default; color: var(--agua); }
+.cg-pix-mp { display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%; margin: 10px 0 4px; text-decoration: none; }
+.cg-pix-mp small { font-weight: 400; opacity: .8; }
 .cg-aviso-pag { display: block; width: 100%; margin-top: 10px; padding: 10px 14px; border-radius: 14px; border: 2px solid var(--agua); background: rgba(52, 245, 197, .12); color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .cg-aviso-pag b { display: block; }
 .cg-aviso-pag span { display: block; font-size: .86rem; color: var(--txt-2); margin-top: 2px; }

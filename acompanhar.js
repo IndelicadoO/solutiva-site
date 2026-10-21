@@ -136,7 +136,7 @@
     if (!(rest || sin)) return;
     var v = rest ? Number(i.restante) || 0 : Number(i.sinal) || 0;
     $('aviso-pag-t').textContent = rest ? 'Seu site está pronto! Falta só o restante' + (v ? ' (' + brl(v) + ')' : '') + ' para ir ao ar.' : 'Esboço aprovado! Falta só o sinal' + (v ? ' (' + brl(v) + ')' : '') + ' para começar o site final.';
-    $('aviso-pag-s').textContent = 'Toque para ver o Pix' + (i.querCartao ? '. O link do cartão chega na conversa.' : ' ou pedir o cartão parcelado.');
+    $('aviso-pag-s').textContent = i.cartaoUrl ? 'Toque para ver o Pix ou pagar no cartão (até 12x).' : 'Toque para ver o Pix' + (i.querCartao ? '. O link do cartão chega na conversa.' : ' ou pedir o cartão parcelado.');
   }
   $('aviso-pag').onclick = function () { $('pix').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
   // "Prefere cartão parcelado? Toque aqui": o pedido vai à conversa e a equipe é avisada (sem digitar)
@@ -146,6 +146,13 @@
     mandar('', { tipo: 'cartao' }).then(function () { toast('Pedido enviado! A equipe ClickGo te manda o link do cartão na conversa.'); b.innerHTML = 'Pedido de cartão enviado. O link chega na conversa.'; })
       .catch(function () { b.disabled = false; });
   };
+  // voltou do Mercado Pago (?cartao=aprovado|pendente|recusado): avisa; a confirmação chega sozinha pelo aviso do MP
+  (function () {
+    var m = /[?&]cartao=(aprovado|pendente|recusado)/.exec(location.search || '');
+    if (!m) return;
+    setTimeout(function () { toast(m[1] === 'aprovado' ? 'Pagamento aprovado! Em instantes ele aparece confirmado aqui.' : m[1] === 'pendente' ? 'Pagamento em análise no Mercado Pago. Assim que aprovar, ele aparece confirmado aqui.' : 'O pagamento não passou. Tente de novo no cartão ou pague pelo Pix.'); }, 600);
+    try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) { /* */ }
+  })();
   function desenharPix(prep) {
     var i = estado.info || {}, rest = !!(i.restanteLiberado && !i.publicado && !i.cancelado), mostra = rest || !!(i.pixLiberado && !i.sinalRecebido && !i.publicado && !i.cancelado);
     desenharAvisoPag();
@@ -158,6 +165,10 @@
     $('pix-titulo').textContent = rest ? 'Pague o restante e coloque o seu site no ar' : 'Pague o sinal e garanta o seu site';
     $('pix-rotulo').textContent = rest ? 'Restante (50%)' : 'Sinal (50%)';
     $('pix-garante-sinal').hidden = rest; $('pix-garante-restante').hidden = !rest;
+    // Mercado Pago ligado no app: link de pagamento com o valor exato (até 12x); senão, o pedido de cartão vai à equipe
+    var mp = /^https:\/\/(www\.|sandbox\.)?mercadopago\.com(\.br)?\//.test(String(i.cartaoUrl || ''));
+    $('pix-cartao-link').hidden = !mp; $('pix-cartao').hidden = mp;
+    if (mp) $('pix-cartao-link').href = i.cartaoUrl;
     if (i.querCartao && !$('pix-cartao').disabled) { $('pix-cartao').disabled = true; $('pix-cartao').innerHTML = 'Pedido de cartão enviado. O link chega na conversa.'; }
     var sinal = rest ? Number(i.restante) || 0 : Number(i.sinal) || 0, chave = String(i.pixChave || '');
     $('pix-valor').parentNode.hidden = !sinal;
