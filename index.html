@@ -29,6 +29,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Instrument+Serif:ital@1&family=Onest:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="v5.css">
 <link rel="stylesheet" href="v6.css">
+<link rel="stylesheet" href="v7.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"ProfessionalService","name":"ClickGo","description":"Sites profissionais em 48 h, cardápio digital, vídeos de produto com IA e sistemas sob medida.","areaServed":"BR","address":{"@type":"PostalAddress","addressLocality":"Brasília","addressRegion":"DF","addressCountry":"BR"},"logo":"https://clickgo.dev.br/assets/icon-512.png","sameAs":["https://www.instagram.com/clickgo.dev/","https://www.youtube.com/@clickgodev"]}
 </script>
@@ -153,6 +154,60 @@
     </div>
   </section>
 
+  <!-- 02b: O FORMULÁRIO DE PEDIDO em demonstração (preenche sozinho; sem JS ou com movimento reduzido, mostra o fim) -->
+  <section class="canto fd8" id="pedido">
+    <div class="canto-in">
+      <p class="slate"><b>Como pedir</b> Do formulário ao site no ar</p>
+      <h2 class="grande">Você responde 8 perguntas.<br><em>O esboço sai em minutos.</em></h2>
+      <p class="sub">É o nosso formulário de verdade, aqui se preenchendo sozinho. O exemplo é fictício.</p>
+      <div class="fd" id="fd" aria-label="Demonstração do formulário de pedido: escolhe site, preenche nome e ramo, envia fotos, o esboço aparece, vira prévia no celular e o site vai ao ar.">
+        <ol class="fd-trilho" aria-hidden="true">
+          <li data-e="0">Pedido</li><li data-e="2">Fotos</li><li data-e="3">Esboço</li><li data-e="4">Prévia</li><li data-e="5">No ar</li>
+        </ol>
+        <div class="fd-palco">
+          <div class="fd-form" aria-hidden="true">
+            <div class="fd-prog"><i></i></div>
+            <p class="fd-passo">Passo <span class="fd-np">8</span> de 8</p>
+            <div class="fd-ps" data-e="0">
+              <p class="fd-t">O que você precisa?</p>
+              <div class="fd-gc"><span class="fd-op sel"><b>Site</b><small>página do negócio</small></span><span class="fd-op"><b>Cardápio</b><small>com pedido no WhatsApp</small></span></div>
+            </div>
+            <div class="fd-ps" data-e="1">
+              <p class="fd-t">Como se chama o seu negócio?</p>
+              <span class="fd-cp"><small>Nome do negócio</small><b class="fd-dig" data-texto="Barbearia Dois Irmãos">Barbearia Dois Irmãos</b></span>
+              <span class="fd-cp"><small>Ramo</small><b class="fd-dig" data-texto="Barbearia">Barbearia</b></span>
+              <span class="fd-sug"><i class="sel">Barbearia</i><i>Salão</i><i>Padaria</i><i>Clínica</i></span>
+            </div>
+            <div class="fd-ps" data-e="2">
+              <p class="fd-t">Tem fotos?</p>
+              <div class="fd-fotos"><span class="f1"><i></i></span><span class="f2"><i></i></span><span class="f3"><i></i></span></div>
+              <p class="fd-cont"><span class="fd-nf">3</span> de 3 enviadas</p>
+            </div>
+            <div class="fd-ps fd-env" data-e="3">
+              <p class="fd-t">Tudo certo?</p>
+              <span class="fd-bt">Ver meu esboço</span>
+            </div>
+          </div>
+          <div class="fd-cel" aria-hidden="true">
+            <div class="fd-tela">
+              <div class="fd-site">
+                <div class="fd-hero"><small>Barbearia</small><strong>Barbearia Dois Irmãos</strong><span class="fd-cta">Chamar no WhatsApp</span></div>
+                <div class="fd-blocos"><i></i><i></i><i></i></div>
+                <div class="fd-linhas"><i></i><i></i><i></i></div>
+              </div>
+              <div class="fd-nasce"><span></span><span></span><span></span><span></span></div>
+              <span class="fd-selo-prev">Prévia · você pede ajustes</span>
+            </div>
+            <span class="fd-noar"><b>Site no ar</b><small>sites.clickgo.dev.br/barbearia-dois-irmaos · exemplo</small></span>
+          </div>
+        </div>
+      </div>
+      <div class="acoes">
+        <a class="btn btn-prim" data-contato="esboco" href="/esboco/"><span data-rotulo>Fazer o meu esboço grátis</span></a>
+      </div>
+    </div>
+  </section>
+
   <!-- CENA 02: ROBÔ DE ATENDIMENTO (escondida 21/10/2026: ainda não está à venda; para voltar, tirar o hidden e renumerar 02/03/04) -->
   <section class="cena" id="robo" hidden>
     <video class="cena-video vid" data-poster-m="https://cdn.jsdelivr.net/gh/erinaldogomes/solutiva-site@cb194ad/assets/v5/robo-m.jpg" poster="https://cdn.jsdelivr.net/gh/erinaldogomes/solutiva-site@cb194ad/assets/v5/robo-d.jpg" muted loop playsinline preload="none" aria-hidden="true"><source data-src="https://cdn.jsdelivr.net/gh/erinaldogomes/solutiva-site@8d575a3/assets/v5/robo-d.mp4" media="(min-width: 700px)" type="video/mp4"><source data-src="https://cdn.jsdelivr.net/gh/erinaldogomes/solutiva-site@8d575a3/assets/v5/robo-m.mp4" type="video/mp4"></video>
@@ -242,7 +297,7 @@
     </div>
   </section>
 
-  <!-- 04: SISTEMAS QUE CONVERSAM (minimalista: diagrama de linhas finas + lista) -->
+  <!-- 04: SISTEMAS QUE CONVERSAM (mapa em dois níveis + cartões vivos, 21/10) -->
   <section class="canto sis8" id="sistemas">
     <div class="canto-in">
       <p class="slate"><b>04</b> Sistemas sob medida · os nossos</p>
@@ -251,16 +306,40 @@
       <div class="sis8-corpo">
         <div class="mapa" id="mapa">
           <svg class="mapa-svg" role="img" aria-labelledby="mapa-tit" viewBox="0 0 520 420"><title id="mapa-tit">O Orbit no centro conversa com Orbix, Certeza Duvidosa, NexoFrame, ClickGo e LYRA; o Orbix pede vídeos ao NexoFrame e o Certeza empresta voz e cenas ao ClickGo. Cada sistema se abre nos próprios galhos, listados ao lado.</title></svg>
-          <p class="mapa-dica">Toque ou passe o mouse num sistema para ver os galhos dele.</p>
+          <p class="mapa-dica">Toque num cartão ou passe o mouse para ver os galhos no mapa.</p>
         </div>
-        <dl class="sis-lista">
-          <div data-no="orbit" tabindex="0"><dt>Orbit</dt><dd>Assistente que comanda os outros por conversa, com lista fechada de ações e confirmação.<ul class="galhos"><li>Conversa por chat</li><li>Lista fechada de ações</li><li>Confirma antes de agir</li><li>Pede vídeo por tema</li><li>Resumo de cada app</li><li>Avisos no Telegram</li></ul></dd></div>
-          <div data-no="orbix" tabindex="0"><dt>Orbix</dt><dd>Acha produto, escreve o roteiro, grava com apresentadora de IA, confere o preço e publica sozinho em 4 redes.<ul class="galhos"><li>Achadinhos e curadoria</li><li>Roteiro</li><li>Apresentadora no NexoFrame</li><li>Conferência de preço</li><li>Piloto e agenda</li><li>Publica em 4 redes</li><li>Robô de comentários</li><li>Canal no Telegram</li></ul></dd></div>
-          <div data-no="certeza" tabindex="0"><dt>Certeza Duvidosa</dt><dd>Canal de YouTube que se produz sozinho: roteiro, narração, animação em código, B-roll de várias fontes, trilha e Shorts.<ul class="galhos"><li>Roteiro com portão</li><li>Narração</li><li>Animação em código</li><li>B-roll de várias fontes</li><li>Trilha e efeitos</li><li>Shorts</li><li>Agenda e publicação</li></ul></dd></div>
-          <div data-no="nexo" tabindex="0"><dt>NexoFrame</dt><dd>Motor de vídeo e avatar no próprio computador; recebe o roteiro e devolve o vídeo pronto.<ul class="galhos"><li>Avatar</li><li>Fala</li><li>Dança</li><li>Provador</li><li>Cenários</li></ul></dd></div>
-          <div data-no="clickgo" tabindex="0"><dt>ClickGo</dt><dd>Este app: fábrica de conteúdo, postador com calendário e pedidos de site do formulário ao site no ar.<ul class="galhos"><li>Fábrica de conteúdo</li><li>Postador e calendário</li><li>Formulário e esboço</li><li>Prévia e ajustes</li><li>Pagamento confirmado</li><li>Site no ar</li><li>Prospecção</li><li>Sala do projeto</li></ul></dd></div>
-          <div data-no="lyra" tabindex="0"><dt>LYRA</dt><dd>Canal de games: o Radar da Steam acha as promoções e o Short vai ao ar sozinho; também edita a gameplay e agenda.<ul class="galhos"><li>Radar da Steam</li><li>Promoção no ar sozinha</li><li>Gameplay</li><li>Edição</li><li>Capa e título</li><li>Agenda</li></ul></dd></div>
-        </dl>
+        <div class="sis-lista" role="list">
+          <div class="sc" data-no="orbit" tabindex="0">
+            <div class="sc-cab"><span class="sc-ic" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="6" class="ic-cheio"/><ellipse cx="24" cy="24" rx="19" ry="8" transform="rotate(-25 24 24)"/><g class="ic-gira"><circle cx="41" cy="16" r="3" class="ic-cheio"/></g></svg></span><div class="sc-tit"><h3>Orbit</h3><p class="sc-papel">O cérebro: comanda os outros</p></div><span class="sc-n">6 galhos</span></div>
+            <p class="sc-desc">Assistente que comanda os outros apps por conversa, com lista fechada de ações e confirmação antes de agir.</p>
+            <ul class="galhos"><li>Conversa por chat</li><li>Lista fechada de ações</li><li>Confirma antes de agir</li><li>Pede vídeo por tema</li><li>Resumo de cada app</li><li>Avisos no Telegram</li></ul>
+          </div>
+          <div class="sc" data-no="orbix" tabindex="0">
+            <div class="sc-cab"><span class="sc-ic" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 22V9h13l19 19-13 13z"/><circle cx="15" cy="16" r="2.6" class="ic-cheio"/><path class="ic-pisca" d="M36 6v6M33 9h6"/></svg></span><div class="sc-tit"><h3>Orbix</h3><p class="sc-papel">Achadinhos que se publicam</p></div><span class="sc-n">8 galhos</span></div>
+            <p class="sc-desc">Acha produto, escreve o roteiro, grava com apresentadora de IA, confere o preço e publica sozinho em 4 redes.</p>
+            <ul class="galhos"><li>Achadinhos e curadoria</li><li>Roteiro</li><li>Apresentadora no NexoFrame</li><li>Conferência de preço</li><li>Piloto e agenda</li><li>Publica em 4 redes</li><li>Robô de comentários</li><li>Canal no Telegram</li></ul>
+          </div>
+          <div class="sc" data-no="certeza" tabindex="0">
+            <div class="sc-cab"><span class="sc-ic" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="6" y="12" width="36" height="26" rx="5"/><path d="M6 19h36"/><g class="ic-eq"><rect x="14" y="25" width="4" height="9" rx="2" class="ic-cheio"/><rect x="22" y="23" width="4" height="11" rx="2" class="ic-cheio"/><rect x="30" y="26" width="4" height="8" rx="2" class="ic-cheio"/></g></svg></span><div class="sc-tit"><h3>Certeza Duvidosa</h3><p class="sc-papel">Canal de YouTube no automático</p></div><span class="sc-n">7 galhos</span></div>
+            <p class="sc-desc">Canal que se produz sozinho: roteiro, narração, animação em código, B-roll de várias fontes, trilha e Shorts.</p>
+            <ul class="galhos"><li>Roteiro com portão</li><li>Narração</li><li>Animação em código</li><li>B-roll de várias fontes</li><li>Trilha e efeitos</li><li>Shorts</li><li>Agenda e publicação</li></ul>
+          </div>
+          <div class="sc" data-no="nexo" tabindex="0">
+            <div class="sc-cab"><span class="sc-ic" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M6 14V8h6M36 8h6v6M42 34v6h-6M12 40H6v-6"/><circle cx="24" cy="20" r="6"/><path d="M13 38c2-6 6-9 11-9s9 3 11 9"/><path class="ic-scan" d="M9 12h30"/></svg></span><div class="sc-tit"><h3>NexoFrame</h3><p class="sc-papel">Motor de vídeo e avatar</p></div><span class="sc-n">5 galhos</span></div>
+            <p class="sc-desc">Roda no próprio computador: recebe o roteiro e devolve o vídeo pronto, com avatar que fala e dança.</p>
+            <ul class="galhos"><li>Avatar</li><li>Fala</li><li>Dança</li><li>Provador</li><li>Cenários</li></ul>
+          </div>
+          <div class="sc" data-no="clickgo" tabindex="0">
+            <div class="sc-cab"><span class="sc-ic" aria-hidden="true"><svg viewBox="0 0 48 48"><circle class="ic-onda" cx="18" cy="18" r="8"/><path d="M18 18l18 7-7 3-3 7z" class="ic-cheio"/></svg></span><div class="sc-tit"><h3>ClickGo</h3><p class="sc-papel">Este app: do pedido ao site no ar</p></div><span class="sc-n">8 galhos</span></div>
+            <p class="sc-desc">Fábrica de conteúdo, postador com calendário e pedidos de site, do formulário ao site publicado.</p>
+            <ul class="galhos"><li>Fábrica de conteúdo</li><li>Postador e calendário</li><li>Formulário e esboço</li><li>Prévia e ajustes</li><li>Pagamento confirmado</li><li>Site no ar</li><li>Prospecção</li><li>Sala do projeto</li></ul>
+          </div>
+          <div class="sc" data-no="lyra" tabindex="0">
+            <div class="sc-cab"><span class="sc-ic" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M14 16h20a9 9 0 0 1 8.7 11.3l-1.8 6.6a4.5 4.5 0 0 1-7.6 2L29 31H19l-4.3 4.9a4.5 4.5 0 0 1-7.6-2l-1.8-6.6A9 9 0 0 1 14 16z"/><path d="M15 21v8M11 25h8"/><circle class="ic-pisca" cx="32" cy="23" r="2.2"/><circle class="ic-pisca dois" cx="36" cy="28" r="2.2"/></svg></span><div class="sc-tit"><h3>LYRA</h3><p class="sc-papel">Canal de games sozinho</p></div><span class="sc-n">6 galhos</span></div>
+            <p class="sc-desc">O Radar da Steam acha as promoções e o Short vai ao ar sozinho; também edita a gameplay e agenda.</p>
+            <ul class="galhos"><li>Radar da Steam</li><li>Promoção no ar sozinha</li><li>Gameplay</li><li>Edição</li><li>Capa e título</li><li>Agenda</li></ul>
+          </div>
+        </div>
       </div>
       <div class="acoes">
         <a class="btn btn-prim" data-contato="principal" href="https://ig.me/m/clickgo.dev" target="_blank" rel="noopener"><span data-rotulo>Quero um sistema</span></a>
@@ -317,5 +396,6 @@
 <script src="script.js" defer></script>
 <script src="v5.js" defer></script>
 <script src="v6.js" defer></script>
+<script src="v7.js" defer></script>
 </body>
 </html>
