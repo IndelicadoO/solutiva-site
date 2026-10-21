@@ -36,7 +36,7 @@
         <summary>Como funciona: prévia grátis → sinal → site final</summary>
         <ol>
           <li><b>Ajuste a prévia grátis.</b> É uma versão de prévia, com textos e fotos de exemplo, que fica no ar por 2 horas de cada vez (depois é só tocar em "Ver a prévia de novo"). Você ajusta com o dedo ou pela conversa, sem pagar nada.</li>
-          <li><b>Aprove e pague o sinal de 50% do pacote.</b> O Pix aparece aqui na página, no nome da ClickGo (CNPJ 50.522.870/0001-07).</li>
+          <li><b>Aprove e pague o sinal de 50% do pacote.</b> O pagamento (Pix ou cartão) aparece aqui na página, no nome da ClickGo (CNPJ 50.522.870/0001-07).</li>
           <li><b>Receba o site final completo.</b> Caprichado, com os seus dados e fotos reais, no ar de vez, com o seu domínio e a sala do site para pedir mudanças. Você vê o site pronto antes de pagar o restante: os outros 50% só na entrega.</li>
         </ol>
       </details>
@@ -61,14 +61,15 @@
     </section>
 
     <section class="cg-pix" id="pix" aria-live="polite" hidden>
-      <div class="cg-pix-preparando" id="pix-preparando"><div class="cg-giro"></div><div><b id="pix-prep-t">Aprovado! Preparando o seu Pix…</b><span id="pix-prep-s">Leva só alguns segundos. Os dados do pagamento aparecem aqui mesmo.</span></div></div>
+      <div class="cg-pix-preparando" id="pix-preparando"><div class="cg-giro"></div><div><b id="pix-prep-t">Aprovado! Preparando o seu pagamento…</b><span id="pix-prep-s">Leva só alguns segundos. Os dados do pagamento aparecem aqui mesmo.</span></div></div>
       <div id="pix-pronto" hidden>
         <h2 id="pix-titulo">Pague o sinal e garanta o seu site</h2>
         <div class="cg-pix-valor"><span id="pix-rotulo">Sinal (50%)</span><b id="pix-valor"></b></div>
         <div class="cg-pix-chave" id="pix-chave-box"><span>Chave Pix</span><code id="pix-chave"></code><button type="button" class="cg-btn cg-btn-prim" id="pix-copiar">Copiar chave Pix</button></div>
         <p class="cg-pix-sem" id="pix-sem" hidden>A chave Pix está na conversa.</p>
         <button type="button" class="cg-pix-cartao" id="pix-cartao">Prefere cartão parcelado? <u>Toque aqui</u></button>
-        <a class="cg-btn cg-pix-mp" id="pix-cartao-link" href="#" target="_blank" rel="noopener" hidden>Pagar no cartão <small>(até 12x, Mercado Pago)</small></a>
+        <a class="cg-btn cg-btn-prim cg-pix-mp" id="pix-cartao-link" href="#" target="_blank" rel="noopener" hidden>Pagar (Pix ou cartão, até 12x) <small>Mercado Pago</small></a>
+        <p class="cg-pix-nota" id="pix-mp-nota" hidden>O Pix fica dentro do link (QR Code ou copia e cola) e cai na hora. Aprovado o pagamento, a confirmação aparece aqui sozinha.</p>
         <ul class="cg-pix-garante" id="pix-garante-sinal">
           <li>O sinal garante o seu site final: caprichado, com os seus dados e fotos reais, no ar de vez.</li>
           <li>Você vê o site pronto antes de pagar o restante: os outros 50% só na entrega.</li>
@@ -79,7 +80,7 @@
           <li>Assim que o restante cair, o site vai ao ar de vez e esta página vira a sala do seu site.</li>
           <li>Pagamento para a ClickGo, CNPJ 50.522.870/0001-07.</li>
         </ul>
-        <p class="cg-pix-nota">Pagou? Mande o comprovante (print ou foto) e a gente confirma.</p>
+        <p class="cg-pix-nota" id="pix-nota">Pagou? Mande o comprovante (print ou foto) e a gente confirma.</p>
         <button type="button" class="cg-btn cg-btn-linha" id="pix-comprovante">Enviar comprovante</button>
       </div>
     </section>
@@ -188,7 +189,7 @@
 <button type="button" class="cg-nova-msg" id="nova-msg" hidden>Nova mensagem · ver</button>
 <div class="cg-toast" id="toast" role="status" hidden></div>
 <script src="/cg-comum.js"></script>
-<script src="/acompanhar.js"></script>
+<script src="/acompanhar.js?v=mp2"></script>
 <script src="/sala.js"></script>
 <script src="/projeto.js"></script>
 </body>

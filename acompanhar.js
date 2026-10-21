@@ -70,7 +70,7 @@
     $('status-s').textContent = i.publicado ? 'Seu site está no ar. Para mudar alguma coisa, use "Pedir uma mudança" logo abaixo.'
       : i.restanteLiberado ? 'Seu site final está pronto! Veja na prévia. Assim que o restante cair, ele vai ao ar de vez.'
       : i.sinalRecebido ? 'Recebemos o sinal. Mande na conversa o que faltar para o site final.'
-      : i.pixLiberado ? 'Os dados do Pix estão logo abaixo. Assim que o sinal cair, começamos o site final.'
+      : i.pixLiberado ? (temLinkMP(i) ? 'O link de pagamento (Pix ou cartão) está logo abaixo. Assim que o sinal for aprovado, começamos o site final.' : 'Os dados do Pix estão logo abaixo. Assim que o sinal cair, começamos o site final.')
       : i.posicao ? (i.posicao > 1 ? 'Tem ' + (i.posicao - 1) + ' na sua frente. ' : 'É o próximo! ') + 'Enquanto isso, pode tirar dúvidas na conversa.'
       : i.versao ? (i.rodadasRestantes > 0 ? 'Gostou? Aprove. Quer mudar? Ajuste com o dedo ou peça na conversa.' : 'Ajustes do esboço usados: o que faltar entra no site final, depois do sinal.')
       : 'Estamos preparando o seu esboço. Pode tirar dúvidas na conversa.';
@@ -136,7 +136,7 @@
     if (!(rest || sin)) return;
     var v = rest ? Number(i.restante) || 0 : Number(i.sinal) || 0;
     $('aviso-pag-t').textContent = rest ? 'Seu site está pronto! Falta só o restante' + (v ? ' (' + brl(v) + ')' : '') + ' para ir ao ar.' : 'Esboço aprovado! Falta só o sinal' + (v ? ' (' + brl(v) + ')' : '') + ' para começar o site final.';
-    $('aviso-pag-s').textContent = i.cartaoUrl ? 'Toque para ver o Pix ou pagar no cartão (até 12x).' : 'Toque para ver o Pix' + (i.querCartao ? '. O link do cartão chega na conversa.' : ' ou pedir o cartão parcelado.');
+    $('aviso-pag-s').textContent = temLinkMP(i) ? 'Toque para pagar (Pix ou cartão, até 12x).' : 'Toque para ver o Pix' + (i.querCartao ? '. O link do cartão chega na conversa.' : ' ou pedir o cartão parcelado.');
   }
   $('aviso-pag').onclick = function () { $('pix').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
   // "Prefere cartão parcelado? Toque aqui": o pedido vai à conversa e a equipe é avisada (sem digitar)
@@ -150,15 +150,17 @@
   (function () {
     var m = /[?&]cartao=(aprovado|pendente|recusado)/.exec(location.search || '');
     if (!m) return;
-    setTimeout(function () { toast(m[1] === 'aprovado' ? 'Pagamento aprovado! Em instantes ele aparece confirmado aqui.' : m[1] === 'pendente' ? 'Pagamento em análise no Mercado Pago. Assim que aprovar, ele aparece confirmado aqui.' : 'O pagamento não passou. Tente de novo no cartão ou pague pelo Pix.'); }, 600);
+    setTimeout(function () { toast(m[1] === 'aprovado' ? 'Pagamento aprovado! Em instantes ele aparece confirmado aqui.' : m[1] === 'pendente' ? 'Pagamento em análise no Mercado Pago. Assim que aprovar, ele aparece confirmado aqui.' : 'O pagamento não passou. Tente de novo pelo mesmo link: dá para escolher Pix ou outro cartão.'); }, 600);
     try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) { /* */ }
   })();
+  // Mercado Pago ligado no app (dono, 21/10/2026): o pagamento sai SÓ pelo link (Pix ou cartão), sem chave copia-e-cola
+  function temLinkMP(i) { return /^https:\/\/(www\.|sandbox\.)?mercadopago\.com(\.br)?\//.test(String((i || {}).cartaoUrl || '')); }
   function desenharPix(prep) {
     var i = estado.info || {}, rest = !!(i.restanteLiberado && !i.publicado && !i.cancelado), mostra = rest || !!(i.pixLiberado && !i.sinalRecebido && !i.publicado && !i.cancelado);
     desenharAvisoPag();
     $('pix').hidden = !(mostra || prep);
     $('pix-preparando').hidden = mostra || !prep;
-    if (prep && !mostra) { var demora = Date.now() - prep > 60000; $('pix-prep-t').textContent = demora ? 'Aprovação recebida!' : 'Aprovado! Preparando o seu Pix…'; $('pix-prep-s').textContent = demora ? 'Estamos confirmando a sua aprovação. Os dados do Pix aparecem aqui (e na conversa) assim que saírem.' : 'Leva só alguns segundos. Os dados do pagamento aparecem aqui mesmo.'; }
+    if (prep && !mostra) { var demora = Date.now() - prep > 60000; $('pix-prep-t').textContent = demora ? 'Aprovação recebida!' : 'Aprovado! Preparando o seu pagamento…'; $('pix-prep-s').textContent = demora ? 'Estamos confirmando a sua aprovação. Os dados do pagamento aparecem aqui (e na conversa) assim que saírem.' : 'Leva só alguns segundos. Os dados do pagamento aparecem aqui mesmo.'; }
     $('pix-pronto').hidden = !mostra;
     if (prep && !mostra) { $('giro').hidden = true; $('status-t').textContent = 'Esboço aprovado!'; $('status-s').textContent = 'Obrigado! O pagamento do sinal aparece logo abaixo.'; }
     if (!mostra) return;
@@ -166,14 +168,15 @@
     $('pix-rotulo').textContent = rest ? 'Restante (50%)' : 'Sinal (50%)';
     $('pix-garante-sinal').hidden = rest; $('pix-garante-restante').hidden = !rest;
     // Mercado Pago ligado no app: link de pagamento com o valor exato (até 12x); senão, o pedido de cartão vai à equipe
-    var mp = /^https:\/\/(www\.|sandbox\.)?mercadopago\.com(\.br)?\//.test(String(i.cartaoUrl || ''));
-    $('pix-cartao-link').hidden = !mp; $('pix-cartao').hidden = mp;
+    var mp = temLinkMP(i);
+    $('pix-cartao-link').hidden = !mp; $('pix-cartao').hidden = mp; $('pix-mp-nota').hidden = !mp;
+    $('pix-nota').hidden = mp; $('pix-comprovante').hidden = mp;
     if (mp) $('pix-cartao-link').href = i.cartaoUrl;
     if (i.querCartao && !$('pix-cartao').disabled) { $('pix-cartao').disabled = true; $('pix-cartao').innerHTML = 'Pedido de cartão enviado. O link chega na conversa.'; }
     var sinal = rest ? Number(i.restante) || 0 : Number(i.sinal) || 0, chave = String(i.pixChave || '');
     $('pix-valor').parentNode.hidden = !sinal;
     $('pix-valor').textContent = brl(sinal);
-    $('pix-chave-box').hidden = !chave; $('pix-sem').hidden = !!chave;
+    $('pix-chave-box').hidden = mp || !chave; $('pix-sem').hidden = mp || !!chave;
     $('pix-chave').textContent = chave;
   }
   function copiarTexto(t) {
@@ -292,7 +295,7 @@
   function rolarChat() { var b = $('msgs'); b.scrollTop = b.scrollHeight; }
   function sugestoes() {
     var i = estado.info || {}, s = $('sugestoes'); s.innerHTML = '';
-    var lista = i.publicado ? ['Quero mudar uma coisa no site'] : i.restanteLiberado ? ['Já paguei o restante', 'Aceita cartão?'] : i.pixLiberado ? ['Já paguei o sinal', 'Qual é a chave Pix?'] : i.versao ? ['Quanto fica?', 'Como funciona o pagamento?', 'Quanto tempo para ficar no ar?'] : ['Quanto custa um site?', 'Em quanto tempo fica pronto?'];
+    var lista = i.publicado ? ['Quero mudar uma coisa no site'] : i.restanteLiberado ? ['Já paguei o restante', temLinkMP(i) ? 'Como faço para pagar?' : 'Aceita cartão?'] : i.pixLiberado ? ['Já paguei o sinal', temLinkMP(i) ? 'Como faço para pagar?' : 'Qual é a chave Pix?'] : i.versao ? ['Quanto fica?', 'Como funciona o pagamento?', 'Quanto tempo para ficar no ar?'] : ['Quanto custa um site?', 'Em quanto tempo fica pronto?'];
     lista.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function () { if (i.publicado && $('sala-texto') && !$('sala-mudar').hidden && !$('sala').hidden) { $('sala-mudar').scrollIntoView({ behavior: 'smooth' }); $('sala-texto').focus(); } else mandar(t); }; s.appendChild(b); });
   }
 
@@ -326,12 +329,12 @@
     });
   });
   $('aprovar').onclick = function () {
-    if (!confirm('Aprovar o esboço? Em seguida mandamos aqui o Pix do sinal (50%). O restante só na entrega do site.')) return;
+    if (!confirm('Aprovar o esboço? Em seguida mandamos aqui o pagamento do sinal (50%). O restante só na entrega do site.')) return;
     $('aprovar').disabled = true;
     aprovadoAqui = Date.now(); if (estado) desenhar();
     $('pix').scrollIntoView({ behavior: 'smooth', block: 'center' });
     mandar('', { tipo: 'aprovar' }).then(function () {
-      toast('Aprovado! Preparando o seu Pix…');
+      toast('Aprovado! Preparando o seu pagamento…');
       ciclo();
     }).catch(function () { aprovadoAqui = 0; $('aprovar').disabled = false; if (estado) desenhar(); });
   };
