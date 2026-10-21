@@ -1,14 +1,13 @@
 /* ClickGo: ANDAMENTO da página do cliente (21/10/2026).
    Linha do tempo (site/cardápio e sistema), animação de "site sendo construído" (equipe trabalhando), pergunta do robô com
-   respostas rápidas (mesmo caminho da conversa), barra fixa da conversa no celular e "Agendar uma conversa por vídeo" (sistema).
-   Campos novos em info (etapa, etapaN/M, emProducao, naFila, pergunta, agendaUrl); sem eles, deduz das flags antigas.
+   respostas rápidas (mesmo caminho da conversa), barra fixa da conversa no celular e a agenda própria do sistema (agenda.js).
+   Campos novos em info (etapa, etapaN/M, emProducao, naFila, pergunta, agenda); sem eles, deduz das flags antigas.
    Nunca mostra posição nem minutos de fila. acompanhar.js chama CGAndamento.desenhar(estado, api) a cada atualização. */
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var SITE = [['pedido', 'Pedido'], ['esboco', 'Esboço'], ['sinal', 'Sinal'], ['montando', 'Montando seu site'], ['previa_final', 'Prévia final'], ['no_ar', 'No ar']];
   var SIS = [['briefing', 'Briefing'], ['prototipo', 'Protótipo'], ['orcamento', 'Orçamento'], ['sinal', 'Sinal'], ['construcao', 'Em construção'], ['entrega', 'Entrega'], ['no_ar', 'No ar']];
-  var AGENDA = /^https:\/\/(calendar\.app\.google|calendar\.google\.com|cal\.com|calendly\.com|zcal\.co)(\/[\w\-./?=&%#~+]*)?$/;
   // texto que não pode aparecer para o cliente (fila numerada, minutos, máquina, "assim que possível", bastidores)
   var PROIBIDO = /posi[cç][aã]o|\d+\s*min\b|minuto|\bPC\b|computador|desligad|assim que poss|claude|\brob[oô]\b|\bIA\b/i;
 
@@ -196,13 +195,9 @@
     clearTimeout(pulsar.t); pulsar.t = setTimeout(function () { d.classList.remove('pulsa'); }, 2600);
   }
 
-  // ---------- agendar conversa por vídeo (sistema) ----------
-  function desenharAgenda(r, an) {
-    var a = $('agenda'); if (!a) return;
-    var u = String((r.info || {}).agendaUrl || '');
-    var ok = an.proj && an.etapa !== 'briefing' && u.length <= 400 && AGENDA.test(u) && !(r.info || {}).cancelado;
-    a.hidden = !ok;
-    if (ok && a.getAttribute('href') !== u) a.setAttribute('href', u);
+  // ---------- agenda própria da sala do projeto (agenda.js; substitui o link externo agendaUrl, 21/10/2026) ----------
+  function desenharAgenda(r) {
+    if (window.CGAgenda) window.CGAgenda.desenhar(r, api);
   }
 
   function desenhar(r, a) {
