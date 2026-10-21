@@ -11,6 +11,9 @@
   if (!ID || !K) { $('sem-pedido').hidden = false; return; }
 
   var estado = null, vistas = 0, previaAtual = '', anexos = [], enviando = false;
+  // mensagens já vistas neste aparelho (a barra fixa só conta as novas de verdade, não todas a cada visita)
+  try { vistas = Number(localStorage.getItem('cg_vistas_' + ID)) || 0; } catch (e) { /* sem armazenamento */ }
+  function marcarVistas(n) { vistas = n; try { localStorage.setItem('cg_vistas_' + ID, String(n)); } catch (e) { /* */ } }
   var ehLargo = function () { return matchMedia('(min-width: 980px)').matches; };
 
   function toast(t) { var el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { el.hidden = true; }, 3800); }
@@ -22,7 +25,7 @@
     $('painel-previa').hidden = nome !== 'previa';
     $('painel-editor').hidden = nome !== 'editor';
     $('painel-conversa').hidden = nome !== 'conversa';
-    if (nome === 'conversa') { $('nova-msg').hidden = true; vistas = (estado && estado.mensagens.length) || 0; $('badge').hidden = true; $('badge').textContent = '0'; var ac = document.querySelector('.cg-abas button[data-aba="conversa"]'); if (ac) ac.classList.remove('tem-nova'); rolarChat(); }
+    if (nome === 'conversa') { $('nova-msg').hidden = true; marcarVistas((estado && estado.mensagens.length) || 0); $('badge').hidden = true; $('badge').textContent = '0'; var ac = document.querySelector('.cg-abas button[data-aba="conversa"]'); if (ac) ac.classList.remove('tem-nova'); rolarChat(); }
     if (nome === 'editor') abrirEditor();
     if (estado && window.CGAndamento) window.CGAndamento.desenhar(estado, apiAndamento);
   }
@@ -124,7 +127,7 @@
     if (window.CGAndamento) window.CGAndamento.desenhar(r, apiAndamento);
   }
   var apiAndamento = {
-    mandar: function (t) { return mandar(t); }, toast: toast, abrirConversa: abrirConversa, largo: ehLargo,
+    mandar: function (t) { return mandar(t); }, toast: toast, ocupado: function () { return enviando; }, abrirConversa: abrirConversa, largo: ehLargo,
     conversaAberta: function () { return !$('painel-conversa').hidden; }, encerrado: function () { return encerrado; },
     aprovado: function () { return estado ? aprovacaoPendente() : 0; }
   };
@@ -276,6 +279,7 @@
   var desenhadas = 0;
   function desenharMsgs() {
     var ms = estado.mensagens || [], box = $('msgs'), primeira = desenhadas === 0;
+    if (vistas > ms.length) vistas = ms.length;
     if (ms.length < desenhadas) { box.innerHTML = ''; desenhadas = 0; }
     for (var j = desenhadas; j < ms.length; j++) {
       var m = ms[j], d = document.createElement('div');
@@ -288,7 +292,7 @@
     var aberta = ehLargo() || !$('painel-conversa').hidden;
     if (aberta) {
       if (!primeira && ms.length > vistas && ms.slice(vistas).some(function (x) { return x.de !== 'cliente'; })) { var rc = $('painel-conversa').getBoundingClientRect(); if (rc.bottom < 60 || rc.top > innerHeight - 60) avisoNova(ms.slice(vistas).filter(function (x) { return x.de !== 'cliente'; }).length); }
-      vistas = ms.length; rolarChat();
+      marcarVistas(ms.length); rolarChat();
     }
     else {
       var novas = ms.slice(vistas).filter(function (x) { return x.de !== 'cliente'; }).length;
