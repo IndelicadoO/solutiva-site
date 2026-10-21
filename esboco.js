@@ -47,6 +47,18 @@
     });
   });
 
+  // WhatsApp oficial (a API diz em /config): DESLIGADO = e-mail obrigatório (padrão seguro, inclusive se a consulta falhar);
+  // LIGADO = WhatsApp ou e-mail, qualquer um basta. A fila confere a mesma regra.
+  var waOficial = false;
+  CG.chamar('/config').then(function (c) {
+    if (!c || !c.whatsappOficial) return;
+    waOficial = true;
+    document.getElementById('avisos-sub').textContent = 'Deixe pelo menos um. O esboço também fica numa página só sua.';
+    document.getElementById('rot-email').textContent = 'E-mail';
+    document.getElementById('rot-whats').textContent = 'WhatsApp';
+    form.querySelector('[name=email]').required = false;
+  }).catch(function () { /* fica o padrão: e-mail obrigatório */ });
+
   function mostrarErro(msg) { erro.textContent = msg; erro.hidden = !msg; if (msg) erro.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
@@ -56,7 +68,9 @@
     if (!v('ramo')) return mostrarErro('Diga o ramo (ex.: barbearia, clínica, restaurante).');
     if (!v('cidade')) return mostrarErro('Diga a cidade.');
     var zap = v('whatsapp').replace(/\D/g, '');
-    if (zap.length < 10 && !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v('email'))) return mostrarErro('Deixe um WhatsApp (com DDD) ou um e-mail para a gente te avisar.');
+    var emailOk = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v('email'));
+    if (!waOficial && !emailOk) return mostrarErro('Deixe o seu e-mail: é por ele que a gente te avisa do pedido.');
+    if (zap.length < 10 && !emailOk) return mostrarErro('Deixe um WhatsApp (com DDD) ou um e-mail para a gente te avisar.');
     if (!d.get('aceite')) return mostrarErro('Marque que concorda com o uso dos dados para montar o esboço.');
     mostrarErro('');
     botao.disabled = true; botao.textContent = 'Enviando…';

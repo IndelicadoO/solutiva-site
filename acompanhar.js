@@ -61,13 +61,14 @@
     $('aviso-off').hidden = !!r.appOnline;
     $('chat-estado').textContent = r.appOnline ? 'online agora' : 'responde em breve';
     // passos
-    var passo = i.publicado ? 5 : i.sinalRecebido ? 4 : i.pixLiberado ? 3 : (i.versao ? 2 : 1);
+    var passo = i.publicado ? 5 : i.sinalRecebido ? (i.restanteLiberado ? 5 : 4) : i.pixLiberado ? 3 : (i.versao ? 2 : 1);
     Array.prototype.forEach.call($('passos').children, function (li, n) { li.className = n + 1 < passo ? 'feito' : n + 1 === passo ? 'agora' : ''; });
     // status
     var fazendo = /fila|fazendo|ajustando|montando|publicando/i.test(r.situacaoTexto || '') || (!proj && !i.versao && !i.publicado);
     $('giro').hidden = !fazendo;
     $('status-t').textContent = r.situacaoTexto || 'Pedido recebido';
     $('status-s').textContent = i.publicado ? 'Seu site está no ar. Para mudar alguma coisa, use "Pedir uma mudança" logo abaixo.'
+      : i.restanteLiberado ? 'Seu site final está pronto! Veja na prévia. Assim que o restante cair, ele vai ao ar de vez.'
       : i.sinalRecebido ? 'Recebemos o sinal. Mande na conversa o que faltar para o site final.'
       : i.pixLiberado ? 'Os dados do Pix estão logo abaixo. Assim que o sinal cair, começamos o site final.'
       : i.posicao ? (i.posicao > 1 ? 'Tem ' + (i.posicao - 1) + ' na sua frente. ' : 'É o próximo! ') + 'Enquanto isso, pode tirar dúvidas na conversa.'
@@ -128,15 +129,37 @@
     for (var j = ms.length - 1; j >= 0; j--) if (ms[j].de === 'cliente' && ms[j].tipo === 'aprovar') return Date.parse(ms[j].em) || 1;
     return 0;
   }
+  // aviso no topo quando há pagamento em aberto (sinal ou restante): quem veio pelo e-mail de lembrete cai direto nele
+  function desenharAvisoPag() {
+    var i = estado.info || {}, rest = !!(i.restanteLiberado && !i.publicado), sin = !!(i.pixLiberado && !i.sinalRecebido && !i.publicado && !i.cancelado);
+    $('aviso-pag').hidden = !(rest || sin);
+    if (!(rest || sin)) return;
+    var v = rest ? Number(i.restante) || 0 : Number(i.sinal) || 0;
+    $('aviso-pag-t').textContent = rest ? 'Seu site está pronto! Falta só o restante' + (v ? ' (' + brl(v) + ')' : '') + ' para ir ao ar.' : 'Esboço aprovado! Falta só o sinal' + (v ? ' (' + brl(v) + ')' : '') + ' para começar o site final.';
+    $('aviso-pag-s').textContent = 'Toque para ver o Pix' + (i.querCartao ? '. O link do cartão chega na conversa.' : ' ou pedir o cartão parcelado.');
+  }
+  $('aviso-pag').onclick = function () { $('pix').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+  // "Prefere cartão parcelado? Toque aqui": o pedido vai à conversa e a equipe é avisada (sem digitar)
+  $('pix-cartao').onclick = function () {
+    var b = this; if (b.disabled) return;
+    b.disabled = true;
+    mandar('', { tipo: 'cartao' }).then(function () { toast('Pedido enviado! A equipe ClickGo te manda o link do cartão na conversa.'); b.innerHTML = 'Pedido de cartão enviado. O link chega na conversa.'; })
+      .catch(function () { b.disabled = false; });
+  };
   function desenharPix(prep) {
-    var i = estado.info || {}, mostra = !!(i.pixLiberado && !i.sinalRecebido && !i.publicado && !i.cancelado);
+    var i = estado.info || {}, rest = !!(i.restanteLiberado && !i.publicado && !i.cancelado), mostra = rest || !!(i.pixLiberado && !i.sinalRecebido && !i.publicado && !i.cancelado);
+    desenharAvisoPag();
     $('pix').hidden = !(mostra || prep);
     $('pix-preparando').hidden = mostra || !prep;
     if (prep && !mostra) { var demora = Date.now() - prep > 60000; $('pix-prep-t').textContent = demora ? 'Aprovação recebida!' : 'Aprovado! Preparando o seu Pix…'; $('pix-prep-s').textContent = demora ? 'Estamos confirmando a sua aprovação. Os dados do Pix aparecem aqui (e na conversa) assim que saírem.' : 'Leva só alguns segundos. Os dados do pagamento aparecem aqui mesmo.'; }
     $('pix-pronto').hidden = !mostra;
     if (prep && !mostra) { $('giro').hidden = true; $('status-t').textContent = 'Esboço aprovado!'; $('status-s').textContent = 'Obrigado! O pagamento do sinal aparece logo abaixo.'; }
     if (!mostra) return;
-    var sinal = Number(i.sinal) || 0, chave = String(i.pixChave || '');
+    $('pix-titulo').textContent = rest ? 'Pague o restante e coloque o seu site no ar' : 'Pague o sinal e garanta o seu site';
+    $('pix-rotulo').textContent = rest ? 'Restante (50%)' : 'Sinal (50%)';
+    $('pix-garante-sinal').hidden = rest; $('pix-garante-restante').hidden = !rest;
+    if (i.querCartao && !$('pix-cartao').disabled) { $('pix-cartao').disabled = true; $('pix-cartao').innerHTML = 'Pedido de cartão enviado. O link chega na conversa.'; }
+    var sinal = rest ? Number(i.restante) || 0 : Number(i.sinal) || 0, chave = String(i.pixChave || '');
     $('pix-valor').parentNode.hidden = !sinal;
     $('pix-valor').textContent = brl(sinal);
     $('pix-chave-box').hidden = !chave; $('pix-sem').hidden = !!chave;
@@ -258,7 +281,7 @@
   function rolarChat() { var b = $('msgs'); b.scrollTop = b.scrollHeight; }
   function sugestoes() {
     var i = estado.info || {}, s = $('sugestoes'); s.innerHTML = '';
-    var lista = i.publicado ? ['Quero mudar uma coisa no site'] : i.pixLiberado ? ['Já paguei o sinal', 'Qual é a chave Pix?'] : i.versao ? ['Quanto fica?', 'Como funciona o pagamento?', 'Quanto tempo para ficar no ar?'] : ['Quanto custa um site?', 'Em quanto tempo fica pronto?'];
+    var lista = i.publicado ? ['Quero mudar uma coisa no site'] : i.restanteLiberado ? ['Já paguei o restante', 'Aceita cartão?'] : i.pixLiberado ? ['Já paguei o sinal', 'Qual é a chave Pix?'] : i.versao ? ['Quanto fica?', 'Como funciona o pagamento?', 'Quanto tempo para ficar no ar?'] : ['Quanto custa um site?', 'Em quanto tempo fica pronto?'];
     lista.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function () { if (i.publicado && $('sala-texto') && !$('sala-mudar').hidden && !$('sala').hidden) { $('sala-mudar').scrollIntoView({ behavior: 'smooth' }); $('sala-texto').focus(); } else mandar(t); }; s.appendChild(b); });
   }
 

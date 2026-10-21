@@ -256,6 +256,12 @@ h1, h2, h3, p { margin: 0; }
 .cg-pix-chave code { display: block; padding: 10px 12px; border-radius: 12px; background: rgba(2, 5, 12, .6); border: 1px solid var(--borda); font-size: .95rem; word-break: break-all; user-select: all; }
 .cg-pix-nota { color: var(--txt-2); font-size: .86rem; margin: 4px 0 12px; }
 .cg-pix-sem { color: var(--txt-2); }
+.cg-pix-cartao { display: block; width: 100%; margin: 8px 0 4px; padding: 6px 0; background: none; border: 0; color: var(--txt-2); font: inherit; font-size: .86rem; text-align: left; cursor: pointer; }
+.cg-pix-cartao u { color: var(--agua); text-underline-offset: 3px; }
+.cg-pix-cartao:disabled { cursor: default; color: var(--agua); }
+.cg-aviso-pag { display: block; width: 100%; margin-top: 10px; padding: 10px 14px; border-radius: 14px; border: 2px solid var(--agua); background: rgba(52, 245, 197, .12); color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.cg-aviso-pag b { display: block; }
+.cg-aviso-pag span { display: block; font-size: .86rem; color: var(--txt-2); margin-top: 2px; }
 .cg-pix .cg-btn { width: 100%; }
 .cg-abas .cg-badge:not([hidden]) { top: -6px; right: 4px; min-width: 22px; height: 22px; line-height: 22px; border-radius: 11px; font-size: .78rem; font-weight: 800; background: #ff4d6d; color: #fff; box-shadow: 0 0 0 3px rgba(255, 77, 109, .3); animation: cgPulsa 1.4s ease-in-out infinite; }
 .cg-abas button.tem-nova:not([aria-selected="true"]) { color: #fff; box-shadow: inset 0 0 0 2px #ff4d6d; }

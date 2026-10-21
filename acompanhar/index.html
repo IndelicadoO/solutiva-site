@@ -31,6 +31,7 @@
       <div class="cg-passos-txt"><span>Pedido</span><span>Esboço</span><span>Aprovado</span><span>Sinal</span><span>No ar</span></div>
       <button type="button" class="cg-resumo-pac" id="resumo-pac" hidden><span>Seu pacote</span><b id="resumo-pac-t"></b><i>ver pacotes ↓</i></button>
       <div class="cg-status" id="status"><div class="cg-giro" id="giro"></div><div><b id="status-t">Pedido recebido</b><span id="status-s">Estamos preparando o seu esboço.</span></div></div>
+      <button type="button" class="cg-aviso-pag" id="aviso-pag" hidden><b id="aviso-pag-t"></b><span id="aviso-pag-s"></span></button>
       <details class="cg-como" id="como" hidden>
         <summary>Como funciona: prévia grátis → sinal → site final</summary>
         <ol>
@@ -62,13 +63,19 @@
     <section class="cg-pix" id="pix" aria-live="polite" hidden>
       <div class="cg-pix-preparando" id="pix-preparando"><div class="cg-giro"></div><div><b id="pix-prep-t">Aprovado! Preparando o seu Pix…</b><span id="pix-prep-s">Leva só alguns segundos. Os dados do pagamento aparecem aqui mesmo.</span></div></div>
       <div id="pix-pronto" hidden>
-        <h2>Pague o sinal e garanta o seu site</h2>
-        <div class="cg-pix-valor"><span>Sinal (50%)</span><b id="pix-valor"></b></div>
+        <h2 id="pix-titulo">Pague o sinal e garanta o seu site</h2>
+        <div class="cg-pix-valor"><span id="pix-rotulo">Sinal (50%)</span><b id="pix-valor"></b></div>
         <div class="cg-pix-chave" id="pix-chave-box"><span>Chave Pix</span><code id="pix-chave"></code><button type="button" class="cg-btn cg-btn-prim" id="pix-copiar">Copiar chave Pix</button></div>
         <p class="cg-pix-sem" id="pix-sem" hidden>A chave Pix está na conversa.</p>
-        <ul class="cg-pix-garante">
+        <button type="button" class="cg-pix-cartao" id="pix-cartao">Prefere cartão parcelado? <u>Toque aqui</u></button>
+        <ul class="cg-pix-garante" id="pix-garante-sinal">
           <li>O sinal garante o seu site final: caprichado, com os seus dados e fotos reais, no ar de vez.</li>
           <li>Você vê o site pronto antes de pagar o restante: os outros 50% só na entrega.</li>
+          <li>Pagamento para a ClickGo, CNPJ 50.522.870/0001-07.</li>
+        </ul>
+        <ul class="cg-pix-garante" id="pix-garante-restante" hidden>
+          <li>O seu site final está pronto: veja na prévia (fica no ar por 2 horas; depois é só tocar em "Ver de novo").</li>
+          <li>Assim que o restante cair, o site vai ao ar de vez e esta página vira a sala do seu site.</li>
           <li>Pagamento para a ClickGo, CNPJ 50.522.870/0001-07.</li>
         </ul>
         <p class="cg-pix-nota">Pagou? Mande o comprovante (print ou foto) e a gente confirma.</p>
