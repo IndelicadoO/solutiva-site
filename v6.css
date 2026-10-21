@@ -92,6 +92,31 @@ html:not(.js-reel) .reel { overflow-x: auto; -webkit-mask-image: none; mask-imag
 .mapa.foco .m-linha.lig { stroke: var(--ac); }
 .mapa.foco .m-no:not(.ativo):not(.centro) .m-nome { fill: var(--txt-2); }
 .m-no.ativo .m-nome { fill: var(--ac); }
+/* mapa em dois níveis (21/10): pulsos no nível 1, galhos do app no nível 2 */
+.m-n1, .m-n2 { transition: opacity .35s ease; }
+.m-n2 { opacity: 0; pointer-events: none; }
+.mapa.nivel2 .m-n1 { opacity: 0; pointer-events: none; }
+.mapa.nivel2 .m-n2 { opacity: 1; pointer-events: auto; }
+.m-no { cursor: pointer; }
+.m-toque { fill: transparent; }
+.m-pulso { fill: #bdf0ff; filter: drop-shadow(0 0 4px var(--ac)); }
+.m-pulso.volta { fill: var(--ac); }
+.parado .m-pulsos { display: none; }
+.m-ramo { fill: none; stroke: var(--ac); stroke-width: 1.4; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: .8; }
+.m-ramo.base { stroke: rgba(236, 247, 255, .3); stroke-width: 1; stroke-dasharray: none; stroke-dashoffset: 0; }
+.m-orbit-mini { font: 700 15px var(--titulo); fill: var(--ac); }
+.m-nome-2 { fill: var(--ac); font-size: 18px; }
+.m-ponto { fill: var(--cartao); stroke: rgba(236, 247, 255, .3); stroke-width: 1.4; transition: fill .25s, stroke .25s; }
+.m-ponto.aceso { fill: var(--ac); stroke: var(--ac); filter: drop-shadow(0 0 5px var(--ac)); }
+.m-galho { font: 500 17px 'Onest', system-ui, sans-serif; fill: var(--txt-2); transition: fill .25s; }
+.m-galho.aceso { fill: var(--txt); }
+.mapa-dica { margin: 10px 0 0; text-align: center; color: var(--txt-2); font-size: .85rem; }
+.sis-lista > div { cursor: pointer; outline: none; border-radius: 4px; transition: background .2s; }
+.sis-lista > div:focus-visible { box-shadow: 0 0 0 2px var(--ac); }
+.sis-lista > div.ativo dt { color: var(--ac); }
+.galhos { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.galhos li { font-size: .78rem; line-height: 1.2; padding: 4px 10px; border: 1px solid var(--linha-2); border-radius: 999px; color: var(--txt-2); transition: border-color .2s, color .2s; }
+.sis-lista > div.ativo .galhos li { border-color: rgba(76, 201, 255, .5); color: var(--txt); }
 .sis-lista { margin: 0; display: grid; }
 .sis-lista > div { display: grid; grid-template-columns: 9.5em 1fr; gap: 4px 20px; padding: 16px 0; border-top: 1px solid var(--linha); }
 .sis-lista > div:last-child { border-bottom: 1px solid var(--linha); }
