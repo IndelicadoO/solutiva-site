@@ -45,7 +45,7 @@
     <section class="cg-projeto" id="projeto" aria-label="Sala do projeto" hidden>
       <div class="cg-cartao">
         <h2>Sala do seu projeto</h2>
-        <p class="cg-sub" id="proj-sub">Responda as perguntas na conversa, mande documentos de exemplo e gere um protótipo clicável. Nada é cobrado aqui: o orçamento vem depois, pela conversa.</p>
+        <p class="cg-sub" id="proj-sub">Responda as perguntas na conversa, mande documentos de exemplo e gere um protótipo clicável. O protótipo não tem custo. Terminada a conversa inicial, o orçamento aparece aqui nesta página.</p>
         <div class="cg-proj-barra" aria-hidden="true"><i id="proj-barra"></i></div>
         <p class="cg-proj-etapa" id="proj-etapa"></p>
         <ul class="cg-proj-resumo" id="proj-resumo"></ul>
@@ -58,6 +58,22 @@
           <small id="proj-rodadas"></small>
         </div>
       </div>
+    </section>
+
+    <section class="cg-pix cg-orc" id="orc" aria-live="polite" hidden>
+      <h2 id="orc-titulo">Orçamento do seu sistema</h2>
+      <div class="cg-pix-valor"><span>Valor do sistema</span><b id="orc-valor"></b></div>
+      <p class="cg-pix-nota" id="orc-mensal" hidden></p>
+      <p class="cg-pix-nota" id="orc-prazo" hidden></p>
+      <ul class="cg-pix-garante" id="orc-inclui"></ul>
+      <div id="orc-pagar" hidden>
+        <div class="cg-pix-valor"><span id="orc-rotulo">Sinal (50%)</span><b id="orc-pag-valor"></b></div>
+        <a class="cg-btn cg-btn-prim cg-pix-mp" id="orc-link" href="#" target="_blank" rel="noopener" hidden>Pagar sinal <small>Pix ou cartão, até 12x · Mercado Pago</small></a>
+        <p class="cg-pix-nota" id="orc-mp-nota" hidden>O Pix fica dentro do link (QR Code ou copia e cola) e cai na hora. Aprovado o pagamento, a confirmação aparece aqui sozinha.</p>
+        <div class="cg-pix-chave" id="orc-chave-box" hidden><span>Chave Pix (CNPJ da ClickGo)</span><code id="orc-chave"></code><button type="button" class="cg-btn cg-btn-prim" id="orc-copiar">Copiar chave Pix</button><button type="button" class="cg-btn cg-btn-linha" id="orc-comprovante">Mandar o comprovante</button></div>
+        <p class="cg-pix-sem" id="orc-sem" hidden>Os dados do pagamento estão na conversa.</p>
+      </div>
+      <p class="cg-pix-nota" id="orc-situacao" hidden></p>
     </section>
 
     <section class="cg-pix" id="pix" aria-live="polite" hidden>

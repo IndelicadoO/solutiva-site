@@ -1,6 +1,8 @@
 // SALA DO PROJETO (sistema sob medida, 20/10/2026): o formulário marcou "Sistema sob medida" e a página de acompanhamento vira a
 // sala do projeto: andamento do briefing (as perguntas vêm pela conversa), documentos de exemplo em PDF (tipo "arquivo") e
-// "Gerar protótipo" (tipo "prototipo", até 3 rodadas). O protótipo aparece na própria prévia da página. Sem preço aqui.
+// "Gerar protótipo" (tipo "prototipo", até 3 rodadas). O protótipo aparece na própria prévia da página.
+// ORÇAMENTO (21/10/2026): depois que a equipe aprova, o app manda projeto.orcamento (valor, inclui, prazo, sinal/restante) e o
+// cartão mostra "Pagar sinal" (link do Mercado Pago, Pix ou cartão) ou, sem o link, a chave Pix + "Mandar o comprovante".
 // acompanhar.js chama window.CGProjeto.desenhar(estado, { mandar, toast, abrirConversa }) a cada atualização.
 (function () {
   'use strict';
@@ -40,13 +42,42 @@
     };
   }
 
+  function brl(n) { n = Number(n) || 0; return 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
+  var orcLigado = false;
+  function desenharOrc(o) {
+    $('orc').hidden = !o;
+    if (!o) return;
+    if (!orcLigado) {
+      orcLigado = true;
+      $('orc-copiar').onclick = function () { var b = this, t = $('orc-chave').textContent; var ok = function () { b.textContent = 'Chave copiada!'; api.toast('Chave Pix copiada. É só colar no app do seu banco.'); setTimeout(function () { b.textContent = 'Copiar chave Pix'; }, 2500); };
+        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(ok, function () { api.toast('Segure o dedo sobre a chave para copiar.'); }); else api.toast('Segure o dedo sobre a chave para copiar.'); };
+      $('orc-comprovante').onclick = function () { api.abrirConversa(); api.toast('Escolha o print ou a foto do comprovante e toque em enviar.'); setTimeout(function () { var x = document.getElementById('anexo-input'); if (x) x.click(); }, 250); };
+    }
+    $('orc-valor').textContent = brl(o.valor);
+    $('orc-mensal').hidden = !o.mensal; $('orc-mensal').textContent = o.mensal ? '+ ' + brl(o.mensal) + '/mês de hospedagem e suporte.' : '';
+    $('orc-prazo').hidden = !o.prazoDias; $('orc-prazo').textContent = o.prazoDias ? 'Prazo: cerca de ' + o.prazoDias + ' dias úteis depois do sinal.' : '';
+    var ul = $('orc-inclui'); ul.innerHTML = ''; (o.inclui || []).forEach(function (x) { ul.appendChild(el('li', x)); });
+    var rest = o.fase === 'restante', aberto = !!o.fase;
+    $('orc-titulo').textContent = rest ? 'Seu sistema está pronto: falta o restante' : o.entregue ? 'Sistema pago: obrigado!' : o.emProducao ? 'Sinal recebido: seu sistema está em produção' : 'Orçamento do seu sistema';
+    $('orc-pagar').hidden = !aberto;
+    var sit = $('orc-situacao'); sit.hidden = aberto; sit.textContent = o.entregue ? 'Recebemos o pagamento completo. A equipe ClickGo combina a entrega pela conversa.' : o.emProducao ? 'O restante (' + brl(o.restante) + ') só na entrega. A equipe te dá notícias pela conversa.' : '';
+    if (!aberto) return;
+    $('orc-rotulo').textContent = rest ? 'Restante (50%)' : 'Sinal (50%)';
+    $('orc-pag-valor').textContent = brl(rest ? o.restante : o.sinal);
+    var mp = /^https:\/\/(www\.|sandbox\.)?mercadopago\.com(\.br)?\//.test(String(o.cartaoUrl || ''));
+    $('orc-link').hidden = !mp; $('orc-mp-nota').hidden = !mp; if (mp) { $('orc-link').href = o.cartaoUrl; $('orc-link').firstChild.textContent = rest ? 'Pagar restante ' : 'Pagar sinal '; }
+    $('orc-chave-box').hidden = mp || !o.pixChave; $('orc-chave').textContent = o.pixChave || '';
+    $('orc-sem').hidden = mp || !!o.pixChave;
+  }
+
   function desenhar(r, a) {
     var i = (r && r.info) || {}, v = (r && r.projeto) || null;
     $('projeto').hidden = !i.projeto;
-    if (!i.projeto) return;
+    if (!i.projeto) { $('orc').hidden = true; return; }
     api = a; ligar();
     v = v || { etapa: 0, etapas: 5, arquivos: [], resumo: [], rodada: 0, rodadasTotal: 3, maxArquivos: 6, maxBytes: 1572864 };
     window.__cgProjMax = v.maxBytes || 1572864;
+    desenharOrc(v.orcamento || null);
     var etapas = v.etapas || 5, feitas = Math.min(etapas, v.etapa || 0);
     $('proj-barra').style.width = Math.round(100 * (feitas / etapas)) + '%';
     $('proj-etapa').textContent = feitas < etapas ? 'Conversa inicial: pergunta ' + (feitas + 1) + ' de ' + etapas + ' (responda na conversa).' : 'Conversa inicial completa.';
@@ -62,7 +93,7 @@
     if (v.gerando) { g.disabled = true; g.textContent = v.posicao > 1 ? 'Na fila para montar…' : 'Montando o protótipo…'; }
     else { g.disabled = !v.podeGerar; g.textContent = v.rodada ? 'Gerar de novo (com o que você pediu)' : 'Gerar protótipo'; }
     var tot = v.rodadasTotal || 3;
-    $('proj-rodadas').textContent = v.rodada >= tot ? 'As ' + tot + ' rodadas de protótipo foram usadas. A equipe continua com você pela conversa.'
+    $('proj-rodadas').textContent = v.aviso ? v.aviso : v.rodada >= tot ? 'As ' + tot + ' rodadas de protótipo foram usadas. A equipe continua com você pela conversa.'
       : feitas < etapas ? 'Libera quando a conversa inicial terminar. Até ' + tot + ' rodadas, sem custo.'
       : 'Rodada ' + Math.min(tot, (v.rodada || 0) + 1) + ' de ' + tot + ', sem custo. O link do protótipo fica no ar por 7 dias.';
   }
