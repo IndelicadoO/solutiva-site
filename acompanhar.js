@@ -24,7 +24,10 @@
     $('painel-conversa').hidden = nome !== 'conversa';
     if (nome === 'conversa') { $('nova-msg').hidden = true; vistas = (estado && estado.mensagens.length) || 0; $('badge').hidden = true; $('badge').textContent = '0'; var ac = document.querySelector('.cg-abas button[data-aba="conversa"]'); if (ac) ac.classList.remove('tem-nova'); rolarChat(); }
     if (nome === 'editor') abrirEditor();
+    if (estado && window.CGAndamento) window.CGAndamento.desenhar(estado, apiAndamento);
   }
+  function abrirConversa() { if (!ehLargo()) abrirAba('conversa'); $('painel-conversa').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  $('chat-voltar').onclick = function () { abrirAba('previa'); };
   Array.prototype.forEach.call(document.querySelectorAll('.cg-abas button'), function (b) { b.onclick = function () { abrirAba(b.dataset.aba); }; });
   $('ir-editar').onclick = function () { if (ehLargo()) { $('painel-editor').hidden = false; abrirEditor(); $('painel-editor').scrollIntoView({ behavior: 'smooth' }); } else abrirAba('editor'); };
 
@@ -54,26 +57,25 @@
     $('tudo').hidden = false;
     var proj = !!i.projeto;
     $('titulo').textContent = (proj ? 'Sala do projeto · ' : 'Esboço de ') + r.negocio;
-    $('passos').hidden = proj; document.querySelector('.cg-passos-txt').hidden = proj;
     $('como').hidden = proj || !!i.publicado || !!i.cancelado || !!i.sinalRecebido;
     $('online').textContent = r.appOnline ? 'atendimento online' : 'resposta em breve';
     $('online').className = 'cg-pill' + (r.appOnline ? '' : ' off');
     $('aviso-off').hidden = !!r.appOnline;
     $('chat-estado').textContent = r.appOnline ? 'online agora' : 'responde em breve';
-    // passos
-    var passo = i.publicado ? 5 : i.sinalRecebido ? (i.restanteLiberado ? 5 : 4) : i.pixLiberado ? 3 : (i.versao ? 2 : 1);
-    Array.prototype.forEach.call($('passos').children, function (li, n) { li.className = n + 1 < passo ? 'feito' : n + 1 === passo ? 'agora' : ''; });
+    // andamento (etapa, equipe trabalhando/na fila): andamento.js; aqui só o que o status precisa
+    var an = window.CGAndamento ? window.CGAndamento.estado(r, aprovacaoPendente()) : { naFila: false, emProd: false, frase: '' };
     // status
-    var fazendo = /fila|fazendo|ajustando|montando|publicando/i.test(r.situacaoTexto || '') || (!proj && !i.versao && !i.publicado);
+    var fazendo = ('emProducao' in i || 'naFila' in i) ? !!(i.emProducao || i.naFila) : /fila|fazendo|ajustando|montando|publicando/i.test(r.situacaoTexto || '') || (!proj && !i.versao && !i.publicado);
     $('giro').hidden = !fazendo;
-    $('status-t').textContent = r.situacaoTexto || 'Pedido recebido';
+    $('status-t').textContent = window.CGAndamento ? window.CGAndamento.limpo(r, an) : (r.situacaoTexto || 'Pedido recebido');
     $('status-s').textContent = i.publicado ? 'Seu site está no ar. Para mudar alguma coisa, use "Pedir uma mudança" logo abaixo.'
       : i.restanteLiberado ? 'Seu site final está pronto! Veja na prévia. Assim que o restante cair, ele vai ao ar de vez.'
       : i.sinalRecebido ? 'Recebemos o sinal. Mande na conversa o que faltar para o site final.'
       : i.pixLiberado ? (temLinkMP(i) ? 'O link de pagamento (Pix ou cartão) está logo abaixo. Assim que o sinal for aprovado, começamos o site final.' : 'Os dados do Pix estão logo abaixo. Assim que o sinal cair, começamos o site final.')
-      : i.posicao ? (i.posicao > 1 ? 'Tem ' + (i.posicao - 1) + ' na sua frente. ' : 'É o próximo! ') + 'Enquanto isso, pode tirar dúvidas na conversa.'
+      : an.naFila ? 'Seu pedido está na fila de produção da nossa equipe. Enquanto isso, pode tirar dúvidas na conversa.'
+      : an.emProd && i.versao ? 'Nossa equipe está aplicando os seus ajustes. A nova versão aparece aqui na prévia.'
       : i.versao ? (i.rodadasRestantes > 0 ? 'Gostou? Aprove. Quer mudar? Ajuste com o dedo ou peça na conversa.' : 'Ajustes do esboço usados: o que faltar entra no site final, depois do sinal.')
-      : 'Estamos preparando o seu esboço. Pode tirar dúvidas na conversa.';
+      : 'Nossa equipe está montando o seu esboço. Pode tirar dúvidas na conversa.';
     // prévia
     if (r.previaUrl && r.previaUrl !== previaAtual) {
       previaAtual = r.previaUrl;
@@ -85,7 +87,7 @@
     var exp = !!(i.previaExpirada && !i.publicado);
     $('previa-expirou').hidden = !exp;
     if (exp) { $('previa').hidden = true; $('previa-acoes').hidden = true; $('previa-vazia').hidden = true; previaAtual = ''; }
-    $('previa-msg').textContent = proj ? 'O protótipo clicável aparece aqui depois que você tocar em "Gerar protótipo".' : i.posicao ? 'Seu esboço está na fila (posição ' + i.posicao + ', ~' + i.minutos + ' min).' : 'O esboço aparece aqui assim que ficar pronto.';
+    $('previa-msg').textContent = proj ? 'O protótipo clicável aparece aqui depois que você tocar em "Gerar protótipo".' : an.naFila ? 'Seu esboço está na fila de produção. Ele aparece aqui quando ficar pronto.' : 'Nossa equipe está montando o seu esboço. Ele aparece aqui quando ficar pronto.';
     // editor
     var editavel = !!(i.editavel && r.previaUrl);
     $('aba-editor').hidden = !editavel; $('ir-editar').hidden = !editavel;
@@ -94,7 +96,7 @@
     // compra sempre à vista
     var cta = $('cta');
     var prep = aprovacaoPendente();
-    cta.hidden = prep || !(i.podeAprovar || (i.versao && !i.pixLiberado && !i.posicao));
+    cta.hidden = prep || !(i.podeAprovar || (i.versao && !i.pixLiberado && !an.naFila && !an.emProd));
     desenharPix(prep);
     $('aprovar').disabled = !i.podeAprovar;
     $('cta-s').textContent = i.rodadasRestantes === 0 ? 'Ajustes do esboço usados. Aprove e o resto entra no site final, depois do sinal.' : 'Você só paga o sinal de 50% depois de aprovar. O resto, na entrega.';
@@ -114,10 +116,18 @@
     if (proj) {
       cta.hidden = true; $('pacotes').hidden = true; $('resumo-pac').hidden = true; $('aba-editor').hidden = true; $('ir-editar').hidden = true; $('pix').hidden = true;
       $('sugestoes').innerHTML = '';
-      $('status-s').textContent = (r.projeto && r.projeto.pergunta) ? 'Responda na conversa: ' + r.projeto.pergunta : r.projeto && r.projeto.gerando ? 'Leva alguns minutos; o protótipo aparece aqui sozinho.' : r.projeto && r.projeto.rodada ? 'Navegue no protótipo. Quer mudar algo? Escreva na conversa.' : 'Toque em "Gerar protótipo".';
+      var SUB_SIS = { orcamento: 'Confira o orçamento logo abaixo. Dúvidas? Fale com a equipe na conversa.', sinal: 'O pagamento do sinal está logo abaixo. Com ele, a construção começa.', construcao: 'Nossa equipe constrói o seu sistema em etapas. Cada etapa pronta aparece aqui.', entrega: 'Seu sistema está pronto. A equipe combina a entrega com você pela conversa.', no_ar: 'Seu sistema está no ar. Ajustes do mês: é só pedir na conversa.' };
+      $('status-s').textContent = SUB_SIS[an.etapa] ? SUB_SIS[an.etapa] : (r.projeto && r.projeto.pergunta) ? 'Responda na conversa: ' + r.projeto.pergunta : r.projeto && r.projeto.gerando ? 'Nossa equipe está montando o protótipo; ele aparece aqui quando ficar pronto.' : r.projeto && r.projeto.rodada ? 'Navegue no protótipo. Quer mudar algo? Escreva na conversa.' : 'Toque em "Gerar protótipo".';
     }
-    if (window.CGProjeto) window.CGProjeto.desenhar(r, { mandar: mandar, toast: toast, abrirConversa: function () { if (ehLargo()) $('painel-conversa').scrollIntoView({ behavior: 'smooth' }); else abrirAba('conversa'); } });
+    if (window.CGProjeto) window.CGProjeto.desenhar(r, { mandar: mandar, toast: toast, abrirConversa: abrirConversa });
+    // linha do tempo, animação da equipe, pergunta com respostas rápidas, barra fixa da conversa, agendar vídeo
+    if (window.CGAndamento) window.CGAndamento.desenhar(r, apiAndamento);
   }
+  var apiAndamento = {
+    mandar: function (t) { return mandar(t); }, toast: toast, abrirConversa: abrirConversa, largo: ehLargo,
+    conversaAberta: function () { return !$('painel-conversa').hidden; }, encerrado: function () { return encerrado; },
+    aprovado: function () { return estado ? aprovacaoPendente() : 0; }
+  };
   // ---------- aprovação + cartão do Pix (fixo, visível em qualquer aba) ----------
   var aprovadoAqui = 0;
   function aprovacaoPendente() {
@@ -288,6 +298,7 @@
     var abaConv = document.querySelector('.cg-abas button[data-aba="conversa"]'); if (abaConv) abaConv.classList.toggle('tem-nova', !$('badge').hidden);
   }
   function avisoNova(novas) {
+    if (!ehLargo() && window.CGAndamento) { window.CGAndamento.pulsar(); return; } // celular: a barra fixa da conversa pulsa
     var a = $('nova-msg'); a.textContent = novas > 1 ? novas + ' novas mensagens · ver' : 'Nova mensagem · ver'; a.hidden = false;
     clearTimeout(avisoNova.t); avisoNova.t = setTimeout(function () { a.hidden = true; }, 20000);
   }
@@ -295,6 +306,9 @@
   function rolarChat() { var b = $('msgs'); b.scrollTop = b.scrollHeight; }
   function sugestoes() {
     var i = estado.info || {}, s = $('sugestoes'); s.innerHTML = '';
+    // pergunta da equipe esperando resposta: as respostas rápidas tomam o lugar das sugestões
+    var pp = window.CGAndamento && window.CGAndamento.pendente(estado);
+    if (pp && pp.opcoes.length) { pp.opcoes.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.className = 'cg-op-perg perg'; b.textContent = t; b.onclick = function () { window.CGAndamento.responder(t, estado); }; s.appendChild(b); }); return; }
     var lista = i.publicado ? ['Quero mudar uma coisa no site'] : i.restanteLiberado ? ['Já paguei o restante', temLinkMP(i) ? 'Como faço para pagar?' : 'Aceita cartão?'] : i.pixLiberado ? ['Já paguei o sinal', temLinkMP(i) ? 'Como faço para pagar?' : 'Qual é a chave Pix?'] : i.versao ? ['Quanto fica?', 'Como funciona o pagamento?', 'Quanto tempo para ficar no ar?'] : ['Quanto custa um site?', 'Em quanto tempo fica pronto?'];
     lista.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function () { if (i.publicado && $('sala-texto') && !$('sala-mudar').hidden && !$('sala').hidden) { $('sala-mudar').scrollIntoView({ behavior: 'smooth' }); $('sala-texto').focus(); } else mandar(t); }; s.appendChild(b); });
   }
