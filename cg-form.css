@@ -375,9 +375,34 @@ h1, h2, h3, p { margin: 0; }
 .cg-pergunta-outra { justify-self: start; padding: 4px 0; background: none; border: 0; color: var(--txt-2); font: inherit; font-size: .84rem; text-decoration: underline; cursor: pointer; }
 .cg-sugestoes .perg { border-color: var(--ciano); background: rgba(63, 210, 255, .12); color: var(--txt); font-weight: 700; }
 
-/* agendar conversa por vídeo (sistema) */
-.cg-agenda { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--borda-forte); color: var(--ceu); text-decoration: none; font-size: .86rem; font-weight: 600; }
-.cg-agenda svg { width: 18px; height: 18px; }
+/* agenda própria da sala do projeto (agenda.js): mobile first, manhã e tomados em cinza "Ocupado" */
+.cg-agenda-box { display: grid; gap: 12px; margin-top: 12px; padding: 14px; border-radius: 18px; border: 1px solid var(--borda-forte); background: rgba(10, 20, 38, .6); }
+.cg-agenda-box[hidden] { display: none; }
+.cg-ag-cab { display: grid; gap: 2px; }
+.cg-ag-cab b { font-size: 1rem; }
+.cg-ag-cab span, .cg-ag-nota, .cg-ag-marcado small { color: var(--txt-2); font-size: .84rem; line-height: 1.4; }
+.cg-ag-dias { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.cg-ag-dias::-webkit-scrollbar { display: none; }
+.cg-ag-dia { flex: none; display: grid; justify-items: center; gap: 2px; min-width: 58px; min-height: 52px; padding: 6px 8px; border-radius: 14px; border: 1px solid var(--borda-forte); background: transparent; color: var(--txt); font: inherit; cursor: pointer; }
+.cg-ag-dia small { font-size: .72rem; color: var(--txt-2); text-transform: uppercase; letter-spacing: .04em; }
+.cg-ag-dia b { font-size: .92rem; }
+.cg-ag-dia[aria-selected="true"] { border-color: var(--ciano); background: rgba(63, 210, 255, .14); }
+.cg-ag-dia.cheio { opacity: .55; }
+.cg-ag-grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.cg-ag-hora { display: flex; justify-content: space-between; align-items: center; gap: 6px; min-height: 46px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--borda-forte); font: 600 .9rem 'Onest', sans-serif; color: var(--txt); background: transparent; text-align: left; }
+.cg-ag-hora i { font-style: normal; font-size: .72rem; font-weight: 500; }
+.cg-ag-hora.ocupado { color: #7d8799; background: rgba(125, 135, 153, .12); border-color: rgba(125, 135, 153, .25); }
+.cg-ag-hora.ocupado:first-child { grid-column: 1 / -1; }
+.cg-ag-hora.livre { cursor: pointer; color: var(--ceu); }
+.cg-ag-hora.livre i { color: var(--agua); }
+.cg-ag-hora.escolhido { color: #021019; border-color: transparent; background: linear-gradient(100deg, var(--ceu), var(--ciano)); }
+.cg-ag-hora.escolhido i { color: #021019; }
+.cg-ag-conf, .cg-ag-marcado { display: grid; gap: 10px; }
+.cg-ag-conf .cg-btn, .cg-ag-marcado .cg-btn { min-height: 48px; }
+.cg-ag-marcado > b { font-size: 1.05rem; color: var(--ceu); }
+.cg-ag-acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.cg-ag-cancelar { justify-self: start; padding: 6px 0; background: none; border: 0; color: var(--txt-2); font: inherit; font-size: .86rem; text-decoration: underline; cursor: pointer; }
+@media (min-width: 640px) { .cg-ag-grade { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 /* conversa sempre à mão: barra fixa no celular (última mensagem, não lidas, pulso, respostas rápidas) */
 .cg-doca { position: fixed; left: 10px; right: 10px; bottom: calc(var(--cta-h, 0px) + 10px + env(safe-area-inset-bottom)); z-index: 42; max-width: 620px; margin: 0 auto; border-radius: 20px; background: rgba(10, 20, 38, .96); border: 1px solid var(--borda-forte); box-shadow: 0 18px 40px -12px rgba(0, 0, 0, .8); backdrop-filter: blur(12px); overflow: hidden; }
