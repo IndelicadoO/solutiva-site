@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Onest:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/cg-form.css">
+<link rel="stylesheet" href="/cg-form.css?v=and1">
 </head>
 <body>
 <header class="cg-topo">
@@ -27,10 +27,15 @@
     <div class="cg-cab">
       <h1 id="titulo">Seu esboço</h1>
       <p id="sub">Esta página é só sua: guarde o link.</p>
-      <ol class="cg-passos" id="passos" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li></ol>
-      <div class="cg-passos-txt"><span>Pedido</span><span>Esboço</span><span>Aprovado</span><span>Sinal</span><span>No ar</span></div>
+      <div class="cg-andamento" id="andamento" aria-label="Andamento do seu pedido">
+        <ol class="cg-linha" id="linha"></ol>
+        <p class="cg-linha-agora" id="linha-agora"></p>
+      </div>
       <button type="button" class="cg-resumo-pac" id="resumo-pac" hidden><span>Seu pacote</span><b id="resumo-pac-t"></b><i>ver pacotes ↓</i></button>
-      <div class="cg-status" id="status"><div class="cg-giro" id="giro"></div><div><b id="status-t">Pedido recebido</b><span id="status-s">Estamos preparando o seu esboço.</span></div></div>
+      <div class="cg-status" id="status"><div class="cg-giro" id="giro"></div><div><b id="status-t">Pedido recebido</b><span id="status-s">Nossa equipe está preparando o seu esboço.</span></div></div>
+      <div class="cg-obra-slot" id="obra-slot" hidden></div>
+      <div class="cg-pergunta" id="pergunta" aria-live="polite" hidden></div>
+      <a class="cg-agenda" id="agenda" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>Agendar uma conversa por vídeo</a>
       <button type="button" class="cg-aviso-pag" id="aviso-pag" hidden><b id="aviso-pag-t"></b><span id="aviso-pag-s"></span></button>
       <details class="cg-como" id="como" hidden>
         <summary>Como funciona: prévia grátis → sinal → site final</summary>
@@ -116,7 +121,7 @@
 
     <section class="cg-sala" id="sala" aria-label="Sala do seu site" hidden>
       <p class="cg-sala-guarde" id="sala-guarde"><b>Guarde este link: é a sala do seu site.</b> Por aqui você pede mudanças, vê quantas restam no mês e liga o seu domínio próprio.</p>
-      <p class="cg-aviso-off" id="sala-off" hidden>Nossa equipe está fora agora. Pode mandar o pedido: ele fica na fila e fazemos assim que possível.</p>
+      <p class="cg-aviso-off" id="sala-off" hidden>Pode mandar o pedido: ele entra na fila de produção e a equipe te responde aqui.</p>
       <div class="cg-sala-grade">
         <div class="cg-cartao" id="sala-mudar">
           <h2>Pedir uma mudança</h2>
@@ -162,12 +167,12 @@
     <nav class="cg-abas" role="tablist" aria-label="Seções">
       <button role="tab" aria-selected="true" data-aba="previa">Prévia</button>
       <button role="tab" aria-selected="false" data-aba="editor" id="aba-editor" hidden>Editar</button>
-      <button role="tab" aria-selected="false" data-aba="conversa">Conversa<span class="cg-badge" id="badge" hidden>0</span></button>
+      <button role="tab" aria-selected="false" data-aba="conversa">Conversa</button>
     </nav>
 
     <div class="cg-grade">
       <section id="painel-previa" class="cg-cartao" aria-label="Prévia">
-        <div class="cg-tel"><div class="cg-vazio" id="previa-vazia"><div class="cg-giro"></div><p id="previa-msg">O esboço aparece aqui assim que ficar pronto.</p></div><div class="cg-vazio" id="previa-expirou" hidden><p><b>Sua prévia expirou</b><br>Ela fica no ar por 2 horas. O seu esboço continua guardado.</p><button class="cg-btn cg-btn-prim" id="ver-de-novo" type="button">Ver a prévia de novo</button></div><iframe id="previa" title="Prévia do seu site" hidden loading="lazy" referrerpolicy="no-referrer"></iframe></div>
+        <div class="cg-tel"><div class="cg-vazio" id="previa-vazia"><div class="cg-giro"></div><p id="previa-msg">Nossa equipe está montando o seu esboço. Ele aparece aqui quando ficar pronto.</p></div><div class="cg-vazio" id="previa-expirou" hidden><p><b>Sua prévia expirou</b><br>Ela fica no ar por 2 horas. O seu esboço continua guardado.</p><button class="cg-btn cg-btn-prim" id="ver-de-novo" type="button">Ver a prévia de novo</button></div><iframe id="previa" title="Prévia do seu site" hidden loading="lazy" referrerpolicy="no-referrer"></iframe></div>
         <div class="cg-acoes" id="previa-acoes" hidden>
           <a class="cg-btn cg-btn-linha" id="abrir" target="_blank" rel="noopener">Abrir em tela cheia</a>
           <button class="cg-btn cg-btn-linha" id="ir-editar" type="button">Ajustar com o dedo</button>
@@ -194,9 +199,9 @@
       </section>
 
       <section id="painel-conversa" class="cg-cartao cg-chat" aria-label="Conversa" hidden>
-        <div class="cg-chat-cab"><img src="/assets/logo-clickgo.webp" alt=""><div><b>Atendimento ClickGo</b><small id="chat-estado">responde aqui mesmo</small></div></div>
+        <div class="cg-chat-cab"><img src="/assets/logo-clickgo.webp" alt=""><div><b>Atendimento ClickGo</b><small id="chat-estado">responde aqui mesmo</small></div><button type="button" class="cg-chat-voltar" id="chat-voltar" aria-label="Voltar para a prévia">Prévia ↩</button></div>
         <div class="cg-msgs" id="msgs" aria-live="polite"></div>
-        <p class="cg-aviso-off" id="aviso-off" hidden>Nosso atendimento está fora agora. Pode mandar: sua mensagem fica guardada e a resposta chega aqui em breve.</p>
+        <p class="cg-aviso-off" id="aviso-off" hidden>Pode mandar: sua mensagem fica com a nossa equipe e a resposta chega aqui mesmo.</p>
         <div class="cg-sugestoes" id="sugestoes"></div>
         <div class="cg-anexos-prev" id="anexos"></div>
         <form class="cg-envio" id="envio">
@@ -215,11 +220,16 @@
   </div>
 </main>
 <div class="cg-cta" id="cta" hidden><div class="cg-cta-in"><button class="cg-btn cg-btn-prim" id="aprovar" type="button">Aprovar e garantir meu site</button><small id="cta-s">Você só paga o sinal de 50% depois de aprovar. O resto, na entrega.</small></div></div>
+<div class="cg-doca" id="doca" hidden>
+  <button type="button" class="cg-doca-abrir" id="doca-abrir" aria-label="Abrir a conversa com a equipe ClickGo"><img src="/assets/logo-clickgo.webp" width="34" height="34" alt=""><span class="cg-doca-txt"><b>Atendimento ClickGo <small id="doca-estado"></small></b><span id="doca-ultima">Fale com a nossa equipe por aqui.</span></span><span class="cg-badge" id="badge" hidden>0</span><span class="cg-doca-seta" aria-hidden="true">›</span></button>
+  <div class="cg-doca-perg" id="doca-perg" hidden></div>
+</div>
 <button type="button" class="cg-nova-msg" id="nova-msg" hidden>Nova mensagem · ver</button>
 <div class="cg-toast" id="toast" role="status" hidden></div>
 <script src="/cg-comum.js"></script>
-<script src="/acompanhar.js?v=mp2"></script>
+<script src="/andamento.js?v=and1"></script>
+<script src="/acompanhar.js?v=and1"></script>
 <script src="/sala.js"></script>
-<script src="/projeto.js"></script>
+<script src="/projeto.js?v=and1"></script>
 </body>
 </html>
