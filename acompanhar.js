@@ -127,7 +127,7 @@
     if (window.CGAndamento) window.CGAndamento.desenhar(r, apiAndamento);
   }
   var apiAndamento = {
-    mandar: function (t) { return mandar(t); }, toast: toast, ocupado: function () { return enviando; }, abrirConversa: abrirConversa, largo: ehLargo,
+    mandar: function (t, x) { return mandar(t, x); }, toast: toast, ocupado: function () { return enviando; }, abrirConversa: abrirConversa, largo: ehLargo,
     conversaAberta: function () { return !$('painel-conversa').hidden; }, encerrado: function () { return encerrado; },
     aprovado: function () { return estado ? aprovacaoPendente() : 0; }
   };
