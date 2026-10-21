@@ -219,6 +219,14 @@
     if (sim) $('#prev-fechar').focus(); else prevAbre.focus();
   }
   prevAbre.addEventListener('click', function () { abrirPrev(true); });
+  // computador: o celular da prévia cresce até ocupar a altura da tela (zoom), sem passar da largura que sobra ao lado
+  function tamanhoPrev() {
+    if (innerWidth < 1000) { tel.style.zoom = ''; return; }
+    tel.style.zoom = '';
+    var topo = Math.max(16, tel.getBoundingClientRect().top + scrollY), porAltura = (innerHeight - topo - 16) / 658, porLargura = (Math.min(document.documentElement.clientWidth, 1180) - 32 - 560 - (parseFloat(getComputedStyle($('#palco')).columnGap) || 96) - 8) / 320;
+    tel.style.zoom = String(Math.max(0.8, Math.min(porAltura, porLargura, 1.6)).toFixed(3));
+  }
+  tamanhoPrev(); addEventListener('resize', tamanhoPrev);
   $('#prev-fechar').addEventListener('click', function () { abrirPrev(false); });
   document.addEventListener('click', function (e) { if (document.body.classList.contains('prev-on') && !prevBox.contains(e.target) && e.target !== prevAbre && !prevAbre.contains(e.target)) abrirPrev(false); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.body.classList.contains('prev-on')) abrirPrev(false); });
