@@ -577,6 +577,11 @@
 
   /* ---------- início ---------- */
   var inicio = restaurar();
+  // ?tipo=cardapio (botões do bloco do cardápio na página inicial) já deixa a opção marcada; não atropela rascunho em andamento
+  var tipoUrl = new URLSearchParams(location.search).get('tipo');
+  if (inicio === 0 && /^(site|cardapio|sistema|automacao)$/.test(tipoUrl || '')) {
+    var rTipo = form.querySelector('[name="oque"][value="' + tipoUrl + '"]'); if (rTipo) rTipo.checked = true;
+  }
   ajustarTipo(); desenharFotos(); marcarRamo();
   if (!form.hidden) { irPara(inicio); if (inicio === 0) robo('r-acena'); }
   atualizarPrevia();
