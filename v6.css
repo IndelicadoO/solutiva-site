@@ -118,3 +118,21 @@ html:not(.js-reel) .reel { overflow-x: auto; -webkit-mask-image: none; mask-imag
 
 /* atributo hidden vence o display das cenas/links (21/10/2026: cena do robô de WhatsApp escondida) */
 [hidden] { display: none !important; }
+
+/* 21/10/2026: venda puxada para o CARDÁPIO DIGITAL e para a velocidade (esboço em ~1 min) */
+.abertura h1.h1-rapido { font-size: clamp(2.6rem, 8.6vw, 7.6rem); }
+.btn-sec { color: var(--txt); border: 1px solid var(--borda); background: rgba(2, 5, 12, .6); }
+.btn-sec:hover { border-color: var(--ciano); transform: translateY(-2px); }
+.selo-atend { display: inline-flex; align-items: center; gap: 9px; margin-top: 18px; font-size: .92rem; color: var(--txt-2); }
+.selo-atend span { width: 8px; height: 8px; border-radius: 50%; background: var(--agua); box-shadow: 0 0 0 4px rgba(52, 224, 192, .18); }
+.cd9 { display: grid; gap: 40px; margin-top: 8px; }
+@media (min-width: 900px) { .cd9 { grid-template-columns: 1.15fr 1fr; gap: 64px; align-items: start; } }
+.cd9-preco { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin: 26px 0 10px; }
+.cd9-preco span { font-size: .95rem; color: var(--txt-2); }
+.cd9-preco strong { font: 800 clamp(2.6rem, 7vw, 4.2rem)/1 var(--titulo); letter-spacing: -.04em; color: var(--ceu); }
+.cd9-preco small { font-size: 1.05rem; color: var(--txt); font-weight: 500; }
+.cd9-preco-p { margin-top: 20px; }
+.cd9-preco-p strong { font-size: 2rem; }
+.cardapio9 .acoes { margin-top: 26px; }
+.cd9-rapido { margin-top: 14px; font-size: .92rem; color: var(--txt-2); }
+@media (max-width: 420px) { .acoes .btn { width: 100%; } }
