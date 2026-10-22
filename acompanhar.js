@@ -110,6 +110,11 @@
       $('giro').hidden = true; cta.hidden = true; $('pacotes').hidden = true; $('resumo-pac').hidden = true; $('aba-editor').hidden = true; $('ir-editar').hidden = true;
       $('status-s').innerHTML = 'Nada foi cobrado. <a href="/esboco/">Abrir o pedido novo</a>';
     }
+    // desistência pedida no chat (7 dias, CDC): sem pagamento, aprovação, pacote nem editor; a conversa continua
+    if (r.situacao === 'desistencia') {
+      $('giro').hidden = true; cta.hidden = true; $('pacotes').hidden = true; $('resumo-pac').hidden = true; $('aba-editor').hidden = true; $('ir-editar').hidden = true; $('pix').hidden = true;
+      $('status-s').textContent = 'Pedido cancelado a seu pedido. A devolução é confirmada aqui no chat e por e-mail.';
+    }
     // conversa
     desenharMsgs();
     sugestoes();
