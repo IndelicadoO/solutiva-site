@@ -1,7 +1,7 @@
 # Render: Static Site (sem build). Blueprint opcional; o painel do Render também funciona sem este arquivo.
 # Cabeçalhos de segurança (auditoria 20/10/2026). ATENÇÃO: o Render só lê estes headers se o serviço estiver ligado a este
 # Blueprint; se não estiver, cole os mesmos em Settings > Headers (path /*) no painel do Render.
-# CSP: script só do próprio site (nenhum script inline); estilo inline liberado (as prévias do editor, em srcdoc, herdam
+# CSP (22/10: + Pixel da Meta em connect.facebook.net/www.facebook.com): script só do próprio site (nenhum script inline); estilo inline liberado (as prévias do editor, em srcdoc, herdam
 # esta política e têm <style>); API em orbixbr.onrender.com; prévia/site do cliente em previa./sites.clickgo.dev.br e
 # *.github.io (iframe, fetch do editor e <base> do editor); 127.0.0.1/localhost = teste local (?api=...).
 services:
@@ -16,7 +16,7 @@ services:
         value: public, max-age=604800
       - path: /*
         name: Content-Security-Policy
-        value: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' https://orbixbr.onrender.com https://previa.clickgo.dev.br https://sites.clickgo.dev.br https://*.github.io http://127.0.0.1:* http://localhost:*; frame-src 'self' https://previa.clickgo.dev.br https://sites.clickgo.dev.br https://*.github.io http://127.0.0.1:* http://localhost:*; base-uri 'self' https://previa.clickgo.dev.br https://sites.clickgo.dev.br https://*.github.io http://127.0.0.1:* http://localhost:*; form-action 'self'; object-src 'none'; frame-ancestors 'none'"
+        value: "default-src 'self'; script-src 'self' https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' https://www.facebook.com https://connect.facebook.net https://orbixbr.onrender.com https://previa.clickgo.dev.br https://sites.clickgo.dev.br https://*.github.io http://127.0.0.1:* http://localhost:*; frame-src 'self' https://previa.clickgo.dev.br https://sites.clickgo.dev.br https://*.github.io http://127.0.0.1:* http://localhost:*; base-uri 'self' https://previa.clickgo.dev.br https://sites.clickgo.dev.br https://*.github.io http://127.0.0.1:* http://localhost:*; form-action 'self'; object-src 'none'; frame-ancestors 'none'"
       - path: /*
         name: Strict-Transport-Security
         value: max-age=31536000

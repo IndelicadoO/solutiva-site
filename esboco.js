@@ -649,6 +649,7 @@
       var r = res[0];
       mtLista.forEach(function (li) { li.className = 'ok'; });
       if (r.isca) { $('#mt-t').textContent = 'Recebido!'; return; }
+      try { if (window.cgLead) window.cgLead(oque()); } catch (e) { /* pixel fora */ }
       try {
         var l = JSON.parse(localStorage.getItem('cg_pedidos') || '[]').filter(function (x) { return x.id !== r.id && !(antigo && x.id === antigo.id); });
         l.unshift({ id: r.id, k: r.k, negocio: val('negocio'), em: Date.now() });
