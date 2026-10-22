@@ -58,9 +58,10 @@
 .sis-lista.js .sc .galhos li:nth-child(8) { transition-delay: .95s; }
 .sis-lista.js .sc .galhos li::before { transition-delay: inherit; }
 
-/* o cartão mostra 3 galhos; o toque/clique abre o resto e fecha de novo */
+/* o mapa acima já mostra os galhos: o cartão fica só com ícone, nome e papel; o toque/clique abre os galhos */
+.sis8 .mapa { margin-top: 56px; }
 @media all {
-  .sis-lista.js .sc:not(.aberto) .galhos li:nth-child(n+4) { display: none; }
+  .sis-lista.js .sc:not(.aberto) .galhos { display: none; }
   .sis-lista.js .sc-mais {
     display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: .84rem; font-weight: 700; color: var(--ac);
     background: none; border: 0; padding: 4px 0; cursor: pointer;
