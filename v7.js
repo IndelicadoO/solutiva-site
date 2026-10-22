@@ -13,14 +13,14 @@
     cartoes.forEach(function (c) {
       var lis = c.querySelectorAll('.galhos li');
       c.setAttribute('role', 'listitem');
-      if (lis.length > 3) {
+      if (lis.length) {
         var b = document.createElement('button');
         b.type = 'button'; b.className = 'sc-mais';
         b.setAttribute('aria-expanded', 'false');
         var rot = function () { var ab = c.classList.contains('aberto'); b.textContent = ab ? 'Ver menos' : 'Ver os ' + lis.length + ' galhos'; b.setAttribute('aria-expanded', ab ? 'true' : 'false'); };
         rot();
         c.appendChild(b);
-        // o toque/clique no cartão abre e fecha os galhos (só 3 ficam à mostra)
+        // o toque/clique no cartão abre e fecha os galhos (o mapa já mostra os galhos; o cartão fica curto)
         c.addEventListener('click', function () { c.classList.toggle('aberto'); rot(); });
       }
     });
