@@ -265,6 +265,14 @@ button, input, textarea { font: inherit; color: inherit; }
 .mi-add { aspect-ratio: 1; border-radius: 16px; border: 1.5px dashed var(--borda-3); display: grid; place-items: center; color: var(--ciano); font-size: 1.8rem; cursor: pointer; background: transparent; transition: background .2s, transform .3s var(--mola); }
 .mi-add:hover { background: rgba(63, 210, 255, .07); transform: translateY(-2px); }
 @keyframes mi { from { opacity: 0; transform: scale(.7) rotate(-4deg); } }
+/* cardápio: dica do campo, envio do cardápio atual (foto/PDF) e miniatura de página */
+.cp-dica { display: block; margin-top: 7px; color: var(--txt-3); font-size: .8rem; line-height: 1.45; }
+.cp-dica:empty { display: none; }
+.cp-dica-cima { margin: -2px 0 10px; }
+.drop-mini { min-height: 112px; padding: 16px; }
+.drop-mini svg { width: 38px; height: 38px; }
+.drop.ocupado { pointer-events: none; opacity: .6; }
+.mi.pagina img { object-fit: contain; background: #fff; }
 
 /* revisão */
 .rev { display: grid; gap: 0; border: 1px solid var(--borda); border-radius: 20px; overflow: hidden; background: rgba(10, 20, 38, .55); margin-bottom: 18px; }
