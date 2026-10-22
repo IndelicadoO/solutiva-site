@@ -177,7 +177,7 @@
 @keyframes fd-entra { from { opacity: 0; transform: translateX(18px); } }
 .fd:not(.rodando) .fd-ps + .fd-ps { margin-top: 22px; }
 .fd.rodando .fd-op.sel { border-color: rgba(166, 230, 255, .2); box-shadow: none; }
-.fd.rodando .fd-op.sel.on { border-color: #3fd2ff; box-shadow: 0 0 0 1px #3fd2ff, 0 10px 30px -12px rgba(63, 210, 255, .7); transform: scale(1.03); }
+.fd.rodando .fd-op.on { border-color: #3fd2ff; box-shadow: 0 0 0 1px #3fd2ff, 0 10px 30px -12px rgba(63, 210, 255, .7); transform: scale(1.03); }
 .fd.rodando .fd-sug i.sel:not(.on) { color: var(--txt-2); background: none; border-color: rgba(166, 230, 255, .2); }
 .fd.rodando .fd-fotos span { opacity: 0; transform: translateY(20px) scale(.9); }
 .fd.rodando .fd-fotos span.on { opacity: 1; transform: none; }
@@ -212,4 +212,43 @@
 /* no computador a prévia acompanha a digitação, apagadinha, como no formulário de verdade */
 @media (min-width: 900px) {
   .fd.rodando[data-e="1"] .fd-site, .fd.rodando[data-e="2"] .fd-site { opacity: .5; transform: scale(.97); filter: saturate(.6); }
+}
+
+/* rodada 3: seletor de tipo (Landing / Cardápio / Sistema / Automação) e o caminho de projeto */
+.fd-tipos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; margin: 0 0 22px; border-radius: 999px; background: rgba(10, 20, 38, .8); border: 1px solid rgba(166, 230, 255, .2); max-width: 560px; }
+.fd-tipos button { min-width: 0; padding: 10px 6px; border: 0; border-radius: 999px; background: none; color: var(--txt-2); font: 700 .86rem/1 'Onest', system-ui, sans-serif; cursor: pointer; transition: background .3s, color .3s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fd-tipos button:hover { color: #fff; }
+.fd-tipos button[aria-selected="true"] { color: #021019; background: var(--ac); box-shadow: 0 6px 20px -8px rgba(76, 201, 255, .9); }
+.fd-tipos button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (max-width: 380px) { .fd-tipos button { font-size: .78rem; padding: 10px 2px; } }
+.fd-op em { justify-self: start; margin-top: 6px; font-style: normal; font-size: .68rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; color: #021019; background: #a6e6ff; }
+.fd-so-proj, .fd-prop, .fd-menu { display: none; }
+.fd.proj .fd-so-site { display: none; }
+.fd.proj .fd-so-proj { display: block; }
+.fd-preco { display: inline-block; margin: 0; padding: 8px 14px; border-radius: 999px; font-weight: 800; color: #021019; background: #a6e6ff; }
+.fd-nota { margin: 12px 0 0; font-size: .86rem; color: var(--txt-2); }
+.fd.proj .fd-cp b { white-space: normal; line-height: 1.35; }
+.fd[data-tipo="cardapio"] .fd-blocos { display: none; }
+.fd[data-tipo="cardapio"] .fd-menu { display: grid; gap: 8px; padding: 14px; }
+.fd-menu span { display: flex; justify-content: space-between; gap: 8px; font-size: .8rem; font-weight: 600; color: #0b1426; padding-bottom: 7px; border-bottom: 1px dashed #c9d5e6; }
+.fd-menu b { color: #1f7a6a; }
+.fd.proj .fd-site { display: none; }
+.fd.proj .fd-prop { display: grid; align-content: start; gap: 10px; position: absolute; inset: 10px; border-radius: 26px; padding: 22px 16px; background: linear-gradient(170deg, #10224a, #081128); color: #fff; transition: opacity .6s var(--mola), transform .6s var(--mola); }
+.fd-prop small { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: #a6e6ff; }
+.fd-prop strong { font: 800 1.1rem/1.15 var(--titulo); }
+.fd-prop-itens { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 8px; }
+.fd-prop-itens li { position: relative; padding-left: 20px; font-size: .8rem; color: var(--txt); }
+.fd-prop-itens li::before { content: ''; position: absolute; left: 0; top: .35em; width: 10px; height: 10px; border-radius: 50%; background: #34e0c0; }
+.fd-prop-preco { justify-self: start; margin-top: 6px; font-size: .78rem; font-weight: 800; padding: 6px 12px; border-radius: 999px; color: #021019; background: #a6e6ff; }
+.fd-prop-bt { justify-self: stretch; text-align: center; margin-top: 6px; font-size: .82rem; font-weight: 800; padding: 11px; border-radius: 999px; color: #021019; background: #34e0c0; }
+.fd.rodando.proj .fd-prop { opacity: 0; transform: scale(.94); }
+.fd.rodando.proj[data-e="4"] .fd-prop, .fd.rodando.proj[data-e="5"] .fd-prop { opacity: 1; transform: none; }
+.fd.rodando.proj[data-e="4"] .fd-selo-prev { opacity: 0; }
+.fd.rodando.proj[data-e="3"] .fd-selo-prev { opacity: 1; }
+.fd.rodando.proj[data-e="5"] .fd-prop-bt { transform: scale(.96); filter: brightness(1.15); }
+@media (prefers-reduced-motion: reduce) {
+  .fd.rodando *, .fd.rodando *::before, .fd.rodando *::after { transition: none !important; animation: none !important; }
+}
+@media (min-width: 900px) {
+  .fd.rodando.proj[data-e="1"] .fd-prop, .fd.rodando.proj[data-e="2"] .fd-prop { opacity: .35; transform: scale(.97); filter: saturate(.6); }
 }
