@@ -157,12 +157,18 @@
   <!-- 02b: O FORMULÁRIO DE PEDIDO em demonstração (preenche sozinho; sem JS ou com movimento reduzido, mostra o fim) -->
   <section class="canto fd8" id="pedido">
     <div class="canto-in">
-      <p class="slate"><b>Como pedir</b> Do formulário ao site no ar</p>
-      <h2 class="grande">Você responde 8 perguntas.<br><em>O esboço sai em minutos.</em></h2>
+      <p class="slate"><b>Como pedir</b> Do formulário ao resultado</p>
+      <h2 class="grande">Escolha o que precisa.<br><em>Veja o caminho até o fim.</em></h2>
       <p class="sub">É o nosso formulário de verdade, aqui se preenchendo sozinho. O exemplo é fictício.</p>
-      <div class="fd" id="fd" aria-label="Demonstração do formulário de pedido: escolhe site, preenche nome e ramo, envia fotos, o esboço aparece, vira prévia no celular e o site vai ao ar.">
+      <div class="fd" id="fd" data-tipo="landing" aria-label="Demonstração do formulário de pedido. Landing e cardápio: nome, ramo e fotos, o esboço aparece, vira prévia no celular e vai ao ar. Sistema e automação: preço a consultar; o pedido vira briefing, proposta e aprovação.">
+        <div class="fd-tipos" role="tablist" aria-label="Tipo de pedido" hidden>
+          <button type="button" role="tab" data-tipo="landing" aria-selected="true">Landing</button>
+          <button type="button" role="tab" data-tipo="cardapio" aria-selected="false">Cardápio</button>
+          <button type="button" role="tab" data-tipo="sistema" aria-selected="false">Sistema</button>
+          <button type="button" role="tab" data-tipo="automacao" aria-selected="false">Automação</button>
+        </div>
         <ol class="fd-trilho" aria-hidden="true">
-          <li data-e="0">Pedido</li><li data-e="2">Fotos</li><li data-e="3">Esboço</li><li data-e="4">Prévia</li><li data-e="5">No ar</li>
+          <li data-e="0">Pedido</li><li data-e="2" data-site="Fotos" data-proj="Briefing">Fotos</li><li data-e="3" data-site="Esboço" data-proj="Análise">Esboço</li><li data-e="4" data-site="Prévia" data-proj="Proposta">Prévia</li><li data-e="5" data-site="No ar" data-proj="Aprovação">No ar</li>
         </ol>
         <div class="fd-palco">
           <div class="fd-form" aria-hidden="true">
@@ -170,22 +176,33 @@
             <p class="fd-passo">Passo <span class="fd-np">8</span> de 8</p>
             <div class="fd-ps" data-e="0">
               <p class="fd-t">O que você precisa?</p>
-              <div class="fd-gc"><span class="fd-op sel"><b>Site</b><small>página do negócio</small></span><span class="fd-op"><b>Cardápio</b><small>com pedido no WhatsApp</small></span></div>
+              <div class="fd-gc">
+                <span class="fd-op sel" data-tipo="landing"><b>Landing</b><small>página do negócio</small></span>
+                <span class="fd-op" data-tipo="cardapio"><b>Cardápio</b><small>com pedido no WhatsApp</small></span>
+                <span class="fd-op proj" data-tipo="sistema"><b>Sistema</b><small>sob medida</small><em>Preço a consultar</em></span>
+                <span class="fd-op proj" data-tipo="automacao"><b>Automação</b><small>tarefas sozinhas</small><em>Preço a consultar</em></span>
+              </div>
             </div>
             <div class="fd-ps" data-e="1">
               <p class="fd-t">Como se chama o seu negócio?</p>
-              <span class="fd-cp"><small>Nome do negócio</small><b class="fd-dig" data-texto="Barbearia Dois Irmãos">Barbearia Dois Irmãos</b></span>
-              <span class="fd-cp"><small>Ramo</small><b class="fd-dig" data-texto="Barbearia">Barbearia</b></span>
-              <span class="fd-sug"><i class="sel">Barbearia</i><i>Salão</i><i>Padaria</i><i>Clínica</i></span>
+              <span class="fd-cp"><small>Nome do negócio</small><b class="fd-dig" data-k="nome">Barbearia Dois Irmãos</b></span>
+              <span class="fd-cp"><small class="fd-rot2">Ramo</small><b class="fd-dig" data-k="campo2">Barbearia</b></span>
             </div>
             <div class="fd-ps" data-e="2">
-              <p class="fd-t">Tem fotos?</p>
-              <div class="fd-fotos"><span class="f1"><i></i></span><span class="f2"><i></i></span><span class="f3"><i></i></span></div>
-              <p class="fd-cont"><span class="fd-nf">3</span> de 3 enviadas</p>
+              <div class="fd-so-site">
+                <p class="fd-t">Tem fotos?</p>
+                <div class="fd-fotos"><span class="f1"><i></i></span><span class="f2"><i></i></span><span class="f3"><i></i></span></div>
+                <p class="fd-cont"><span class="fd-nf">3</span> de 3 enviadas</p>
+              </div>
+              <div class="fd-so-proj">
+                <p class="fd-t">Pedido de projeto</p>
+                <p class="fd-preco">Preço a consultar</p>
+                <p class="fd-nota">Sem preço no formulário: primeiro entendemos o que você precisa.</p>
+              </div>
             </div>
             <div class="fd-ps fd-env" data-e="3">
               <p class="fd-t">Tudo certo?</p>
-              <span class="fd-bt">Ver meu esboço</span>
+              <span class="fd-bt" data-site="Ver meu esboço" data-proj="Enviar pedido de projeto">Ver meu esboço</span>
             </div>
           </div>
           <div class="fd-cel" aria-hidden="true">
@@ -193,17 +210,25 @@
               <div class="fd-site">
                 <div class="fd-hero"><small>Barbearia</small><strong>Barbearia Dois Irmãos</strong><span class="fd-cta">Chamar no WhatsApp</span></div>
                 <div class="fd-blocos"><i></i><i></i><i></i></div>
+                <div class="fd-menu"><span>Prato da casa<b>R$ --</b></span><span>Bebidas<b>R$ --</b></span><span>Sobremesa<b>R$ --</b></span></div>
                 <div class="fd-linhas"><i></i><i></i><i></i></div>
               </div>
+              <div class="fd-prop">
+                <small>Proposta</small>
+                <strong class="fd-prop-nome">Sistema</strong>
+                <ul class="fd-prop-itens"><li></li><li></li><li></li></ul>
+                <span class="fd-prop-preco">Preço a consultar</span>
+                <span class="fd-prop-bt">Aprovar proposta</span>
+              </div>
               <div class="fd-nasce"><span></span><span></span><span></span><span></span></div>
-              <span class="fd-selo-prev">Prévia · você pede ajustes</span>
+              <span class="fd-selo-prev" data-site="Prévia · você pede ajustes" data-proj="Analisando o briefing">Prévia · você pede ajustes</span>
             </div>
             <span class="fd-noar"><b>Site no ar</b><small>sites.clickgo.dev.br/barbearia-dois-irmaos · exemplo</small></span>
           </div>
         </div>
       </div>
       <div class="acoes">
-        <a class="btn btn-prim" data-contato="esboco" href="/esboco/"><span data-rotulo>Fazer o meu esboço grátis</span></a>
+        <a class="btn btn-prim" data-contato="esboco" href="/esboco/"><span data-rotulo>Fazer o meu pedido grátis</span></a>
       </div>
     </div>
   </section>
