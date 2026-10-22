@@ -10,6 +10,7 @@
   var api = new URLSearchParams(location.search).get('api');
   var menosMov = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fotos = [];
+  var cardFotos = [];
   var passos = $$('.ps', form);
   var ordem = passos.map(function (p) { return p.getAttribute('data-p'); });
   var atual = 0, daRevisao = false, waOficial = false, enviando = false;
@@ -129,7 +130,11 @@
   function luz(hex) { var n = parseInt(hex.slice(1), 16); return (0.299 * (n >> 16) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255; }
   function misturar(hex, fator) { var n = parseInt(hex.slice(1), 16); var r = Math.round((n >> 16) * fator), g = Math.round((n >> 8 & 255) * fator), b = Math.round((n & 255) * fator); return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
   function itensDe(txt) {
-    return String(txt || '').split(/[,;\n]+/).map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 4).map(function (s) {
+    txt = String(txt || '');
+    // lista do cardápio: uma linha por item ("Nome | R$ 25,90 | descrição"); "Lanches:" sozinho é categoria
+    var partes = /\n|\|/.test(txt) ? txt.split(/\n+/) : txt.split(/[,;]+/);
+    return partes.map(function (s) { s = s.trim(); if (/\|/.test(s)) { var c = s.split('|').map(function (x) { return x.trim(); }); s = c[0] + (c[1] ? ': ' + c[1] : ''); } return s.replace(/^[-•*·]\s*/, ''); })
+      .filter(function (s) { return s && !/:\s*$/.test(s); }).slice(0, 4).map(function (s) {
       var m = s.match(/^(.*?)(?:[:\-–]\s*)?(R\$\s*[\d.,]+|\d+[.,]?\d*\s*(?:reais)?)\s*$/i);
       return m && m[1].trim() ? [m[1].trim(), /R\$/i.test(m[2]) ? m[2].replace(/\s+/, ' ') : 'R$ ' + m[2].replace(/\s*reais/i, '')] : [s, ''];
     });
@@ -265,8 +270,13 @@
     $('#r-quer').textContent = t === 'cardapio' ? 'Algo especial no cardápio?' : pj ? 'Mais alguma coisa que a gente precisa saber?' : 'O que não pode faltar?';
     form.elements.quer.placeholder = t === 'cardapio' ? 'Combos, horário de funcionamento, foto dos pratos' : pj ? 'O que mais atrapalha hoje, que programas você já usa' : 'Fotos do espaço, botão para agendar';
     $('#cp-servicos').hidden = pj;
-    $('#r-servicos').textContent = t === 'cardapio' ? 'Alguns itens e preços' : 'Serviços e preços';
-    form.elements.servicos.placeholder = t === 'cardapio' ? 'X-burger R$ 25, batata R$ 15' : 'Corte R$ 40, barba R$ 30';
+    // cardápio (22/10/2026): lista de itens e preços, um por linha, e/ou a foto/PDF do cardápio atual (lido pela ClickGo)
+    var card = t === 'cardapio';
+    $('#r-servicos').textContent = card ? 'Itens e preços' : 'Serviços e preços';
+    form.elements.servicos.placeholder = card ? 'Lanches:\nX-Burger | R$ 25,90 | pão brioche e cheddar\nBatata frita | R$ 16\n\nBebidas:\nRefrigerante lata | R$ 6' : 'Corte R$ 40, barba R$ 30';
+    form.elements.servicos.rows = card ? 6 : 2;
+    $('#d-servicos').textContent = card ? 'Um item por linha: nome | preço | descrição (opcional). Categoria com dois-pontos ("Bebidas:"). Pode deixar em branco e mandar só a foto do cardápio abaixo.' : '';
+    $('#cp-cardfoto').hidden = !card;
     $('#t-fotos').textContent = pj ? 'Tem prints ou fotos?' : 'Tem fotos?';
     desenharRamos();
   }
@@ -296,16 +306,18 @@
       d.lastChild.addEventListener('click', function () { fotos.splice(i, 1); desenharFotos(); previaJa(); });
       caixa.appendChild(d);
     });
-    if (fotos.length && fotos.length < 3) { var a = document.createElement('button'); a.type = 'button'; a.className = 'mi-add'; a.setAttribute('aria-label', 'Adicionar mais fotos'); a.textContent = '+'; a.addEventListener('click', function () { fInput.click(); }); caixa.appendChild(a); }
-    drop.classList.toggle('cheio', fotos.length > 0);
-    cont.textContent = fotos.length + ' de 3';
+    if (fotos.length && fotos.length < maxFotos()) { var a = document.createElement('button'); a.type = 'button'; a.className = 'mi-add'; a.setAttribute('aria-label', 'Adicionar mais fotos'); a.textContent = '+'; a.addEventListener('click', function () { fInput.click(); }); caixa.appendChild(a); }
+    drop.classList.toggle('cheio', fotos.length > 0 || maxFotos() < 1);
+    cont.textContent = fotos.length + ' de ' + maxFotos();
     atualizarBotao();
   }
+  // o pedido leva até 3 imagens no total: no cardápio, as do cardápio atual (foto/PDF) vêm primeiro e tiram vaga das fotos do site
+  function maxFotos() { return 3 - (oque() === 'cardapio' ? cardFotos.length : 0); }
   function receber(lista) {
-    lista = Array.prototype.slice.call(lista || []).filter(function (f) { return /^image\//.test(f.type); }).slice(0, 3 - fotos.length);
-    if (!lista.length) return;
+    lista = Array.prototype.slice.call(lista || []).filter(function (f) { return /^image\//.test(f.type); }).slice(0, Math.max(0, maxFotos() - fotos.length));
+    if (!lista.length) { if (maxFotos() - fotos.length <= 0) mostrarErro('Já tem ' + (3 - maxFotos()) + ' imagem(ns) do cardápio: cabem mais ' + maxFotos() + ' foto(s) do negócio.'); return; }
     Promise.all(lista.map(function (f) { return CG.comprimir(f).catch(function () { return null; }); })).then(function (urls) {
-      var n = 0; urls.forEach(function (u) { if (u && fotos.length < 3) { fotos.push(u); n++; } });
+      var n = 0; urls.forEach(function (u) { if (u && fotos.length < maxFotos()) { fotos.push(u); n++; } });
       fInput.value = ''; desenharFotos(); previaJa(); if (n) robo('r-ok'); else mostrarErro('Não consegui ler essa foto. Tente outra.');
     });
   }
@@ -316,6 +328,92 @@
   // soltar foto em qualquer lugar do passo de fotos
   document.addEventListener('dragover', function (e) { if (ordem[atual] === 'fotos') e.preventDefault(); });
   document.addEventListener('drop', function (e) { if (ordem[atual] === 'fotos' && !drop.contains(e.target)) { e.preventDefault(); receber(e.dataTransfer && e.dataTransfer.files); } });
+
+  /* ---------- cardápio atual: foto ou PDF (até 2 imagens/páginas), lido pela ClickGo e conferido no chat ---------- */
+  // PDF vira imagem aqui mesmo (pdf.js da própria página, sem CDN: a CSP só deixa script do site); página = JPEG até ~1600 px
+  var dropCard = $('#drop-card'), cardInput = $('#card-input'), cardCaixa = $('#card-fotos'), cardCont = $('#card-cont');
+  var MAX_CARD = 2, PDFJS = '/assets/vendor/pdfjs-3.11.174/';
+  function desenharCard() {
+    cardCaixa.innerHTML = '';
+    cardFotos.forEach(function (url, i) {
+      var d = document.createElement('div'); d.className = 'mi pagina';
+      d.innerHTML = '<img alt=""><button type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>';
+      d.firstChild.src = url; d.firstChild.alt = 'Cardápio, imagem ' + (i + 1);
+      d.lastChild.setAttribute('aria-label', 'Tirar a imagem ' + (i + 1) + ' do cardápio');
+      d.lastChild.addEventListener('click', function () { cardFotos.splice(i, 1); desenharCard(); desenharFotos(); });
+      cardCaixa.appendChild(d);
+    });
+    dropCard.classList.toggle('cheio', cardFotos.length >= MAX_CARD);
+    cardCont.textContent = cardFotos.length ? cardFotos.length + ' de ' + MAX_CARD + ' · a gente lê e te mostra para conferir' : 'até 2 imagens ou páginas';
+    // foto do negócio que passou do total de 3 sai (as do cardápio têm preferência)
+    if (fotos.length > maxFotos()) { fotos.length = Math.max(0, maxFotos()); desenharFotos(); previaJa(); }
+    atualizarBotao();
+  }
+  var pdfjsP = null;
+  function carregarPdfjs() {
+    if (pdfjsP) return pdfjsP;
+    pdfjsP = new Promise(function (ok, falha) {
+      var s = document.createElement('script'); s.src = PDFJS + 'pdf.min.js';
+      s.onload = function () { var L = window.pdfjsLib; if (!L) { pdfjsP = null; return falha(new Error('pdf')); } L.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js'; ok(L); };
+      s.onerror = function () { pdfjsP = null; falha(new Error('pdf')); };
+      document.head.appendChild(s);
+    });
+    return pdfjsP;
+  }
+  // canvas -> JPEG que cabe no limite do servidor (450 KB): baixa a qualidade e, se preciso, o tamanho
+  function canvasJpeg(c) {
+    for (var tentativa = 0; tentativa < 4; tentativa++) {
+      var q = 0.86, url = c.toDataURL('image/jpeg', q);
+      while (url.length > 470000 && q > 0.5) { q -= 0.08; url = c.toDataURL('image/jpeg', q); }
+      if (url.length <= 470000) return url;
+      var m = document.createElement('canvas'); m.width = Math.round(c.width * 0.8); m.height = Math.round(c.height * 0.8);
+      m.getContext('2d').drawImage(c, 0, 0, m.width, m.height); c = m;
+    }
+    return null;
+  }
+  function pdfParaImagens(arquivo, max) {
+    return carregarPdfjs().then(function (L) {
+      return new Promise(function (ok, falha) { var r = new FileReader(); r.onload = function () { ok(new Uint8Array(r.result)); }; r.onerror = falha; r.readAsArrayBuffer(arquivo); })
+        .then(function (dados) { return L.getDocument({ data: dados, isEvalSupported: false }).promise; });
+    }).then(function (doc) {
+      var n = Math.min(doc.numPages, max), urls = [], i = 1;
+      function prox() {
+        if (i > n) return Promise.resolve(urls);
+        return doc.getPage(i++).then(function (pg) {
+          var v = pg.getViewport({ scale: 1 }), e = Math.min(3, 1600 / Math.max(v.width, v.height)), vp = pg.getViewport({ scale: e });
+          var c = document.createElement('canvas'); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+          var cx = c.getContext('2d'); cx.fillStyle = '#ffffff'; cx.fillRect(0, 0, c.width, c.height);
+          return pg.render({ canvasContext: cx, viewport: vp }).promise.then(function () { var u = canvasJpeg(c); if (u) urls.push(u); return prox(); });
+        });
+      }
+      return prox();
+    });
+  }
+  function receberCard(lista) {
+    lista = Array.prototype.slice.call(lista || []).filter(function (f) { return /^image\//.test(f.type) || f.type === 'application/pdf' || /\.pdf$/i.test(f.name || ''); });
+    var vagas = MAX_CARD - cardFotos.length;
+    if (!lista.length || vagas <= 0) return;
+    dropCard.classList.add('ocupado'); cardCont.textContent = 'Preparando…';
+    var feito = Promise.resolve(), erroPdf = false;
+    lista.forEach(function (f) {
+      feito = feito.then(function () {
+        if (cardFotos.length >= MAX_CARD) return;
+        var ehPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name || '');
+        var p = ehPdf ? pdfParaImagens(f, MAX_CARD - cardFotos.length).catch(function () { erroPdf = true; return []; }) : CG.comprimir(f, 1600).then(function (u) { return [u]; }).catch(function () { return []; });
+        return p.then(function (urls) { urls.forEach(function (u) { if (u && cardFotos.length < MAX_CARD) cardFotos.push(u); }); });
+      });
+    });
+    feito.then(function () {
+      dropCard.classList.remove('ocupado'); cardInput.value = '';
+      desenharCard(); previaJa(); salvar();
+      if (erroPdf) mostrarErro('Não consegui abrir esse PDF aqui. Tire um print (ou foto) do cardápio e mande como imagem.');
+      else if (cardFotos.length) { mostrarErro(''); robo('r-ok'); }
+    });
+  }
+  cardInput.addEventListener('change', function () { receberCard(cardInput.files); });
+  ['dragenter', 'dragover'].forEach(function (ev) { dropCard.addEventListener(ev, function (e) { e.preventDefault(); dropCard.classList.add('sobre'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { dropCard.addEventListener(ev, function (e) { e.preventDefault(); dropCard.classList.remove('sobre'); }); });
+  dropCard.addEventListener('drop', function (e) { receberCard(e.dataTransfer && e.dataTransfer.files); });
 
   /* ---------- rascunho local ---------- */
   var CAMPOS = ['negocio', 'ramo', 'cidade', 'quer', 'servicos', 'cores', 'whatsapp', 'email', 'instagram', 'sis_faz'];
@@ -372,7 +470,7 @@
   var OPCIONAIS = { precisa: 1, detalhes: 1, fotos: 1 };
   function temAlgo(p) {
     if (p === 'precisa') { var t = oque(); return t === 'cardapio' ? marcados('cpx').length > 0 : projeto() ? true : marcados('precisa').length > 0; }
-    if (p === 'detalhes') return !!(val('quer') || val('servicos') || val('cores'));
+    if (p === 'detalhes') return !!(val('quer') || val('servicos') || val('cores') || (oque() === 'cardapio' && cardFotos.length));
     if (p === 'fotos') return fotos.length > 0;
     return true;
   }
@@ -455,9 +553,11 @@
       ['Cidade', val('cidade'), 'cidade'],
       [oque() === 'sistema' ? 'O sistema' : oque() === 'automacao' ? 'A automação' : 'Precisa', resumoPrecisa(), 'precisa'],
       ['Detalhes', [val('quer'), val('servicos'), val('cores')].filter(Boolean).join(' · '), 'detalhes'],
+      oque() === 'cardapio' && cardFotos.length ? ['Cardápio atual', cardFotos.length + (cardFotos.length > 1 ? ' imagens' : ' imagem') + ': a gente lê os itens e preços e te mostra para conferir', 'detalhes'] : null,
       ['Fotos', fotos.length ? fotos.length + (fotos.length > 1 ? ' fotos' : ' foto') : '', 'fotos'],
       ['Contato', [val('email'), val('whatsapp'), val('instagram')].filter(Boolean).join(' · '), 'contato']
     ];
+    linhas = linhas.filter(Boolean);
     var dl = $('#rev'); dl.innerHTML = '';
     linhas.forEach(function (l, i) {
       var d = document.createElement('div'); d.style.animationDelay = (i * 40) + 'ms';
@@ -510,7 +610,10 @@
       if (marcados('sis_env').length) extra.push('Envolve: ' + marcados('sis_env').join(', ') + '.');
       if (val('sis_quem')) extra.push('Pessoas que usam: ' + val('sis_quem') + '.');
     }
-    return extra.concat(val('quer') ? [val('quer')] : []).join('\n').slice(0, 1500);
+    var txt = extra.concat(val('quer') ? [val('quer')] : []).join('\n');
+    // marca que a ClickGo lê (lib/cardapioItens): as primeiras N fotos são o cardápio atual do cliente
+    if (t === 'cardapio' && cardFotos.length) return txt.slice(0, 1450) + (txt ? '\n' : '') + 'Cardápio atual nas fotos (' + cardFotos.length + ').';
+    return txt.slice(0, 1500);
   }
   function montarPrecisa() {
     var t = oque();
@@ -536,7 +639,7 @@
     enviando = true; botao.disabled = true; botaoTxt.textContent = 'Enviando…';
     var corpo = {
       negocio: val('negocio'), ramo: val('ramo'), cidade: val('cidade'), tipo: oque() === 'cardapio' ? 'Cardápio digital' : 'site', quer: montarQuer(), servicos: projeto() ? '' : val('servicos'),
-      cores: val('cores'), whatsapp: val('whatsapp'), email: val('email'), instagram: val('instagram'), site_url: val('site_url'), t0: t0, aceite: true, fotos: fotos,
+      cores: val('cores'), whatsapp: val('whatsapp'), email: val('email'), instagram: val('instagram'), site_url: val('site_url'), t0: t0, aceite: true, fotos: oque() === 'cardapio' ? cardFotos.concat(fotos).slice(0, 3) : fotos,
       precisa: montarPrecisa(),
       substitui: antigo && trocar ? { id: antigo.id, k: antigo.k } : undefined
     };
