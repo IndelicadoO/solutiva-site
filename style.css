@@ -540,6 +540,6 @@ html:not(.js-mov) .pii i { transform: none; }
 .legal h1 { font-size: clamp(2rem, 4.4vw, 3rem); margin: 0 0 8px; }
 .legal h2 { font-size: 1.3rem; margin: 36px 0 10px; }
 .legal p, .legal li { color: var(--txt-2); line-height: 1.6; }
-.legal ul { padding-left: 20px; display: grid; gap: 8px; }
+.legal ul, .legal ol { padding-left: 20px; display: grid; gap: 8px; }
 .legal b { color: var(--txt); }
 .legal a { color: var(--ciano); }
