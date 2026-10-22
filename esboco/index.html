@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/esboco/esboco.css?v=4">
+<link rel="stylesheet" href="/esboco/esboco.css?v=5">
 </head>
 <body>
 <div class="ar" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -159,7 +159,17 @@
           <h2 id="t-detalhes" class="ps-t" tabindex="-1">Quer caprichar nos detalhes?</h2>
           <p class="ps-d">Tudo opcional. Quanto mais, mais parecido com você.</p>
           <label class="cp"><span class="cp-r" id="r-quer">O que não pode faltar?</span><textarea name="quer" maxlength="1500" rows="3" placeholder="Fotos do espaço, botão para agendar"></textarea></label>
-          <label class="cp" id="cp-servicos"><span class="cp-r" id="r-servicos">Serviços e preços</span><input name="servicos" maxlength="1200" placeholder="Corte R$ 40, barba R$ 30" enterkeyhint="next"></label>
+          <label class="cp" id="cp-servicos"><span class="cp-r" id="r-servicos">Serviços e preços</span><textarea name="servicos" maxlength="1200" rows="2" placeholder="Corte R$ 40, barba R$ 30" aria-describedby="d-servicos"></textarea><small class="cp-dica" id="d-servicos"></small></label>
+          <!-- cardápio: foto ou PDF do cardápio atual (a ClickGo lê os itens e preços e o cliente confere no chat antes do esboço) -->
+          <div class="cp" id="cp-cardfoto" hidden><span class="cp-r" id="r-cardfoto">Tem o cardápio atual? <i>opcional</i></span>
+            <small class="cp-dica cp-dica-cima" id="d-cardfoto">Mande a foto ou o PDF do cardápio que você já usa: a gente lê os itens e os preços e te mostra para conferir antes de montar.</small>
+            <label class="drop drop-mini" id="drop-card">
+              <input type="file" accept="image/*,application/pdf" multiple id="card-input" class="vh" aria-describedby="d-cardfoto">
+              <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="10" y="6" width="28" height="36" rx="5"/><path d="M17 16h14M17 23h14M17 30h9"/></svg>
+              <b>Enviar foto ou PDF do cardápio</b><small id="card-cont">até 2 imagens ou páginas</small>
+            </label>
+            <div class="miniat" id="card-fotos" aria-live="polite"></div>
+          </div>
           <div class="cp"><span class="cp-r" id="r-cores">Cores da marca</span>
             <div class="paletas" id="paletas" role="group" aria-labelledby="r-cores"></div>
             <div class="cores-livre">
@@ -273,6 +283,6 @@
 <canvas id="confete" class="confete" aria-hidden="true"></canvas>
 
 <script src="/cg-comum.js"></script>
-<script src="/esboco.js?v=3"></script>
+<script src="/esboco.js?v=4"></script>
 </body>
 </html>
