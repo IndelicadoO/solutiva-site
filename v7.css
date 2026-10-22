@@ -2,12 +2,9 @@
    Celular primeiro (375 px), sem rolagem horizontal. Movimento só com transform/opacity; reduzir movimento = parado. */
 
 /* ================= 04: cartões dos sistemas ================= */
-.sis8-corpo { align-items: start; }
-@media (min-width: 960px) {
-  .sis8-corpo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .sis8-corpo .mapa { position: sticky; top: 96px; }
-}
-.sis-lista { display: grid; gap: 14px; margin: 0; padding: 0; }
+.sis-lista { display: grid; gap: 14px; margin: 28px 0 0; padding: 0; align-items: start; }
+@media (min-width: 700px) { .sis-lista { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .sis-lista { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .sis-lista > .sc:last-child { border-bottom: 1px solid var(--linha-2); }
 .sis-lista > .sc {
   position: relative; display: block; grid-template-columns: none; padding: 20px 18px 18px; border-radius: 18px; cursor: pointer; outline: none;
@@ -61,8 +58,8 @@
 .sis-lista.js .sc .galhos li:nth-child(8) { transition-delay: .95s; }
 .sis-lista.js .sc .galhos li::before { transition-delay: inherit; }
 
-/* celular: o cartão mostra 3 galhos; o toque abre o resto e fecha de novo */
-@media (max-width: 959px) {
+/* o cartão mostra 3 galhos; o toque/clique abre o resto e fecha de novo */
+@media all {
   .sis-lista.js .sc:not(.aberto) .galhos li:nth-child(n+4) { display: none; }
   .sis-lista.js .sc-mais {
     display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: .84rem; font-weight: 700; color: var(--ac);
@@ -70,7 +67,6 @@
   }
   .sc-mais::after { content: ''; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .3s; }
   .sc.aberto .sc-mais::after { transform: translateY(2px) rotate(-135deg); }
-  .sc-n { display: none; }
 }
 
 /* mini-animações dos ícones (só com o cartão na tela) */
@@ -251,4 +247,43 @@
 }
 @media (min-width: 900px) {
   .fd.rodando.proj[data-e="1"] .fd-prop, .fd.rodando.proj[data-e="2"] .fd-prop { opacity: .35; transform: scale(.97); filter: saturate(.6); }
+}
+
+/* ================= 04: a central (v3 em código) ================= */
+.hub { position: relative; max-width: 960px; margin: 36px auto 8px; }
+.hub-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.hub-lista li { font-size: .85rem; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(76, 201, 255, .4); color: var(--txt); }
+.hub.vivo .hub-lista { display: none; }
+.hub-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.hb-perna { fill: none; stroke: rgba(47, 140, 255, .32); stroke-width: 5; stroke-linecap: round; }
+.hb-perna-luz { fill: none; stroke: #38d6ff; stroke-width: 4; stroke-linecap: round; transition: stroke .3s; }
+.hb-perna-luz.stop { stroke: #ff4d6d; animation: hb-pisca .62s ease-in-out infinite; }
+.hb-gota { fill: #9fe2ff; opacity: .5; transition: fill .3s, opacity .3s; }
+.hb-gota.acesa { fill: #4ff0c8; opacity: 1; }
+.hb-pulso { fill: #eaffff; }
+.hb-caixa { fill: #0b1630; stroke: rgba(47, 140, 255, .35); stroke-width: 1.5; transition: fill .4s, stroke .4s; }
+.hb-txt { fill: rgba(238, 245, 255, .55); font-family: 'Onest', system-ui, sans-serif; font-weight: 700; transition: fill .4s; }
+.hb-card.aceso .hb-caixa { fill: #10224a; stroke: #38d6ff; }
+.hb-card.aceso .hb-txt { fill: #fff; }
+.hb-card.parado .hb-caixa { stroke: #ff4d6d; animation: hb-pisca .62s ease-in-out infinite; }
+.hb-ck { opacity: 0; transition: opacity .3s; }
+.hb-ck circle { fill: #4ff0c8; }
+.hb-ck path { fill: none; stroke: #06142c; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.hb-card.feito .hb-ck { opacity: 1; }
+.hb-pill { opacity: 0; transition: opacity .3s; }
+.hb-pill.vis { opacity: 1; }
+.hb-pill rect { fill: #ff4d6d; }
+.hb-pill text { fill: #fff; font: 800 12px 'Onest', system-ui, sans-serif; }
+.hb-pill.ok rect { fill: #4ff0c8; }
+.hb-pill.ok text { fill: #06142c; }
+.hb-disco { fill: #0a1838; stroke: #38d6ff; stroke-width: 2.5; }
+.hb-anel { fill: none; stroke: rgba(159, 226, 255, .45); stroke-width: 1.5; stroke-dasharray: 6 8; transform-box: fill-box; transform-origin: center; animation: hb-gira 14s linear infinite; }
+.hb-aura { animation: hb-respira 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.hb-olhos { transform-box: fill-box; transform-origin: center; animation: hb-pisca-olho 5s infinite; }
+@keyframes hb-pisca { 50% { opacity: .45; } }
+@keyframes hb-gira { to { transform: rotate(360deg); } }
+@keyframes hb-respira { 50% { transform: scale(1.08); opacity: .8; } }
+@keyframes hb-pisca-olho { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+@media (prefers-reduced-motion: reduce) {
+  .hb-anel, .hb-aura, .hb-olhos, .hb-perna-luz.stop, .hb-card.parado .hb-caixa { animation: none; }
 }
