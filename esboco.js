@@ -577,7 +577,8 @@
       antigo = ult;
       var card = $('#continuar');
       $('#continuar-nome').textContent = ult.negocio || 'seu negócio';
-      $('#continuar-ir').href = '/acompanhar/' + (api ? '?api=' + encodeURIComponent(api) : '') + '#' + ult.id + '.' + ult.k;
+      // A chave do pedido não fica no href (o Clarity grava o DOM): o endereço completo só nasce no clique
+      $('#continuar-ir').addEventListener('click', function (ev) { ev.preventDefault(); location.href = '/acompanhar/' + (api ? '?api=' + encodeURIComponent(api) : '') + '#' + ult.id + '.' + ult.k; });
       card.hidden = false; form.hidden = true;
       prevBox.hidden = true; prevAbre.hidden = true;
       $('#palco').classList.add('so-cont');
