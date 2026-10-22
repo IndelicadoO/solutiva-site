@@ -346,3 +346,27 @@
   .btn, .btn::before, .btn::after, .flutuante { transition: none; }
   .btn-prim:hover::before { transform: translateX(-120%); }
 }
+
+/* WhatsApp da ClickGo (22/10): bolinha discreta no canto. No celular fica ACIMA do botão "Ver meu site grátis"
+   (que gruda embaixo, centralizado) e só aparece depois do topo, como ele: nunca cobre o botão principal. */
+.zap-flut {
+  position: fixed; z-index: 39; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; color: #eaf7ff; text-decoration: none;
+  border: 1px solid rgba(76, 201, 255, .55);
+  background: linear-gradient(180deg, rgba(18, 34, 56, .94), rgba(4, 10, 20, .96));
+  box-shadow: inset 0 1px 0 rgba(166, 230, 255, .18), 0 12px 30px -10px rgba(0, 0, 0, .9), 0 0 24px -8px rgba(76, 201, 255, .55);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  transition: transform .25s ease, opacity .25s ease, border-color .2s ease, color .2s ease;
+}
+.zap-flut svg { width: 26px; height: 26px; }
+.zap-flut:hover { color: #25d366; border-color: rgba(37, 211, 102, .7); transform: translateY(-2px); }
+.zap-flut:focus-visible { outline: 2px solid #eaf7ff; outline-offset: 3px; }
+@media (max-width: 759px) {
+  .zap-flut { right: 16px; width: 46px; height: 46px; border-radius: 14px; bottom: calc(70px + env(safe-area-inset-bottom, 0px)); opacity: 0; pointer-events: none; transform: translateY(8px); }
+  .zap-flut.mostra { opacity: 1; pointer-events: auto; transform: none; }
+  .zap-flut svg { width: 23px; height: 23px; }
+}
+.fim-zap { margin-top: 18px; }
+.fim-zap a, .rodape-links a[data-zap] { display: inline-flex; align-items: center; gap: 8px; }
+.fim-zap svg { width: 18px; height: 18px; flex: none; }
+@media (prefers-reduced-motion: reduce) { .zap-flut { transition: none; } }

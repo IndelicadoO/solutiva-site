@@ -478,3 +478,11 @@ button, input, textarea { font: inherit; color: inherit; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
   .ar i { animation: none; }
 }
+
+/* WhatsApp da ClickGo (22/10): link discreto no topo, com o nº do pedido na mensagem (contato.js) */
+.tp-zap { margin-left: auto; font-size: .8rem; font-weight: 600; color: var(--txt-2); text-decoration: none; white-space: nowrap; padding: 6px 4px; border-radius: 8px; }
+.tp-zap:hover { color: var(--txt); text-decoration: underline; }
+.tp-zap:focus-visible { outline: 2px solid var(--ceu); outline-offset: 2px; }
+.tp .tp-selo { margin-left: auto; }
+.tp .tp-selo + .tp-zap { margin-left: 0; }
+@media (max-width: 420px) { .tp-zap-l { display: none; } .tp .tp-selo { display: none; } .tp .tp-zap { margin-left: auto; } }

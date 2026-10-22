@@ -2,7 +2,9 @@
    CONTATO: o ÚNICO lugar para trocar para onde os botões levam.
    - principal: botão de orçamento (ciano), o único botão principal do site.
    - secundario: ícone do LinkedIn no rodapé.
-   - whatsapp: quando tiver o número comercial, preencha só com dígitos,
+   - O NÚMERO do WhatsApp da ClickGo (rodapé, bolinha, formulário, página do
+     pedido) fica em contato.js. O campo abaixo é outra coisa:
+   - whatsapp: preencha só com dígitos para os BOTÕES PRINCIPAIS
      com 55 + DDD, ex.: '5561999999999'. Aí todos os botões principais
      passam a abrir o WhatsApp com a mensagem pronta abaixo.
    ===================================================================== */
@@ -279,10 +281,14 @@ const CONTATO = {
   // ---- botão flutuante no celular depois do topo ----
   var flut = document.querySelector('.flutuante');
   var hero = document.getElementById('inicio');
+  // WhatsApp (bolinha): no celular aparece JUNTO com o botão flutuante (logo acima dele), então some quando um botão
+  // de pedido da seção está na tela e nunca cobre um botão principal (CSS em v7.css; no computador fica sempre).
+  var zapF = document.querySelector('.zap-flut');
+  if (zapF && !(flut && hero && 'IntersectionObserver' in window)) zapF.classList.add('mostra');
   var fim = document.getElementById('contato');
   if (flut && hero && 'IntersectionObserver' in window) {
     var vis = { hero: true, fim: false }, ctas = 0;
-    var upd = function () { flut.classList.toggle('mostra', !vis.hero && !vis.fim && ctas === 0); };
+    var upd = function () { var m = !vis.hero && !vis.fim && ctas === 0; flut.classList.toggle('mostra', m); if (zapF) zapF.classList.toggle('mostra', m); };
     new IntersectionObserver(function (e) { vis.hero = e[0].isIntersecting; upd(); }).observe(hero);
     if (fim) new IntersectionObserver(function (e) { vis.fim = e[0].isIntersecting; upd(); }).observe(fim);
     // some quando um botão de orçamento da própria seção está na tela (não cobre o botão)

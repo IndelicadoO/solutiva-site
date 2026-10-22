@@ -434,3 +434,8 @@ body.cg-com-doca .cg-toast { bottom: calc(var(--cta-h, 0px) + 120px); }
   .cg-grade > #painel-conversa { height: min(calc(100vh - 32px), 760px); }
 }
 @media (prefers-reduced-motion: reduce) { .cg-obra .b, .cg-obra .dig { opacity: 1; } .cg-obra-mao { display: none; } }
+
+/* WhatsApp da ClickGo (22/10): "Dúvida? Chama no WhatsApp" com o nº do pedido na mensagem (contato.js) */
+.cg-zap-duvida { margin-top: 6px; font-size: .86rem; }
+.cg-zap-duvida a { color: var(--txt-2); text-decoration: underline; text-underline-offset: 3px; }
+.cg-zap-duvida a:hover { color: var(--txt); }
