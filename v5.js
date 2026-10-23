@@ -2,16 +2,27 @@
    Os contatos continuam centralizados no script.js (não mexer lá). */
 (function () {
   'use strict';
+  // fontes do Google sem travar a 1a pintura (23/10/2026): o <link> nasce como preload e vira folha de estilo aqui (CSP sem script inline)
+  var lf = document.querySelector('link[data-fontes]');
+  if (lf) requestAnimationFrame(function () { requestAnimationFrame(function () { lf.rel = 'stylesheet'; }); });
   var html = document.documentElement;
   var reduz = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var celular = window.matchMedia && window.matchMedia('(max-width: 699px)').matches;
   var temIO = 'IntersectionObserver' in window;
   if (!reduz) html.classList.add('js-v5');
 
-  // pôster vertical no celular (leve, aparece antes de qualquer vídeo)
   var videos = document.querySelectorAll('video.cena-video, video.vid');
-  videos.forEach(function (v) {
-    if (celular && v.getAttribute('data-poster-m')) v.poster = v.getAttribute('data-poster-m');
+
+  // pôsteres só perto da tela (23/10/2026): eram ~20 imagens baixando junto com o topo e atrasando a 1a tela no celular.
+  // O vertical (data-poster-m) vai para o celular. Roda depois dos outros scripts (a fita do v6.js clona os vídeos).
+  function poePoster(v) { var u = (celular && v.getAttribute('data-poster-m')) || v.getAttribute('data-poster'); if (u && v.getAttribute('poster') !== u) v.poster = u; }
+  document.addEventListener('DOMContentLoaded', function () {
+    var lista = document.querySelectorAll('video[data-poster]');
+    if (!temIO) { lista.forEach(poePoster); return; }
+    var pio = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) { if (e.isIntersecting) { poePoster(e.target); pio.unobserve(e.target); } });
+    }, { rootMargin: '600px 600px' });
+    lista.forEach(function (v) { pio.observe(v); });
   });
 
   // vídeo: só baixa quando chega perto da tela; toca visível, pausa fora; movimento reduzido = só o pôster
@@ -35,7 +46,10 @@
         } else if (!v.paused) { v.pause(); }
       });
     }, { threshold: 0.2 });
-    videos.forEach(function (v) { vio.observe(v); });
+    // celular: o vídeo de fundo das cenas NÃO baixa (o do topo pesava 4 MB e segurava o LCP em 7 s); fica o pôster.
+    // Economia de dados ligada também fica só no pôster. Os vídeos de conteúdo (vitrine) continuam carregando ao chegar na tela.
+    var poupa = celular || !!(navigator.connection && navigator.connection.saveData);
+    videos.forEach(function (v) { if (poupa && v.classList.contains('cena-video')) return; vio.observe(v); });
   }
 
   // abertura entra depois do primeiro quadro

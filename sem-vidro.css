@@ -50,3 +50,22 @@
 .fd.rodando[data-e="1"] .fd-site, .fd.rodando[data-e="2"] .fd-site,
 .fd.rodando.proj[data-e="1"] .fd-prop, .fd.rodando.proj[data-e="2"] .fd-prop,
 .fd.rodando.proj[data-e="5"] .fd-prop-bt { filter: none; }
+
+/* perguntas frequentes (23/10/2026): cartões sólidos, abre e fecha sem JS */
+.faq-lista { display: grid; gap: 12px; margin-top: 28px; max-width: 820px; }
+.faq-lista details { background: var(--sup); border: 1px solid var(--linha-s); border-radius: 14px; }
+.faq-lista details[open] { border-color: #2a4268; }
+.faq-lista summary { cursor: pointer; list-style: none; padding: 18px 52px 18px 20px; font-weight: 700; position: relative; }
+.faq-lista summary::-webkit-details-marker { display: none; }
+.faq-lista summary::after { content: '+'; position: absolute; right: 20px; top: 50%; margin-top: -.6em; line-height: 1.2; color: var(--ac); font-size: 1.3rem; transition: transform .2s; }
+.faq-lista details[open] summary::after { transform: rotate(45deg); }
+.faq-lista p { margin: 0; padding: 0 20px 20px; color: var(--txt-2, #b9c7da); line-height: 1.6; }
+.faq-lista summary:focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; border-radius: 14px; }
+@media (prefers-reduced-motion: reduce) { .faq-lista summary::after { transition: none; } }
+
+/* topo leve (23/10/2026): a imagem do topo é um <img> de verdade (LCP rápido, uma só por tamanho de tela); no celular o
+   vídeo não baixa (v5.js) e no computador ele cobre a imagem quando começa a tocar. O título já nasce visível: entra só
+   com transform (opacity 0 tirava o título da conta do LCP e atrasava a nota). */
+.abertura .cena-poster img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -3; opacity: .9; }
+.abertura .cena-video { background: transparent; }
+.js-v5 .abertura h1 .l, .js-v5 .abertura .sub { opacity: 1; }
