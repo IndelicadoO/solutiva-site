@@ -44,8 +44,8 @@
     encerrado = true; clearTimeout(proxima); proxima = null;
     $('tudo').hidden = true; $('sem-pedido').hidden = false;
     $('sem-pedido-t').textContent = ja ? 'Este pedido foi encerrado' : 'Não achei o seu pedido';
-    $('sem-pedido-s').textContent = ja ? 'Ele não recebe mais mensagens nem aprovações. Se ainda quiser o seu site, faça um pedido novo: leva um minuto e o esboço é grátis.' : 'Abra pelo link que você recebeu (ele é só seu) ou peça um esboço novo.';
-    $('sem-pedido-b').textContent = ja ? 'Fazer um novo pedido' : 'Pedir meu esboço grátis';
+    $('sem-pedido-s').textContent = ja ? 'Ele não recebe mais mensagens nem aprovações. Se ainda quiser o seu site, faça um pedido novo: leva um minuto e a prévia é grátis.' : 'Abra pelo link que você recebeu (ele é só seu) ou peça uma prévia nova.';
+    $('sem-pedido-b').textContent = ja ? 'Fazer um novo pedido' : 'Pedir minha prévia grátis';
     try { $('texto').disabled = true; $('envio').querySelector('button[type=submit]').disabled = true; } catch (_) {}
   }
   function carregar() {
@@ -59,7 +59,7 @@
     var r = estado, i = r.info || {};
     $('tudo').hidden = false;
     var proj = !!i.projeto;
-    $('titulo').textContent = (proj ? 'Sala do projeto · ' : 'Esboço de ') + r.negocio;
+    $('titulo').textContent = (proj ? 'Sala do projeto · ' : 'Prévia de ') + r.negocio;
     $('como').hidden = proj || !!i.publicado || !!i.cancelado || !!i.sinalRecebido;
     $('online').textContent = r.appOnline ? 'atendimento online' : 'resposta em breve';
     $('online').className = 'cg-pill' + (r.appOnline ? '' : ' off');
@@ -77,8 +77,8 @@
       : i.pixLiberado ? (temLinkMP(i) ? 'O link de pagamento (Pix ou cartão) está logo abaixo. Assim que o sinal for aprovado, começamos o site final.' : 'Os dados do Pix estão logo abaixo. Assim que o sinal cair, começamos o site final.')
       : an.naFila ? 'Seu pedido está na fila de produção da nossa equipe. Enquanto isso, pode tirar dúvidas na conversa.'
       : an.emProd && i.versao ? 'Nossa equipe está aplicando os seus ajustes. A nova versão aparece aqui na prévia.'
-      : i.versao ? (i.rodadasRestantes > 0 ? 'Gostou? Aprove. Quer mudar? Ajuste com o dedo ou peça na conversa.' : 'Ajustes do esboço usados: o que faltar entra no site final, depois do sinal.')
-      : 'Nossa equipe está montando o seu esboço. Pode tirar dúvidas na conversa.';
+      : i.versao ? (i.rodadasRestantes > 0 ? 'Gostou? Aprove. Quer mudar? Ajuste com o dedo ou peça na conversa.' : 'Ajustes da prévia usados: o que faltar entra no site final, depois do sinal.')
+      : 'Nossa equipe está montando a sua prévia. Pode tirar dúvidas na conversa.';
     // prévia
     if (r.previaUrl && r.previaUrl !== previaAtual) {
       previaAtual = r.previaUrl;
@@ -86,23 +86,23 @@
       f.hidden = false; $('previa-vazia').hidden = true; $('previa-acoes').hidden = false; $('abrir').href = r.previaUrl;
       edCarregado = '';
     }
-    // prévia fica no ar 2 h; vencida, um toque republica por mais 2 h (o esboço continua guardado)
+    // prévia fica no ar 2 h; vencida, um toque republica por mais 2 h (a prévia continua guardada)
     var exp = !!(i.previaExpirada && !i.publicado);
     $('previa-expirou').hidden = !exp;
     if (exp) { $('previa').hidden = true; $('previa-acoes').hidden = true; $('previa-vazia').hidden = true; previaAtual = ''; }
-    $('previa-msg').textContent = proj ? 'O protótipo clicável aparece aqui depois que você tocar em "Gerar protótipo".' : an.naFila ? 'Seu esboço está na fila de produção. Ele aparece aqui quando ficar pronto.' : 'Nossa equipe está montando o seu esboço. Ele aparece aqui quando ficar pronto.';
+    $('previa-msg').textContent = proj ? 'O protótipo clicável aparece aqui depois que você tocar em "Gerar protótipo".' : an.naFila ? 'Sua prévia está na fila de produção. Ela aparece aqui quando ficar pronta.' : 'Nossa equipe está montando a sua prévia. Ela aparece aqui quando ficar pronta.';
     // editor
     var editavel = !!(i.editavel && r.previaUrl);
     $('aba-editor').hidden = !editavel; $('ir-editar').hidden = !editavel;
     if (!editavel && !$('painel-editor').hidden) { $('painel-editor').hidden = true; if (!ehLargo()) abrirAba('previa'); }
-    $('rodadas').textContent = i.rodadasTotal ? 'Rodada de ajuste ' + Math.min(i.rodadasTotal, (i.rodadasTotal - i.rodadasRestantes) + 1) + ' de ' + i.rodadasTotal + ' no esboço. Depois do sinal, o site final recebe o resto.' : '';
+    $('rodadas').textContent = i.rodadasTotal ? 'Rodada de ajuste ' + Math.min(i.rodadasTotal, (i.rodadasTotal - i.rodadasRestantes) + 1) + ' de ' + i.rodadasTotal + ' na prévia. Depois do sinal, o site final recebe o resto.' : '';
     // compra sempre à vista
     var cta = $('cta');
     var prep = aprovacaoPendente();
     cta.hidden = prep || !(i.podeAprovar || (i.versao && !i.pixLiberado && !an.naFila && !an.emProd));
     desenharPix(prep);
     $('aprovar').disabled = !i.podeAprovar;
-    $('cta-s').textContent = i.rodadasRestantes === 0 ? 'Ajustes do esboço usados. Aprove e o resto entra no site final, depois do sinal.' : 'Você só paga o sinal de 50% depois de aprovar. O resto, na entrega.';
+    $('cta-s').textContent = i.rodadasRestantes === 0 ? 'Ajustes da prévia usados. Aprove e o resto entra no site final, depois do sinal.' : 'Você só paga o sinal de 50% depois de aprovar. O resto, na entrega.';
     // pacotes (valores vêm da tabela da ClickGo, mandados pelo app)
     desenharPacotes();
     // pedido substituído por um novo deste aparelho
@@ -153,7 +153,7 @@
     $('aviso-pag').hidden = !(rest || sin);
     if (!(rest || sin)) return;
     var v = rest ? Number(i.restante) || 0 : Number(i.sinal) || 0;
-    $('aviso-pag-t').textContent = rest ? 'Seu site está pronto! Falta só o restante' + (v ? ' (' + brl(v) + ')' : '') + ' para ir ao ar.' : 'Esboço aprovado! Falta só o sinal' + (v ? ' (' + brl(v) + ')' : '') + ' para começar o site final.';
+    $('aviso-pag-t').textContent = rest ? 'Seu site está pronto! Falta só o restante' + (v ? ' (' + brl(v) + ')' : '') + ' para ir ao ar.' : 'Prévia aprovada! Falta só o sinal' + (v ? ' (' + brl(v) + ')' : '') + ' para começar o site final.';
     $('aviso-pag-s').textContent = temLinkMP(i) ? 'Toque para pagar (Pix ou cartão, até 12x).' : 'Toque para ver o Pix' + (i.querCartao ? '. O link do cartão chega na conversa.' : ' ou pedir o cartão parcelado.');
   }
   $('aviso-pag').onclick = function () { $('pix').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
@@ -180,7 +180,7 @@
     $('pix-preparando').hidden = mostra || !prep;
     if (prep && !mostra) { var demora = Date.now() - prep > 60000; $('pix-prep-t').textContent = demora ? 'Aprovação recebida!' : 'Aprovado! Preparando o seu pagamento…'; $('pix-prep-s').textContent = demora ? 'Estamos confirmando a sua aprovação. Os dados do pagamento aparecem aqui (e na conversa) assim que saírem.' : 'Leva só alguns segundos. Os dados do pagamento aparecem aqui mesmo.'; }
     $('pix-pronto').hidden = !mostra;
-    if (prep && !mostra) { $('giro').hidden = true; $('status-t').textContent = 'Esboço aprovado!'; $('status-s').textContent = 'Obrigado! O pagamento do sinal aparece logo abaixo.'; }
+    if (prep && !mostra) { $('giro').hidden = true; $('status-t').textContent = 'Prévia aprovada!'; $('status-s').textContent = 'Obrigado! O pagamento do sinal aparece logo abaixo.'; }
     if (!mostra) return;
     $('pix-titulo').textContent = rest ? 'Pague o restante e coloque o seu site no ar' : 'Pague o sinal e garanta o seu site';
     $('pix-rotulo').textContent = rest ? 'Restante (50%)' : 'Sinal (50%)';
@@ -262,7 +262,7 @@
       else {
         b.className = 'cg-btn ' + (p.recomendado ? 'cg-btn-prim' : 'cg-btn-linha'); b.textContent = 'Escolher este'; b.disabled = trava;
         b.onclick = function () {
-          var aviso = !i.versao ? 'O esboço já sai nesse nível.' : i.rodadasRestantes > 0 ? 'O esboço é refeito nesse nível (usa 1 das ' + i.rodadasTotal + ' rodadas de ajuste).' : 'As rodadas de ajuste acabaram: o esboço fica como está e o site final sai nesse nível.';
+          var aviso = !i.versao ? 'A prévia já sai nesse nível.' : i.rodadasRestantes > 0 ? 'A prévia é refeita nesse nível (usa 1 das ' + i.rodadasTotal + ' rodadas de ajuste).' : 'As rodadas de ajuste acabaram: a prévia fica como está e o site final sai nesse nível.';
           if (!confirm('Trocar para o pacote ' + p.pacote + '? ' + aviso + ' Você só paga depois de aprovar.')) return;
           b.disabled = true; b.textContent = 'Trocando…';
           mandar('', { tipo: 'pacote', pacote: p.pacote }).then(function () { toast('Pedido de troca enviado! A resposta chega na conversa.'); }).catch(function () { b.disabled = false; b.textContent = 'Escolher este'; });
@@ -270,7 +270,7 @@
       }
       box.appendChild(c);
     });
-    $('pacotes-nota').textContent = trava ? 'O esboço já foi aprovado: para trocar de pacote, fale na conversa.' : 'Pagamento: 50% depois de aprovar o esboço, 50% na entrega. Mensalidade sem fidelidade.';
+    $('pacotes-nota').textContent = trava ? 'A prévia já foi aprovada: para trocar de pacote, fale na conversa.' : 'Pagamento: 50% depois de aprovar a prévia, 50% na entrega. Mensalidade sem fidelidade.';
     // no celular, já mostra o recomendado/escolhido
     if (!rolouPacote) { rolouPacote = true; var alvo = box.querySelector('.cg-pac.esc') || box.querySelector('.cg-pac.rec'); if (alvo && box.scrollWidth > box.clientWidth) box.scrollLeft = alvo.offsetLeft - box.offsetLeft - 16; }
   }
@@ -352,7 +352,7 @@
     });
   });
   $('aprovar').onclick = function () {
-    if (!confirm('Aprovar o esboço? Em seguida mandamos aqui o pagamento do sinal (50%). O restante só na entrega do site.')) return;
+    if (!confirm('Aprovar a prévia? Em seguida mandamos aqui o pagamento do sinal (50%). O restante só na entrega do site.')) return;
     $('aprovar').disabled = true;
     aprovadoAqui = Date.now(); if (estado) desenhar();
     $('pix').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -439,7 +439,7 @@
       if (t) t.setAttribute('data-cg-alvo', '');
     });
   }
-  // cor principal = a cor saturada mais usada no CSS do esboço
+  // cor principal = a cor saturada mais usada no CSS da prévia
   function coresDoDoc() {
     var css = Array.prototype.map.call(ed.doc.querySelectorAll('style:not(#cg-editor)'), function (s) { return s.textContent; }).join('\n') + Array.prototype.map.call(ed.doc.querySelectorAll('[style]'), function (e) { return e.getAttribute('style'); }).join('\n');
     var cont = {};
@@ -496,7 +496,7 @@
     if (nome === 'foto') p.innerHTML = '<p class="cg-dica">Toque numa imagem do site para trocar por uma foto sua (até 3 por rodada).</p>';
     if (nome === 'cor') {
       var cores = coresDoDoc(); ed.cor = ed.cor || cores[0] || '';
-      if (!ed.cor) { p.innerHTML = '<p class="cg-dica">Este esboço não tem uma cor principal para trocar. Peça na conversa.</p>'; return; }
+      if (!ed.cor) { p.innerHTML = '<p class="cg-dica">Esta prévia não tem uma cor principal para trocar. Peça na conversa.</p>'; return; }
       p.innerHTML = '<p class="cg-dica">Escolha a cor principal do site.</p><div class="cg-paleta"></div>';
       PALETA.forEach(function (c) {
         var b = document.createElement('button'); b.type = 'button'; b.style.background = c; b.setAttribute('aria-label', 'Cor ' + c); b.setAttribute('aria-pressed', String(c === ed.cor));
@@ -506,7 +506,7 @@
     }
     if (nome === 'secoes') {
       var ss = secoes();
-      if (ss.length < 2) { p.innerHTML = '<p class="cg-dica">Este esboço tem uma seção só. Para mudar a ordem, peça na conversa.</p>'; return; }
+      if (ss.length < 2) { p.innerHTML = '<p class="cg-dica">Esta prévia tem uma seção só. Para mudar a ordem, peça na conversa.</p>'; return; }
       p.innerHTML = '<p class="cg-dica">Mude a ordem ou esconda partes do site.</p><ul class="cg-secoes"></ul>';
       var ul = p.querySelector('ul');
       ss.forEach(function (s, i) {
@@ -537,7 +537,7 @@
   $('salvar').onclick = function () {
     if (!ed.doc || !ed.mudou.length) return;
     var i = (estado && estado.info) || {};
-    if (i.rodadasRestantes === 0) { toast('As rodadas de ajuste do esboço acabaram. Aprove e o resto entra no site final.'); return; }
+    if (i.rodadasRestantes === 0) { toast('As rodadas de ajuste da prévia acabaram. Aprove e o resto entra no site final.'); return; }
     if (ed.doc.activeElement && ed.doc.activeElement.blur) ed.doc.activeElement.blur();
     var clone = ed.doc.documentElement.cloneNode(true);
     var fotos = [];
