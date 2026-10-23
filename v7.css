@@ -370,3 +370,67 @@
 .fim-zap a, .rodape-links a[data-zap] { display: inline-flex; align-items: center; gap: 8px; }
 .fim-zap svg { width: 18px; height: 18px; flex: none; }
 @media (prefers-reduced-motion: reduce) { .zap-flut { transition: none; } }
+
+/* ---------- COMO FUNCIONA / POR QUE CONFIAR (#confianca, refeita 23/10/2026) ----------
+   Superfície sólida, 1 cor de destaque (--ciano), sem vidro, blur nem gradiente. Estado padrão = final (sem JS e com
+   movimento reduzido fica tudo pronto e parado). Movimento só com transform/opacity, 1 vez, quando .cf-js ganha .anima. */
+.cf10 { --cf-sup: #0a1220; --cf-linha: #1a2740; --cf-dur: .55s; }
+.cf10 .medio { max-width: 720px; }
+.cf10 .medio em { color: var(--ciano); }
+.cf-trilha { position: relative; list-style: none; margin: 34px 0 0; padding: 0; display: grid; gap: 22px; }
+.cf-rail { position: absolute; left: 27px; top: 28px; bottom: 28px; width: 2px; background: var(--cf-linha); }
+.cf-rail i { position: absolute; inset: 0; background: var(--ciano); transform-origin: top; }
+.cf-p { position: relative; display: grid; grid-template-columns: 56px minmax(0, 1fr); column-gap: 16px; align-items: center; }
+.cf-ic { grid-row: span 2; width: 56px; height: 56px; padding: 8px; border-radius: 50%; background: var(--cf-sup); border: 2px solid var(--cf-linha); overflow: visible; }
+.cf-p b { font: 700 1.06rem/1.2 var(--titulo); color: var(--txt); align-self: end; }
+.cf-p span { color: var(--txt-2); font-size: .95rem; line-height: 1.35; align-self: start; }
+.cf-tr { fill: none; stroke: var(--ciano); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.cf-pt { fill: var(--ciano); }
+.cf-bl { fill: var(--ciano); opacity: .9; }
+.cf-ck { fill: none; stroke: var(--cf-sup); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.cf-onda { fill: none; stroke: var(--ciano); stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.cf-gira, .cf-ok, .cf-bl, .cf-pt, .cf-alca { transform-box: fill-box; transform-origin: center; }
+.cf-fim .cf-ic { border-color: var(--ciano); }
+.cf-sub { margin: 44px 0 14px; font: 600 .74rem/1 ui-monospace, Consolas, monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--txt-2); }
+.cf-selos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.cf-selos li { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: var(--cf-sup); border: 1px solid var(--cf-linha); font-size: .92rem; line-height: 1.25; color: var(--txt); }
+.cf-selos li:last-child { grid-column: 1 / -1; }
+.cf-selos svg { flex: none; width: 20px; height: 20px; fill: none; stroke: var(--ciano); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.cf-nota { margin: 16px 0 0; max-width: 720px; color: var(--txt-2); font-size: .88rem; line-height: 1.5; }
+.cf-nota a { color: var(--ciano); }
+.cf10 .acoes { margin-top: 26px; }
+@media (min-width: 900px) {
+  .cf-trilha { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+  .cf-rail { left: calc(100% / 12); right: calc(100% / 12); top: 35px; bottom: auto; width: auto; height: 2px; }
+  .cf-rail i { transform-origin: left; }
+  .cf-p { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; row-gap: 6px; }
+  .cf-ic { grid-row: auto; width: 72px; height: 72px; padding: 12px; margin-bottom: 8px; }
+  .cf-selos { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .cf-selos li:last-child { grid-column: auto; }
+}
+/* movimento: só quando a seção entra na tela (v7.js põe .cf-js e depois .anima), nunca com movimento reduzido */
+@media (prefers-reduced-motion: no-preference) {
+  .cf-js .cf-rail i { transform: scaleY(0); }
+  .cf-js .cf-p, .cf-js .cf-selos li, .cf-js .cf-nota { opacity: 0; }
+  .cf-js.anima .cf-rail i { animation: cf-trilho 4.2s cubic-bezier(.45, 0, .2, 1) .2s both; }
+  .cf-js.anima .cf-p { animation: cf-entra var(--cf-dur) ease-out calc(var(--i) * .7s + .1s) both; }
+  .cf-js.anima .cf-p .cf-a1 { animation: cf-surge .4s ease-out calc(var(--i) * .7s + .35s) both; }
+  .cf-js.anima .cf-p .cf-a2 { animation: cf-surge .4s ease-out calc(var(--i) * .7s + .5s) both; }
+  .cf-js.anima .cf-p .cf-a3 { animation: cf-surge .4s ease-out calc(var(--i) * .7s + .65s) both; }
+  .cf-js.anima .cf-alca { animation: cf-fecha .5s cubic-bezier(.3, 1.6, .5, 1) 1.9s both; }
+  .cf-js.anima .cf-gira { animation: cf-gira 1.4s ease-in-out 2.3s both; }
+  .cf-js.anima .cf-ok { animation: cf-pop .45s cubic-bezier(.3, 1.6, .5, 1) 3.2s both; }
+  .cf-js.anima .cf-onda { animation: cf-onda 1.6s ease-out 3.8s 2 both; }
+  .cf-js.anima .cf-onda.cf-a2 { animation-delay: 4.3s; }
+  .cf-js.anima .cf-selos li { animation: cf-entra .45s ease-out calc(4.2s + var(--i) * .12s) both; }
+  .cf-js.anima .cf-nota { animation: cf-entra .45s ease-out 4.9s both; }
+  @media (min-width: 900px) { .cf-js .cf-rail i { transform: scaleX(0); } .cf-js.anima .cf-rail i { animation-name: cf-trilho-x; } }
+}
+@keyframes cf-trilho { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes cf-trilho-x { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes cf-entra { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes cf-surge { from { opacity: 0; transform: translateY(6px) scale(.6); } to { opacity: 1; transform: none; } }
+@keyframes cf-fecha { from { transform: translateY(-5px); } to { transform: none; } }
+@keyframes cf-gira { from { transform: rotate(-120deg); } to { transform: none; } }
+@keyframes cf-pop { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: none; } }
+@keyframes cf-onda { from { opacity: .8; transform: scale(.4); } to { opacity: 0; transform: scale(1.5); } }
