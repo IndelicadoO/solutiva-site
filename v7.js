@@ -299,3 +299,17 @@
   } else { visivel = true; liga(); }
   document.addEventListener('visibilitychange', function () { if (document.hidden) desliga(); else liga(); });
 })();
+
+/* Como funciona / Por que confiar (#confianca, 23/10/2026): o movimento roda 1 vez quando a seção entra na tela.
+   Sem IntersectionObserver ou com movimento reduzido, nada muda (o CSS já mostra o estado final). */
+(function () {
+  'use strict';
+  var s = document.getElementById('confianca');
+  if (!s || !('IntersectionObserver' in window)) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  s.classList.add('cf-js');
+  var io = new IntersectionObserver(function (ents) {
+    if (ents[0].isIntersecting) { s.classList.add('anima'); io.disconnect(); }
+  }, { threshold: 0.25 });
+  io.observe(s);
+})();
