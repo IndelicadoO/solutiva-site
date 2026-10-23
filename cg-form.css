@@ -439,3 +439,51 @@ body.cg-com-doca .cg-toast { bottom: calc(var(--cta-h, 0px) + 120px); }
 .cg-zap-duvida { margin-top: 6px; font-size: .86rem; }
 .cg-zap-duvida a { color: var(--txt-2); text-decoration: underline; text-underline-offset: 3px; }
 .cg-zap-duvida a:hover { color: var(--txt); }
+
+/* ===== SEM VIDRO (dono 23/10/2026): nada de liquid glass, glow, brilho ou degradê translúcido =====
+   Superfícies sólidas, 1 cor de destaque (ciano), bordas finas, sombra neutra curta; movimento só transform/opacity.
+   Esta camada vem por último e vence as regras antigas acima. */
+:root { --azul: #3fd2ff; --sup: #0a1426; --sup-2: #0e1b33; --linha: #1b2c47; --linha-2: #2a4266; }
+body { background: #050a14; }
+.cg-hero h1 em { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--ciano); }
+.cg-cartao, .cg-continuar, .cg-pac { background: var(--sup); border-color: var(--linha); box-shadow: none; }
+.cg-pac.rec { background: var(--sup); border: 2px solid var(--ciano); box-shadow: none; }
+.cg-btn-prim, .cg-pergunta-op .cg-btn:first-child { background: var(--ciano); box-shadow: none; }
+.cg-btn-linha { background: var(--sup); }
+.cg-chip input:checked + span, .cg-abas button[aria-selected="true"], .cg-ferr button[aria-pressed="true"], .cg-pac-selos .rec, .cg-enviar, .cg-ag-hora.escolhido { background: var(--ciano); }
+.cg-pill::before { box-shadow: none; }
+.cg-passos li.feito, .cg-passos li.agora { background: var(--ciano); }
+.cg-linha li.feito::before, .cg-linha li.agora::before { background: var(--ciano); }
+.cg-linha li.agora i { box-shadow: none; }
+.cg-linha li.agora.ativa i, .cg-linha li.agora.calma i { animation: none; }
+.cg-linha li.agora i::before { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid var(--ciano); opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .cg-linha li.agora.ativa i::before { animation: cgAnelSv 1.6s ease-out infinite; }
+  .cg-linha li.agora.calma i::before { animation: cgAnelSv 3.6s ease-out infinite; }
+}
+@keyframes cgAnelSv { 0% { opacity: .8; transform: scale(.8); } 100% { opacity: 0; transform: scale(1.7); } }
+.cg-abas { background: var(--sup); border-color: var(--linha); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.cg-abas .cg-badge:not([hidden]) { box-shadow: none; }
+.cg-nova-msg { box-shadow: 0 8px 20px rgba(0, 0, 0, .45); }
+.cg-tel { background: #111c30; border-color: var(--linha-2); box-shadow: 0 24px 48px -28px rgba(0, 0, 0, .9); }
+.cg-msg.meu { background: #1d63c9; }
+.cg-cta { background: #050a14; border-top: 1px solid var(--linha); }
+.cg-pix { background: var(--sup); box-shadow: none; }
+.cg-pergunta { background: var(--sup); }
+.cg-agenda-box { background: var(--sup); }
+.cg-campo input, .cg-campo textarea, .cg-campo select, .cg-entrada, .cg-envio textarea, .cg-sala-form textarea, .cg-sala-form input { background: var(--sup); }
+.cg-proj-barra i { background: var(--ciano); }
+.cg-obra-jan { box-shadow: none; }
+.cg-obra .b { background: #1c3a5c; }
+.cg-obra .hero { background: #1d4f80; }
+.cg-obra.sis .lado { background: #1a3d63; }
+.cg-obra.ativa .dig { width: 70%; transform-origin: left center; animation-name: cgDigitaSv; }
+@keyframes cgDigitaSv { 0% { transform: scaleX(0); } 35%, 100% { transform: scaleX(1); } }
+@keyframes cgMonta { 0% { opacity: 0; transform: translateY(10px) scale(.92); } 8% { opacity: 1; transform: none; } 88% { opacity: 1; transform: none; } 100% { opacity: 0; transform: none; } }
+.cg-doca { background: var(--sup); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: 0 12px 28px -12px rgba(0, 0, 0, .8); }
+.cg-doca.pulsa { animation: cgDocaSv .5s ease-out 2; }
+@keyframes cgDocaSv { 50% { transform: translateY(-4px); } }
+/* portfólio (dono 23/10/2026): autorização de mostrar o site, com botão para mudar */
+.cg-portfolio { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 18px; padding: 14px 16px; border-radius: 16px; background: var(--sup); border: 1px solid var(--linha); font-size: .9rem; color: var(--txt-2); }
+.cg-portfolio p { flex: 1 1 220px; }
+.cg-portfolio.nao { border-style: dashed; }

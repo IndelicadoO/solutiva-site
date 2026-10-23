@@ -75,7 +75,8 @@
 
   /* ---------- fundo vivo: malha de pontos (pausa com a aba oculta e com menos movimento) ---------- */
   (function fundo() {
-    var cv = $('#fundo'); if (!cv || !cv.getContext) return;
+    // sem vidro (dono 23/10/2026): o CSS esconde a malha; escondida, nem liga o laço (celular leve)
+    var cv = $('#fundo'); if (!cv || !cv.getContext || getComputedStyle(cv).display === 'none') return;
     var cx = cv.getContext('2d'), pts = [], w = 0, h = 0, dpr = 1, raf = 0, mx = -999, my = -999;
     function medir() {
       dpr = Math.min(window.devicePixelRatio || 1, 1.5); w = innerWidth; h = innerHeight;
@@ -663,7 +664,7 @@
     enviando = true; botao.disabled = true; botaoTxt.textContent = 'Enviando…';
     var corpo = {
       negocio: val('negocio'), ramo: val('ramo'), cidade: val('cidade'), tipo: oque() === 'cardapio' ? 'Cardápio digital' : 'site', quer: montarQuer(), servicos: projeto() ? '' : val('servicos'),
-      cores: val('cores'), whatsapp: val('whatsapp'), email: val('email'), instagram: val('instagram'), site_url: val('site_url'), t0: t0, aceite: true, fotos: oque() === 'cardapio' ? cardFotos.concat(fotos).slice(0, 3) : fotos,
+      cores: val('cores'), whatsapp: val('whatsapp'), email: val('email'), instagram: val('instagram'), site_url: val('site_url'), t0: t0, aceite: true, portfolio: !(form.elements.portfolio && !form.elements.portfolio.checked), fotos: oque() === 'cardapio' ? cardFotos.concat(fotos).slice(0, 3) : fotos,
       precisa: montarPrecisa(), turnstile: cf.token || undefined,
       substitui: antigo && trocar ? { id: antigo.id, k: antigo.k } : undefined
     };
