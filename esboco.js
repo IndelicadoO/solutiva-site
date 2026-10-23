@@ -600,6 +600,28 @@
     form.elements.email.required = false;
   }).catch(function () { /* fica o padrão: e-mail obrigatório */ });
 
+  /* ---------- Cloudflare Turnstile (auditoria 23/10/2026): só liga quando a API manda a site key em /config ----------
+     O widget fica na revisão, antes de enviar; o token vai no pedido (campo turnstile) e é de uso único (reset depois). */
+  var cf = { chave: '', token: '', id: null };
+  function cfDesenhar() {
+    if (!cf.chave || cf.id !== null || !window.turnstile) return;
+    var onde = $('#cg-turnstile'); if (!onde) return;
+    onde.hidden = false;
+    cf.id = window.turnstile.render(onde, { sitekey: cf.chave, language: 'pt-br', appearance: 'interaction-only',
+      callback: function (t) { cf.token = t; }, 'expired-callback': function () { cf.token = ''; }, 'error-callback': function () { cf.token = ''; } });
+  }
+  function cfRenovar() { cf.token = ''; try { if (window.turnstile && cf.id !== null) window.turnstile.reset(cf.id); } catch (e) { /* */ } }
+  CG.chamar('/config').then(function (c) {
+    var k = c && c.turnstileSiteKey;
+    if (!k || !/^[\w-]{10,100}$/.test(k)) return;
+    cf.chave = k;
+    window.cgTurnstilePronto = cfDesenhar;
+    var s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=cgTurnstilePronto';
+    s.async = true; s.defer = true;
+    document.head.appendChild(s);
+  }).catch(function () { /* sem config: sem widget (a API decide) */ });
+
   /* ---------- enviar ---------- */
   function montarQuer() {
     var t = oque(), extra = [];
@@ -636,12 +658,13 @@
   }
   function enviar() {
     for (var i = 0; i < ordem.length; i++) { var m = validar(ordem[i]); if (m) { if (i !== atual) { irPara(i, true); m = validar(ordem[i]); } mostrarErro(m); robo('r-nao'); return; } }
+    if (cf.chave && !cf.token) { cfDesenhar(); mostrarErro('Só um instante: estamos confirmando que você não é um robô. Tente enviar de novo em alguns segundos.'); return; }
     mostrarErro('');
     enviando = true; botao.disabled = true; botaoTxt.textContent = 'Enviando…';
     var corpo = {
       negocio: val('negocio'), ramo: val('ramo'), cidade: val('cidade'), tipo: oque() === 'cardapio' ? 'Cardápio digital' : 'site', quer: montarQuer(), servicos: projeto() ? '' : val('servicos'),
       cores: val('cores'), whatsapp: val('whatsapp'), email: val('email'), instagram: val('instagram'), site_url: val('site_url'), t0: t0, aceite: true, fotos: oque() === 'cardapio' ? cardFotos.concat(fotos).slice(0, 3) : fotos,
-      precisa: montarPrecisa(),
+      precisa: montarPrecisa(), turnstile: cf.token || undefined,
       substitui: antigo && trocar ? { id: antigo.id, k: antigo.k } : undefined
     };
     var animacao = montando();
@@ -661,6 +684,7 @@
       robo('r-festa', mtRobo); confete();
       setTimeout(function () { location.href = '/acompanhar/' + (api ? '?api=' + encodeURIComponent(api) : '') + '#' + r.id + '.' + r.k; }, menosMov ? 300 : 1700);
     }).catch(function (e) {
+      cfRenovar();
       mt.hidden = true; enviando = false; botao.disabled = false; atualizarBotao();
       mostrarErro(e.message || 'Não deu para enviar agora. Tente de novo em instantes.'); robo('r-nao');
     });
