@@ -86,7 +86,7 @@
       f.hidden = false; $('previa-vazia').hidden = true; $('previa-acoes').hidden = false; $('abrir').href = r.previaUrl;
       edCarregado = '';
     }
-    // prévia fica no ar 2 h; vencida, um toque republica por mais 2 h (a prévia continua guardada)
+    // prévia fica no ar 48 h (sem sinal); vencida, um toque republica a MESMA prévia por mais 48 h (guardada por até 30 dias)
     var exp = !!(i.previaExpirada && !i.publicado);
     $('previa-expirou').hidden = !exp;
     if (exp) { $('previa').hidden = true; $('previa-acoes').hidden = true; $('previa-vazia').hidden = true; previaAtual = ''; }
@@ -334,7 +334,7 @@
   }
   $('ver-de-novo').onclick = function () {
     var b = this; b.disabled = true; b.textContent = 'Publicando de novo…';
-    mandar('', { tipo: 'reabrir' }).then(function () { toast('Pronto! Em instantes a prévia volta aqui, por mais 2 horas.'); }).catch(function () {}).finally(function () { setTimeout(function () { b.disabled = false; b.textContent = 'Ver a prévia de novo'; }, 8000); });
+    mandar('', { tipo: 'reabrir' }).then(function () { toast('Pronto! Em instantes a prévia volta aqui, por mais 48 horas.'); }).catch(function () {}).finally(function () { setTimeout(function () { b.disabled = false; b.textContent = 'Ver a prévia de novo'; }, 8000); });
   };
   $('envio').addEventListener('submit', function (ev) {
     ev.preventDefault();
