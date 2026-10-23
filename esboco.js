@@ -1,4 +1,4 @@
-/* ClickGo: formulário do esboço v2 (passo a passo + prévia ao vivo) -> fila pública (/api/clickgo/pedido) -> página só do
+/* ClickGo: formulário da prévia v2 (passo a passo + prévia ao vivo) -> fila pública (/api/clickgo/pedido) -> página só do
    cliente (/acompanhar/#id.chave). Contrato da API igual ao v1: negocio, ramo, cidade, tipo, quer, servicos, cores, whatsapp,
    email, instagram, site_url (isca), t0, aceite, fotos (até 3, CG.comprimir), precisa (lista fechada), substitui {id,k}. */
 (function () {
@@ -460,7 +460,7 @@
         if (!waOficial && !emailOk()) return campoErro('email', 'Deixe o seu e-mail: é por ele que a gente te avisa do pedido.');
         if (zap.length < 10 && !emailOk()) return campoErro('whatsapp', 'Deixe um WhatsApp (com DDD) ou um e-mail para a gente te avisar.');
         return '';
-      case 'revisao': return form.elements.aceite.checked ? '' : campoErro('aceite', 'Marque que concorda com o uso dos dados para montar o esboço.');
+      case 'revisao': return form.elements.aceite.checked ? '' : campoErro('aceite', 'Marque que concorda com o uso dos dados para montar a prévia.');
     }
     return '';
   }
@@ -477,7 +477,7 @@
   function atualizarBotao() {
     var p = ordem[atual];
     botao.classList.toggle('enviar', p === 'revisao');
-    if (p === 'revisao') botaoTxt.textContent = antigo && trocar ? 'Enviar pedido novo' : 'Pedir meu esboço';
+    if (p === 'revisao') botaoTxt.textContent = antigo && trocar ? 'Enviar pedido novo' : 'Pedir minha prévia';
     else if (daRevisao) botaoTxt.textContent = 'Voltar à revisão';
     else botaoTxt.textContent = OPCIONAIS[p] && !temAlgo(p) ? 'Pular' : 'Continuar';
   }
