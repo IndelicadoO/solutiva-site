@@ -379,6 +379,10 @@
       var estilo = '<style id="cg-editor">[data-cg-alvo]{outline:2px dashed #3fd2ff!important;outline-offset:3px;cursor:pointer}[contenteditable]{outline:3px solid #34e0c0!important;outline-offset:3px;background:rgba(52,224,192,.08)}html{scroll-behavior:smooth}</style>';
       html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, function (m) { return m + base + estilo; }) : base + estilo + html;
       var f = $('ed-frame');
+      // auditoria 23/10/2026: a prévia editada nunca roda script aqui dentro (mesma origem da página do pedido). O editor só
+      // precisa do contentDocument (allow-same-origin); os cliques são ouvidos daqui de fora.
+      f.setAttribute('sandbox', 'allow-same-origin');
+      if (f.getAttribute('sandbox') !== 'allow-same-origin' || !f.sandbox || f.sandbox.contains('allow-scripts')) throw new Error('editor sem sandbox');
       f.onload = function () { ed.doc = f.contentDocument; ligarDoc(); escolherFerr(ed.ferr); };
       f.srcdoc = html;
     }).catch(function () { $('ed-painel').innerHTML = '<p class="cg-dica">Não consegui abrir o editor agora. Peça o ajuste na conversa.</p>'; });
