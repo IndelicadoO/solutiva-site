@@ -175,7 +175,7 @@
   var qa = function (s) { return Array.prototype.slice.call(fd.querySelectorAll(s)); };
   // exemplos fictícios (os mesmos do formulário de verdade: placeholders e sugestões de lá)
   var TIPOS = {
-    landing:   { proj: false, nome: 'Barbearia Dois Irmãos', rot2: 'Ramo', campo2: 'Barbearia', cta: 'Chamar no WhatsApp', fim: 'Site no ar', slug: 'barbearia-dois-irmaos', url: 'site' },
+    landing:   { proj: false, nome: 'Barbearia Dois Irmãos', rot2: 'Ramo', campo2: 'Barbearia', cta: 'Agendar horário', fim: 'Site no ar', slug: 'barbearia-dois-irmaos', url: 'site' },
     cardapio:  { proj: false, nome: 'Hamburgueria do Bairro', rot2: 'Ramo', campo2: 'Hamburgueria', cta: 'Pedir no WhatsApp', fim: 'Cardápio no ar', slug: 'hamburgueria-do-bairro', url: 'cardapio' },
     sistema:   { proj: true, nome: 'Contabilidade Central', rot2: 'O que o sistema precisa fazer?', campo2: 'Ler meus contratos em PDF e responder dúvidas da equipe', prop: 'Sistema Contabilidade Central', itens: ['Leitura dos contratos em PDF', 'Respostas para a equipe', 'Acesso por usuário'], fim: 'Proposta aprovada', sub: 'a construção começa · exemplo', url: 'sistema' },
     automacao: { proj: true, nome: 'Clínica Bem-Estar', rot2: 'O que deve acontecer sozinho?', campo2: 'Lembrete automático do horário marcado', prop: 'Automação Clínica Bem-Estar', itens: ['Lê a agenda do dia', 'Manda o lembrete na hora certa', 'Anota quem confirmou'], fim: 'Proposta aprovada', sub: 'a construção começa · exemplo', url: 'automacao' }

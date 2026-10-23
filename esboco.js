@@ -50,7 +50,8 @@
   function svgIc(nome) { return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + IC[nome] + '"/></svg>'; }
 
   var RAMOS = {
-    site: ['Barbearia', 'Salão de beleza', 'Clínica', 'Odontologia', 'Estética', 'Academia', 'Pet shop', 'Advocacia', 'Contabilidade', 'Oficina', 'Imobiliária', 'Loja de roupas'],
+    // 23/10/2026 (dono): a ClickGo vende só cardápio digital e SITE COM AGENDA; o site comum está em construção
+    site: ['Barbearia', 'Salão de beleza', 'Clínica', 'Odontologia', 'Estética', 'Manicure', 'Psicólogo', 'Fisioterapia', 'Pet shop', 'Pilates', 'Personal trainer', 'Tatuagem'],
     cardapio: ['Restaurante', 'Lanchonete', 'Pizzaria', 'Hamburgueria', 'Açaí', 'Cafeteria', 'Doceria', 'Marmitaria'],
     sistema: ['Clínica', 'Escritório', 'Contabilidade', 'Advocacia', 'Escola', 'Loja', 'Imobiliária', 'Indústria']
   };
@@ -540,7 +541,7 @@
   form.addEventListener('change', function () { previaJa(); salvar(); atualizarBotao(); });
 
   /* ---------- revisão ---------- */
-  var ROT_OQUE = { site: 'Site do negócio', cardapio: 'Cardápio digital', sistema: 'Sistema sob medida', automacao: 'Automação' };
+  var ROT_OQUE = { site: 'Site com agenda', cardapio: 'Cardápio digital', sistema: 'Sistema sob medida', automacao: 'Automação' };
   function resumoPrecisa() {
     var t = oque();
     if (t === 'cardapio') return marcados('cpx').map(function (k) { return CARDAPIO[k][1]; }).join(', ');
