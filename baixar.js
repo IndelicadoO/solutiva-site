@@ -1,6 +1,6 @@
 /* ClickGo: download do .zip da compra do site (auditoria 23/10/2026).
    O arquivo no repositório público é CIFRADO (.cgz = "CGZ1" + iv 12 + tag 16 + dados, AES-256-GCM). O link que o cliente recebe é
-   clickgo.dev.br/baixar/#<p|g>.<pasta>.<arquivo>.<chave>: o # nunca vai para servidor nenhum; a chave decifra aqui no aparelho. */
+   clickgo.dev.br/baixar/#<p|g|c-projeto>.<pasta>.<arquivo>.<chave>: o # nunca vai para servidor nenhum; a chave decifra aqui no aparelho. */
 (function () {
   'use strict';
   var st = document.getElementById('baixar-status'), lk = document.getElementById('baixar-link');
@@ -9,9 +9,10 @@
   // o nome do arquivo pode ter pontos (site.zip): host, pasta, chave nas pontas
   if (partes.length < 4) { msg('Link incompleto. Abra pelo link que você recebeu na conversa.'); return; }
   var host = partes[0], pasta = partes[1], chave = partes[partes.length - 1], arq = decodeURIComponent(partes.slice(2, -1).join('.'));
-  if (!/^[pg]$/.test(host) || !/^d-[0-9a-f]{24}$/.test(pasta) || !/^[\w.-]{1,90}$/.test(arq) || !/^[\w-]{43}$/.test(chave)) { msg('Link inválido. Abra pelo link que você recebeu na conversa.'); return; }
+  if (!/^(p|g|c-clickgo-previas(-[a-z0-9]{1,12})?)$/.test(host) || !/^d-[0-9a-f]{24}$/.test(pasta) || !/^[\w.-]{1,90}$/.test(arq) || !/^[\w-]{43}$/.test(chave)) { msg('Link inválido. Abra pelo link que você recebeu na conversa.'); return; }
   if (!window.crypto || !crypto.subtle) { msg('Este navegador não consegue abrir o arquivo. Tente pelo Chrome, Safari ou Edge atualizado.'); return; }
-  var base = host === 'p' ? 'https://previa.clickgo.dev.br/' : 'https://erinaldogomes.github.io/clickgo-previas/';
+  // p = previa.clickgo.dev.br; c-<projeto> = Cloudflare Pages (<projeto>.pages.dev) antes do domínio ligar; g = GitHub Pages (antigo)
+  var base = host === 'p' ? 'https://previa.clickgo.dev.br/' : /^c-/.test(host) ? 'https://' + host.slice(2) + '.pages.dev/' : 'https://erinaldogomes.github.io/clickgo-previas/';
   function b64url(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
   fetch(base + pasta + '/' + encodeURIComponent(arq) + '.cgz', { cache: 'no-store', referrerPolicy: 'no-referrer' }).then(function (r) {
     if (r.status === 404) throw new Error('venceu');
