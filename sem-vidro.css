@@ -1,0 +1,52 @@
+/* ClickGo: SEM VIDRO (dono 23/10/2026). Nada de "liquid glass": sem backdrop-filter/blur, glow, brilho que atravessa
+   botão nem degradê translúcido em cartão ou botão. Superfícies sólidas, hierarquia clara, 1 cor de destaque (--ac),
+   sombra neutra e curta; movimento só com transform/opacity. Vem por último na página inicial (depois do v7.css) e vence
+   as regras antigas sem mexer nelas. Os véus sobre o vídeo do topo ficam: são legibilidade do texto, não vidro. */
+:root { --vidro: #0a1426; --sup: #0a1426; --sup-2: #0e1b33; --linha-s: #1b2c47; }
+
+/* topo fixo: faixa sólida */
+.topo { background: #050a14; border-bottom: 1px solid var(--linha-s); }
+
+/* títulos: destaque em cor sólida */
+.grande em, h1 em { background: none; -webkit-text-fill-color: currentColor; color: var(--ac); }
+
+/* botões */
+.btn-prim, .fd-bt { background: var(--ac); border-color: var(--ac); box-shadow: none; }
+.btn-prim:hover { background: #7ad8ff; box-shadow: none; }
+.btn-prim::before { content: none; }
+.btn-sec, .btn-linha { background: var(--sup); box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.btn-sec:hover, .btn-linha:hover { box-shadow: none; background: var(--sup-2); }
+.btn-linha::before { box-shadow: none; }
+.btn:focus-visible, .flutuante:focus-visible, .btn-texto:focus-visible { box-shadow: none; }
+.flutuante, .zap-flut { background: var(--sup); box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .9); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.flutuante::after { background: var(--ac); box-shadow: none; }
+
+/* cartões e caixas */
+.plano, .conversa, .sis-faixa li, .ficha-bloco, .tela { background: var(--sup); }
+.plano-destaque { box-shadow: none; border-color: var(--ac); }
+.b.bot { background: var(--sup-2); border-color: var(--linha-s); }
+.sis { background: var(--sup); box-shadow: none; }
+.checks li::before { background: var(--ac); }
+.sis-lista > .sc { background: #08101e; }
+.sc::before { content: none; }
+.sc:hover, .sc.ativo { box-shadow: none; border-color: var(--ac); }
+.sc-ic { background: var(--sup-2); border-color: var(--linha-s); }
+.sc.visto .galhos li::before, .sc.ativo .galhos li::before { box-shadow: none; }
+.selo-atend span { box-shadow: none; }
+.m-pulso, .m-ponto.aceso { filter: none; }
+
+/* demonstração do formulário */
+.fd-trilho li.ok::before, .fd-trilho li:last-child.ok::before { box-shadow: none; }
+.fd-form { background: var(--sup); box-shadow: none; }
+.fd-prog i { background: var(--ac); }
+.fd-op { background: var(--sup-2); }
+.fd-op.sel, .fd.rodando .fd-op.on { box-shadow: inset 0 0 0 1px #3fd2ff; }
+.fd-tela { box-shadow: inset 0 0 0 6px #0a1426; }
+.fd-hero { background: #16304f; }
+.fd-nasce span { background: #13233f; }
+.fd-noar { box-shadow: 0 14px 30px -14px rgba(0, 0, 0, .8); }
+.fd-tipos button[aria-selected="true"] { box-shadow: none; }
+.fd.proj .fd-prop { background: #0e1b33; }
+.fd.rodando[data-e="1"] .fd-site, .fd.rodando[data-e="2"] .fd-site,
+.fd.rodando.proj[data-e="1"] .fd-prop, .fd.rodando.proj[data-e="2"] .fd-prop,
+.fd.rodando.proj[data-e="5"] .fd-prop-bt { filter: none; }
