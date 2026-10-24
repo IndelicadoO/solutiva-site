@@ -13,28 +13,29 @@
 <!-- fontes do Google sem travar a pintura (CSP sem inline: o v8.js cola o link; sem JS, o noscript): o texto aparece na fonte do sistema e troca -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Instrument+Serif:ital@1&family=Onest:wght@400;500;700&display=swap" data-fontes>
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Instrument+Serif:ital@1&family=Onest:wght@400;500;700&display=swap"></noscript>
-<link rel="stylesheet" href="v9.css?v=h1">
+<link rel="stylesheet" href="v9.css?v=h2">
+<!-- síncrono no head: marca html.trab-pre (o corpo fica invisível até os campos serem preenchidos, sem salto de layout) e preenche a página -->
+<script src="v8-trabalho.js?v=p2"></script>
 <!-- síncrono de propósito (3 KB): a página precisa saber QUAL trabalho é antes do primeiro quadro, para a transição compartilhada -->
-<script src="v8-trabalho.js?v=p1"></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
 <header class="topo">
-  <a class="marca" href="home-v9.html" aria-label="ClickGo, início"><img src="assets/logo-clickgo.webp" width="32" height="32" alt="">Click<b>Go</b></a>
+  <a class="marca" href="./" aria-label="ClickGo, início"><img src="assets/logo-clickgo.webp" width="32" height="32" alt="">Click<b>Go</b></a>
   <nav class="menu" aria-label="Seções">
-    <a href="home-v9.html#cardapio">Cardápio digital</a>
-    <a href="home-v9.html#site">Site com agenda</a>
-    <a href="home-v9.html#portfolio" aria-current="true">Feitos por nós</a>
-    <a href="home-v9.html#perguntas">Perguntas</a>
+    <a href="./#cardapio">Cardápio digital</a>
+    <a href="./#site">Site com agenda</a>
+    <a href="./#portfolio" aria-current="true">Feitos por nós</a>
+    <a href="./#perguntas">Perguntas</a>
   </nav>
   <a class="btn btn-sec btn-mini" data-contato="principal" href="https://ig.me/m/clickgo.dev" target="_blank" rel="noopener"><span class="t"><span>Falar com a gente</span><span aria-hidden="true">Chama no direct</span></span></a>
 </header>
 
 <main id="conteudo">
   <section class="trab-topo">
-    <div class="sec-in">
-      <a class="voltar" href="home-v9.html#portfolio"><span class="seta" aria-hidden="true" style="transform:rotate(180deg)">→</span> Todos os trabalhos</a>
+    <div class="sec-in trab-corpo">
+      <a class="voltar" href="./#portfolio"><span class="seta" aria-hidden="true" style="transform:rotate(180deg)">→</span> Todos os trabalhos</a>
       <p class="rotulo" style="margin-top:22px"><b id="t-num">01</b> <span id="t-tipo">Trabalho</span></p>
       <h1 id="t-nome" style="max-width:20ch">Trabalho</h1>
       <p class="sub" id="t-desc"></p>
@@ -42,14 +43,14 @@
       <div class="trab-meta">
         <div><small>O que tem</small><span id="t-tem"></span></div>
         <div><small>Como foi feito</small><span id="t-como"></span></div>
-        <div><small>No ar</small><a id="t-link" href="home-v9.html" target="_blank" rel="noopener">—</a></div>
+        <div><small>No ar</small><a id="t-link" href="./" target="_blank" rel="noopener">—</a></div>
       </div>
       <div class="acoes">
         <a class="btn btn-prim" data-contato="esboco" href="/esboco/"><span class="t"><span>Quero um assim</span><span aria-hidden="true">Prévia grátis</span></span> <span class="seta" aria-hidden="true">→</span></a>
       </div>
       <nav class="prox" aria-label="Outros trabalhos">
-        <a id="t-ant" href="home-v9.html#portfolio"><small>Anterior</small><b>—</b></a>
-        <a id="t-prox" href="home-v9.html#portfolio"><small>Próximo</small><b>—</b></a>
+        <a id="t-ant" href="./#portfolio"><small>Anterior</small><b>—</b></a>
+        <a id="t-prox" href="./#portfolio"><small>Próximo</small><b>—</b></a>
       </nav>
     </div>
   </section>
@@ -70,6 +71,6 @@
 
 <script src="pixel.js?v=2" defer></script>
 <script src="contato.js" defer></script>
-<script src="v9.js?v=h1" defer></script>
+<script src="v9.js?v=h2" defer></script>
 </body>
 </html>

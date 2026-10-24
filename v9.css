@@ -326,11 +326,12 @@ h2 { font: 800 clamp(1.8rem, 4.6vw, 3.4rem)/1.02 var(--titulo); letter-spacing: 
 
 /* ===== página de trabalho (trabalho-v8.html) ===== */
 .trab-topo { padding: 110px var(--gut) 40px; }
-.trab-hero { position: relative; max-width: 1120px; margin: 26px auto 0; border-radius: var(--raio); overflow: hidden; border: 1px solid var(--linha); background: var(--sup); aspect-ratio: 16 / 9; }
-.trab-hero img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.trab-hero { position: relative; max-width: 1120px; margin: 26px auto 0; border-radius: var(--raio); overflow: hidden; border: 1px solid var(--linha); background: var(--sup); aspect-ratio: 8 / 5; }
+.trab-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.trab-pre .trab-corpo { visibility: hidden; }
 .trab-meta { display: grid; gap: 12px; margin-top: 20px; }
 @media (min-width: 760px) { .trab-meta { grid-template-columns: repeat(3, 1fr); } }
-.trab-meta div { padding: 16px; border: 1px solid var(--linha); border-radius: 14px; background: var(--sup); }
+.trab-meta div { padding: 16px; border: 1px solid var(--linha); border-radius: 14px; background: var(--sup); min-height: 104px; }
 .trab-meta small { display: block; font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--txt-2); margin-bottom: 6px; }
 .prox { display: grid; gap: 12px; margin-top: 40px; }
 @media (min-width: 760px) { .prox { grid-template-columns: 1fr 1fr; } }

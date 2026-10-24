@@ -4,6 +4,8 @@
    tudo é textContent/atributos, e o ?p= só escolhe uma chave da lista abaixo. */
 (function () {
   'use strict';
+  // enquanto os campos não foram preenchidos, o corpo da página fica invisível (visibility): nada salta quando o texto entra
+  if (document.querySelector('link[href^="v9.css"]')) document.documentElement.classList.add('trab-pre');
   // paleta em teste (ver v8.js): aqui é síncrono, então a página já nasce na cor certa
   try {
     var pm = /[?&]paleta=([a-z]+)/.exec(location.search), pal = pm ? pm[1] : localStorage.getItem('cg-paleta');
@@ -30,7 +32,8 @@
     var im = g('t-img'); im.src = t.img; im.width = t.w; im.height = t.h; im.alt = 'Tela do site ' + t.nome; im.style.viewTransitionName = t.vt;
     var a = g('t-ant'); a.href = pg + '?p=' + ordem[(i + ordem.length - 1) % ordem.length]; a.querySelector('b').textContent = ant.nome;
     var x = g('t-prox'); x.href = pg + '?p=' + ordem[(i + 1) % ordem.length]; x.querySelector('b').textContent = prox.nome;
+    document.documentElement.classList.remove('trab-pre');
   }
   // o script roda no <head>: espera o corpo existir, mas ANTES do primeiro quadro (DOMContentLoaded vem antes da pintura)
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pronto); else pronto();
+  if (document.getElementById('t-prox')) pronto(); else if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pronto); else pronto();
 })();
