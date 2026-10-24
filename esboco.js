@@ -108,6 +108,20 @@
       return m && m[1].trim() ? [m[1].trim(), /R\$/i.test(m[2]) ? m[2].replace(/\s+/, ' ') : 'R$ ' + m[2].replace(/\s*reais/i, '')] : [s, ''];
     });
   }
+  /* tíquetes (24/10/2026, visual tátil): cada serviço/item escrito vira uma etiqueta com o preço; só textContent, nada vai no pedido */
+  var tiquesEl = $('#tiques');
+  function desenharTiques(itens) {
+    if (!tiquesEl) return;
+    var chave = JSON.stringify(itens); if (tiquesEl.getAttribute('data-n') === chave) return;
+    tiquesEl.setAttribute('data-n', chave); tiquesEl.textContent = '';
+    itens.forEach(function (it, i) {
+      var d = document.createElement('div'); d.className = 'tq'; d.style.animationDelay = (i * 70) + 'ms';
+      var ic = document.createElement('span'); ic.className = 'tq-ic'; ic.textContent = (it[0].match(/[a-zà-ú0-9]/i) || [''])[0];
+      var n = document.createElement('b'); n.className = 'tq-n'; n.textContent = it[0];
+      var p = document.createElement('span'); p.className = 'tq-p' + (it[1] ? '' : ' sem'); p.textContent = it[1] || 'sem preço';
+      d.appendChild(ic); d.appendChild(n); d.appendChild(p); tiquesEl.appendChild(d);
+    });
+  }
   function mostrar(bloco, on) {
     var els = $$('[data-b="' + bloco + '"]', tela);
     var era = !!visiveis[bloco]; visiveis[bloco] = !!on;
@@ -158,6 +172,7 @@
     $('#ms-cta').textContent = tipo === 'cardapio' ? (cpx.indexOf('whats') >= 0 ? 'Pedir no WhatsApp' : 'Ver cardápio') : precisa.indexOf('agendar') >= 0 ? 'Agendar agora' : precisa.indexOf('vender') >= 0 ? 'Ver a loja' : 'Chamar no WhatsApp';
     // lista de serviços / itens
     var itens = itensDe(val('servicos'));
+    desenharTiques(itens);
     if (!itens.length && tipo === 'cardapio') itens = [['Prato da casa', 'R$ --'], ['Bebidas', 'R$ --'], ['Sobremesa', 'R$ --']];
     $('#ms-lista-t').textContent = tipo === 'cardapio' ? 'Cardápio' : 'Serviços';
     var ul = $('#ms-lista'), html = itens.map(function (it) { return '<li><span></span><b></b></li>'; }).join('');

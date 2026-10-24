@@ -14,8 +14,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/esboco/esboco.css?v=c3">
+<link rel="stylesheet" href="/esboco/esboco.css?v=t1">
 <link rel="stylesheet" href="/cg-cores.css?v=1">
+<link rel="stylesheet" href="/cg-tatil.css?v=1">
 </head>
 <body>
 
@@ -39,7 +40,7 @@
 </svg>
 
 <header class="tp">
-  <a class="tp-marca" href="/"><img src="/assets/logo-clickgo.webp" width="28" height="28" alt="">ClickGo</a>
+  <a class="tp-marca cg-mk" href="/" aria-label="ClickGo, início"><span class="cg-mk-logo"><img src="/assets/logo-clickgo.webp" width="28" height="28" alt=""><i class="cg-mk-onda" aria-hidden="true"></i></span><span class="cg-mk-wm">Click<b>Go</b></span></a>
   <span class="tp-selo">Prévia grátis</span>
   <a class="tp-zap" data-zap data-zap-pedido href="https://wa.me/5561984717809?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20pedido%20de%20site%20na%20ClickGo." target="_blank" rel="noopener">Dúvida? <span class="tp-zap-l">Chama no </span>WhatsApp</a>
 </header>
@@ -72,7 +73,7 @@
         <!-- 1. o que vamos criar -->
         <section class="ps" data-p="oque" aria-labelledby="t-oque">
           <div class="fala"><svg class="robo" id="robo-ps" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
-            <div class="balao"><p class="ps-kick">Oi! Eu sou o robô da ClickGo.</p><h1 id="t-oque" class="ps-t" tabindex="-1">O que vamos criar para você?</h1><p class="ps-d">Leva uns 2 minutos. A prévia é grátis.</p></div></div>
+            <div class="balao"><p class="ps-kick">Oi! Eu sou o robô da ClickGo.</p><h1 id="t-oque" class="ps-t" tabindex="-1">O que vamos <span class="mk">criar</span> para você?</h1><p class="ps-d">Leva uns 2 minutos. A prévia é grátis.</p></div></div>
           <div class="resp">
             <div class="grandes" role="radiogroup" aria-labelledby="t-oque">
               <label class="gc"><input data-clarity-mask="true" type="radio" name="oque" value="site">
@@ -169,6 +170,8 @@
             <div class="balao"><p class="ps-kick">Isso aparece no site do jeito que você escrever.</p><h2 id="t-servicos" class="ps-t" tabindex="-1">Quais serviços e preços?</h2><p class="ps-d">Opcional. Pode pular e mandar depois.</p></div></div>
           <div class="resp">
             <label class="cp" id="cp-servicos"><span class="cp-r" id="r-servicos">Serviços e preços</span><textarea data-clarity-mask="true" name="servicos" maxlength="1200" rows="3" placeholder="Corte R$ 40, barba R$ 30" aria-describedby="d-servicos" data-conta="1200"></textarea><small class="cp-dica" id="d-servicos"></small></label>
+            <!-- tíquetes: o que a pessoa escreve vira etiqueta com preço (só visual; o que vai no pedido é o campo servicos) -->
+            <div class="tiques" id="tiques" aria-hidden="true"></div>
             <!-- cardápio: foto ou PDF do cardápio atual (a ClickGo lê os itens e preços e o cliente confere no chat antes da prévia) -->
             <div class="cp" id="cp-cardfoto" hidden><span class="cp-r" id="r-cardfoto">Tem o cardápio atual? <i>opcional</i></span>
               <small class="cp-dica cp-dica-cima" id="d-cardfoto">Mande a foto ou o PDF do cardápio que você já usa: a gente lê os itens e os preços e te mostra para conferir antes de montar.</small>
@@ -222,7 +225,7 @@
               <p class="grav-ou" aria-hidden="true">ou</p>
               <button type="button" class="grav-bt" id="grav-iniciar">
                 <span class="grav-mic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></span>
-                <span class="grav-bt-tx"><b>Gravar um áudio</b><small>Até 2 minutos. Se preferir falar, fale.</small></span>
+                <span class="grav-bt-tx"><b>Com preguiça de digitar?</b><small>Toque e fale. Até 2 minutos.</small></span>
               </button>
               <div class="grav-rec" role="group" aria-label="Gravando áudio">
                 <span class="grav-ponto" aria-hidden="true"></span>
@@ -345,6 +348,7 @@
 <script src="/contato.js"></script>
 <script src="/cg-comum.js"></script>
 <script src="/pixel.js?v=2"></script>
-<script src="/esboco.js?v=c3"></script>
+<script src="/cg-tatil.js?v=1"></script>
+<script src="/esboco.js?v=t1"></script>
 </body>
 </html>

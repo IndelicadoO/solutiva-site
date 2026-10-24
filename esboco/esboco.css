@@ -563,3 +563,164 @@ button, input, textarea { font: inherit; color: inherit; }
   body.prev-on::after { background: rgba(7, 11, 19, .72); }
 }
 .ms-hero { background: color-mix(in srgb, var(--p) 24%, var(--s)); }
+
+/* ======================================================================================================================
+   TÁTIL (24/10/2026; dono escolheu a direção B "com bordas arredondadas", no NOSSO estilo e "não tão colorido").
+   Cartões e botões grandes de apertar: borda sólida de 2px, cantos bem redondos, sombra SÓLIDA deslocada (sem desfoque),
+   afundam ao tocar e voltam com mola. Paleta da marca: fundo escuro, azul do robô na sombra do que está escolhido, ciano
+   como destaque. Acentos do B só aqui e dessaturados: mostarda na etiqueta de preço, tomate no microfone.
+   O robô "fala" cada pergunta (boca mexe enquanto o balão aparece) e vira a cabeça em 3D atrás do dedo/mouse (cg-tatil.js).
+   ====================================================================================================================== */
+:root { --mola-t: cubic-bezier(.34, 1.56, .64, 1); --sombra-cor: #1a2741; }
+
+/* topo */
+.tp { padding-top: 16px; }
+.tp-marca img { width: 32px; height: 32px; }
+.tp-selo { border: 2px solid var(--linha-2); border-radius: 12px; box-shadow: 3px 3px 0 var(--sombra-cor); }
+
+/* progresso: trilho grosso com borda, como os blocos */
+.wz-prog { height: 12px; border: 2px solid var(--linha-2); background: var(--sup); }
+.wz-prog i { border-radius: 99px; transition: transform .8s var(--mola-t); }
+.wz-passo { font-weight: 700; color: var(--txt-2); }
+
+/* robô + balão: o chatzinho do robô */
+.fala { gap: 12px; perspective: 500px; }
+.fala .robo { width: 58px; height: 50px; transform-style: preserve-3d; }
+.fala > .robo:not(.r-ok):not(.r-festa) use { --a-boca: falar .17s ease-in-out .42s 8 alternate; }
+@keyframes falar { from { transform: scale(1, 1); } to { transform: scale(.82, 2.3); } }
+.fala > .robo { animation: flutua 4.5s ease-in-out infinite, balanca3d 7s ease-in-out infinite; }
+.fala > .robo.segue { animation: flutua 4.5s ease-in-out infinite; transition: rotate .5s var(--mola); }
+@keyframes balanca3d { 0%, 100% { rotate: 0 1 0 0deg; } 25% { rotate: 0 1 0 -18deg; } 60% { rotate: 0 1 0 14deg; } }
+.balao { border: 2px solid var(--linha-2); border-radius: 22px 22px 22px 6px; background: var(--sup-2); box-shadow: 5px 5px 0 var(--sombra-cor); transform-origin: 0 100%; animation-name: balao-3d; animation-duration: .6s; animation-timing-function: var(--mola-t); }
+@keyframes balao-3d { from { opacity: 0; transform: perspective(700px) rotateY(-24deg) rotateX(8deg) scale(.86); } }
+.ps-kick { color: var(--ciano); font-weight: 700; }
+.ps-t { font-size: clamp(1.55rem, 6.4vw, 2.15rem); line-height: 1.04; letter-spacing: -.035em; }
+.eco { border: 2px solid #1b4aa6; border-radius: 20px 20px 6px 20px; box-shadow: 3px 3px 0 #10306e; }
+.eco:active { transform: translate(3px, 3px); box-shadow: none; }
+
+/* passo virando em 3D */
+.wz-palco { perspective: 1200px; }
+@keyframes ps-dir { from { opacity: 0; transform: translate3d(40px, 0, 0) rotateY(-14deg); } }
+@keyframes ps-esq { from { opacity: 0; transform: translate3d(-40px, 0, 0) rotateY(14deg); } }
+
+/* cartões grandes de apertar (passo 1) */
+.grandes { gap: 14px; }
+.gc-in { border: 2px solid var(--linha-2); border-radius: 24px; background: var(--sup); box-shadow: 5px 5px 0 var(--sombra-cor); padding: 18px 48px 18px 16px; transition: transform .35s var(--mola-t), box-shadow .35s var(--mola-t), border-color .2s, background-color .2s; }
+.gc:not(.gc-mini) .gc-in { min-height: 112px; }
+.gc-ic { width: 52px; height: 52px; padding: 11px; border-radius: 16px; border: 2px solid var(--linha-2); background: var(--sup-3); transition: transform .5s var(--mola-t), background-color .2s, stroke .2s; }
+.gc b { font-size: 1.2rem; font-weight: 800; letter-spacing: -.02em; }
+.gc-in::after { top: 14px; right: 14px; width: 26px; height: 26px; border: 2px solid var(--linha-2); }
+@media (hover: hover) { .gc:hover .gc-in { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--sombra-cor); border-color: var(--borda-3); } .gc:hover .gc-ic { transform: rotate(-8deg) scale(1.08); } }
+.gc:active .gc-in, .gc input:checked + .gc-in { transform: translate(5px, 5px); box-shadow: 0 0 0 transparent; }
+.gc input:checked + .gc-in { border-color: var(--ciano); background: var(--sup-2); outline: 2px solid var(--ciano); outline-offset: 3px; }
+.gc input:checked + .gc-in .gc-ic { transform: rotate(-8deg) scale(1.08); border-color: transparent; }
+.gc input:checked + .gc-in::after { width: 28px; height: 28px; background-size: 15px; }
+.gc-mini .gc-in { border-radius: 20px; box-shadow: 4px 4px 0 var(--sombra-cor); }
+.gc-mini .gc-ic { width: 40px; height: 40px; padding: 8px; border-radius: 13px; }
+.gc-ex { border: 2px dashed var(--linha-2); border-radius: 12px; }
+.gc-preco { color: var(--txt-2); }
+/* celular: os dois produtos lado a lado em blocos altos, ícone em cima (grade do B) */
+@media (max-width: 559px) {
+  .grandes { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .gc:not(.gc-mini) .gc-in { flex-direction: column; justify-content: space-between; gap: 18px; min-height: 178px; padding: 14px 12px 16px 14px; }
+  .gc:not(.gc-mini) .gc-ic { width: 58px; height: 58px; padding: 13px; border-radius: 18px; }
+  .gc:not(.gc-mini) b { font-size: 1.12rem; line-height: 1.05; }
+  .gc:not(.gc-mini) small { font-size: .8rem; line-height: 1.3; }
+}
+.grandes > .gc, .pequenos > .gc { animation: sobe .55s var(--mola-t) both; }
+.grandes > .gc:nth-child(2) { animation-delay: .07s; } .pequenos > .gc:nth-child(1) { animation-delay: .12s; } .pequenos > .gc:nth-child(2) { animation-delay: .17s; }
+
+/* opções e quadradinhos */
+.op span { min-height: 66px; border: 2px solid var(--linha-2); border-radius: 20px; box-shadow: 4px 4px 0 var(--sombra-cor); transition: transform .32s var(--mola-t), box-shadow .32s var(--mola-t), border-color .2s, background-color .2s; }
+.op svg { border-radius: 13px; }
+.op span::after { border: 2px solid var(--linha-2); border-radius: 8px; width: 22px; height: 22px; margin-top: -11px; }
+@media (hover: hover) { .op:hover span { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--sombra-cor); border-color: var(--borda-3); } }
+.op:active span, .op input:checked + span { transform: translate(4px, 4px); box-shadow: 0 0 0 transparent; }
+.op input:checked + span { border-color: var(--ciano); }
+.qd span { border: 2px solid var(--linha-2); border-radius: 18px; box-shadow: 3px 3px 0 var(--sombra-cor); transition: transform .3s var(--mola-t), box-shadow .3s var(--mola-t), border-color .2s, color .2s; }
+.qd:active span, .qd input:checked + span { transform: translate(3px, 3px); box-shadow: 0 0 0 transparent; }
+.pl span { border-width: 2px; box-shadow: 3px 3px 0 var(--sombra-cor); transition: transform .3s var(--mola-t), box-shadow .3s var(--mola-t), color .2s, background-color .2s; }
+.pl input:checked + span { transform: translate(3px, 3px); box-shadow: none; }
+.sug button { min-height: 44px; border: 2px solid var(--linha-2); box-shadow: 3px 3px 0 var(--sombra-cor); transition: transform .3s var(--mola-t), box-shadow .3s var(--mola-t), border-color .2s, color .2s, background-color .2s; }
+.sug button:active, .sug button[aria-pressed=true] { transform: translate(3px, 3px); box-shadow: none; }
+.exs button { border-width: 2px; border-radius: 16px; }
+
+/* campos: blocos grandes, foco com sombra sólida azul */
+.cp input:not([type=checkbox]):not([type=radio]):not([type=color]), .cp textarea, .cores-livre input[name=cores] { border: 2px solid var(--linha-2); border-radius: 18px; box-shadow: 4px 4px 0 var(--sombra-cor); transition: border-color .2s, box-shadow .3s var(--mola-t), transform .3s var(--mola-t); }
+.cp-grande input:not([type=checkbox]):not([type=radio]):not([type=color]) { min-height: 68px; border-radius: 20px; font-size: 1.25rem; }
+.cp input:focus, .cp textarea:focus, .cores-livre input[name=cores]:focus { border-color: var(--ciano); box-shadow: 4px 4px 0 var(--forte); transform: translate(-1px, -1px); }
+.cp.cp-err input, .cp.cp-err textarea { box-shadow: 4px 4px 0 #5a2430; }
+.paleta { border: 2px solid var(--linha-2); border-radius: 16px; box-shadow: 3px 3px 0 var(--sombra-cor); transition: transform .3s var(--mola-t), box-shadow .3s var(--mola-t), border-color .2s; }
+.paleta[aria-pressed=true] { transform: translate(3px, 3px); box-shadow: none; }
+.cor-pick { border: 2px solid var(--linha-2); border-radius: 18px; box-shadow: 3px 3px 0 var(--sombra-cor); }
+.drop { border: 2px dashed var(--borda-3); border-radius: 24px; }
+.drop svg { animation: balanca 3s ease-in-out infinite; }
+@keyframes balanca { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+.mi, .mi-add { border-width: 2px; border-radius: 18px; }
+
+/* tíquetes dos serviços/itens (o que a pessoa escreve vira etiqueta com preço; só visual, o campo é o textarea) */
+.tiques { display: grid; gap: 10px; margin: 2px 0 6px; }
+.tiques:empty { display: none; }
+.tq { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 8px 10px; border: 2px solid var(--linha-2); border-radius: 18px; background: var(--sup); box-shadow: 3px 3px 0 var(--sombra-cor); animation: tq-in .55s var(--mola-t) both; }
+.tq-ic { flex: none; width: 38px; height: 38px; border-radius: 12px; border: 2px solid var(--linha-2); background: var(--sup-3); display: grid; place-items: center; font: 800 1rem/1 var(--titulo); color: var(--ciano); text-transform: uppercase; }
+.tq-n { flex: 1; min-width: 0; font-weight: 700; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tq-p { flex: none; padding: 4px 9px; border-radius: 10px; border: 2px solid var(--t-mostarda-tinta, #231a08); background: var(--t-mostarda, #d8b46a); color: var(--t-mostarda-tinta, #231a08); font: 800 .95rem/1.1 var(--titulo); transform: rotate(2deg); font-variant-numeric: tabular-nums; }
+.tq-p.sem { background: var(--sup-3); color: var(--txt-3); border-color: var(--linha-2); transform: none; font-weight: 600; }
+.tq-mais { color: var(--txt-3); font-size: .84rem; font-weight: 600; padding-left: 4px; }
+@keyframes tq-in { from { opacity: 0; transform: translate3d(0, 14px, 0) scale(.95); } }
+
+/* gravador: "Com preguiça de digitar?" com o microfone grande */
+.grav-ou { margin: 6px 0 14px; }
+.grav-bt { flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 20px 16px 22px; border: 2px solid var(--linha-2); border-radius: 26px; background: var(--sup-2); box-shadow: 5px 5px 0 var(--sombra-cor); transition: transform .3s var(--mola-t), box-shadow .3s var(--mola-t), border-color .2s; }
+.grav-bt b { font: 800 1.3rem/1.1 var(--titulo); letter-spacing: -.02em; }
+.grav-bt small { font-size: .9rem; margin-top: 4px; }
+.grav-mic { order: 2; width: 84px; height: 84px; background: var(--t-tomate, #d9775f); border: 2px solid var(--tinta); box-shadow: 4px 4px 0 var(--t-tomate-escuro, #8c3f2f); transition: transform .3s var(--mola-t), box-shadow .3s var(--mola-t); }
+.grav-mic svg { width: 34px; height: 34px; stroke: #fff6ee; stroke-width: 2.2; }
+.grav-mic::after { border-color: var(--t-tomate, #d9775f); }
+@media (hover: hover) { .grav-bt:hover { border-color: var(--borda-3); transform: translate(-1px, -1px); } .grav-bt:hover .grav-mic { transform: rotate(-6deg) scale(1.05); } }
+.grav-bt:active { transform: translate(4px, 4px); box-shadow: none; }
+.grav-bt:active .grav-mic { transform: translate(3px, 3px); box-shadow: none; }
+.grav-rec, .grav-ok { border: 2px solid var(--t-tomate, #d9775f); border-radius: 22px; box-shadow: 4px 4px 0 var(--t-tomate-escuro, #8c3f2f); min-height: 72px; }
+.grav-ok { border-color: var(--ciano); box-shadow: 4px 4px 0 var(--forte); }
+.grav-ponto { background: var(--t-tomate, #d9775f); }
+.grav-ondas i { background: var(--t-tomate, #d9775f); }
+.grav-fim, .grav-play { border: 2px solid var(--tinta); box-shadow: 3px 3px 0 var(--forte); }
+.grav-fim:active, .grav-play:active { transform: translate(3px, 3px); box-shadow: none; }
+.grav-ic { border-width: 2px; }
+
+/* revisão: cartão com sombra sólida, linhas que entram em cascata */
+.rev { border: 2px solid var(--linha-2); border-radius: 24px; box-shadow: 6px 6px 0 var(--sombra-cor); }
+.rev > div { border-top: 2px solid var(--linha); }
+.rev > div:nth-child(2) { animation-delay: .04s; } .rev > div:nth-child(3) { animation-delay: .08s; } .rev > div:nth-child(4) { animation-delay: .12s; } .rev > div:nth-child(5) { animation-delay: .16s; } .rev > div:nth-child(n+6) { animation-delay: .2s; }
+.rev button { border: 2px solid var(--linha-2); border-radius: 12px; box-shadow: 2px 2px 0 var(--sombra-cor); transition: transform .25s var(--mola-t), box-shadow .25s var(--mola-t), border-color .2s; }
+.rev button:active { transform: translate(2px, 2px); box-shadow: none; }
+.aceite-cx { border-width: 2px; border-radius: 9px; box-shadow: 2px 2px 0 var(--sombra-cor); }
+.aceite input:checked + .aceite-cx { box-shadow: none; }
+.cont { border: 2px solid var(--linha-2); border-radius: 26px; box-shadow: 6px 6px 0 var(--sombra-cor); }
+
+/* botões de apertar */
+.bt { border-radius: 18px; min-height: 60px; font-size: 1.08rem; font-weight: 800; transition: transform .25s var(--mola-t), box-shadow .25s var(--mola-t), background-color .2s, color .2s, opacity .2s; }
+.bt-p { border: 2px solid var(--tinta); box-shadow: 4px 4px 0 var(--forte); }
+@media (hover: hover) { .bt-p:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--forte); } }
+.bt-p.pular { border: 2px solid var(--linha-2); box-shadow: 4px 4px 0 var(--sombra-cor); }
+.bt-v { border: 2px solid var(--linha-2); box-shadow: 4px 4px 0 var(--sombra-cor); }
+.bt:active, .bt-p:active, .bt-v:active { transform: translate(4px, 4px); box-shadow: 0 0 0 transparent; }
+.bt[disabled] { box-shadow: none; transform: translate(4px, 4px); }
+@media (max-width: 999px) {
+  .wz-nav { padding: 12px 18px calc(16px + env(safe-area-inset-bottom)); border-top: 2px solid var(--linha); gap: 12px; }
+  .wz-nav .bt-v { width: 60px; }
+  .wz-nav .prev-abre { width: 68px; }
+  .wz-nav .bt-p { padding: 0 14px; white-space: nowrap; font-size: 1.02rem; gap: 8px; }
+}
+
+/* prévia e telas de apoio no mesmo tato */
+.tel { border: 2px solid var(--linha-2); box-shadow: 8px 8px 0 var(--sombra-cor); }
+.prev-fechar { border: 2px solid var(--linha-2); background: var(--sup-2); }
+.mt-tel { border: 2px solid var(--linha-2); box-shadow: 6px 6px 0 var(--sombra-cor); }
+.erro { border-width: 2px; border-radius: 16px; box-shadow: 3px 3px 0 #3a1820; }
+@media (max-width: 999px) { .prev { border-top: 2px solid var(--linha-2); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .fala > .robo, .drop svg { animation: none !important; rotate: none !important; }
+  .tq, .grandes > .gc, .pequenos > .gc { animation: none !important; }
+}
