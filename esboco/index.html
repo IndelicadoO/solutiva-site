@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Prévia grátis do seu site | ClickGo</title>
 <meta name="description" content="Peça a prévia grátis do site do seu negócio. Você vê no celular, ajusta com o dedo e só paga se aprovar.">
-<meta name="theme-color" content="#02050c">
+<meta name="theme-color" content="#070b13">
 <link rel="canonical" href="https://clickgo.dev.br/esboco/">
 <meta property="og:title" content="Prévia grátis do seu site | ClickGo">
 <meta property="og:description" content="Você vê o site do seu negócio no celular antes de pagar qualquer coisa.">
@@ -14,11 +14,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/esboco/esboco.css?v=sv1">
+<link rel="stylesheet" href="/esboco/esboco.css?v=c3">
+<link rel="stylesheet" href="/cg-cores.css?v=1">
 </head>
 <body>
-<div class="ar" aria-hidden="true"><i></i><i></i><i></i></div>
-<canvas id="fundo" class="fundo" aria-hidden="true"></canvas>
 
 <!-- mascote (reutilizado no topo do passo e na tela "montando"): <use href="#robo"> -->
 <svg width="0" height="0" class="so-def" aria-hidden="true" focusable="false">
@@ -57,160 +56,218 @@
       <button type="button" class="bt-txt" id="continuar-outro">Fazer outro pedido</button>
     </section>
 
+    <!-- formulário em CONVERSA (24/10/2026; dono: "a pessoa guiada de um jeito legal, vai preenchendo, divertido"): o robô pergunta
+         uma coisa por vez num balão; a resposta anterior aparece como fala da pessoa (toque para mudar). Todos os name/ids de
+         antes ficaram (o esboco.js e a fila /api/clickgo/pedido dependem deles). -->
     <form id="form" class="wz" novalidate>
       <div class="wz-topo">
-        <div class="wz-prog" role="progressbar" aria-label="Progresso do pedido" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1" id="prog"><i id="prog-barra"></i></div>
-        <p class="wz-passo" id="passo-txt" aria-live="polite">Passo 1 de 8</p>
+        <div class="wz-prog" role="progressbar" aria-label="Progresso do pedido" aria-valuemin="1" aria-valuemax="11" aria-valuenow="1" id="prog"><i id="prog-barra"></i></div>
+        <p class="wz-passo" id="passo-txt" aria-live="polite">1 de 11</p>
       </div>
+
+      <button type="button" class="eco" id="eco" hidden data-clarity-mask="true"><span class="eco-txt" id="eco-txt"></span><span class="eco-mudar">mudar</span></button>
 
       <div class="wz-palco" id="passos">
 
-        <!-- 1. o que precisa -->
+        <!-- 1. o que vamos criar -->
         <section class="ps" data-p="oque" aria-labelledby="t-oque">
-          <div class="ps-cab"><svg class="robo" id="robo-ps" width="60" height="50" aria-hidden="true"><use href="#robo"/></svg>
-            <div><p class="ps-kick">Oi! Vamos montar a sua prévia grátis.</p><h1 id="t-oque" class="ps-t" tabindex="-1">O que você precisa?</h1></div></div>
-          <div class="grandes" role="radiogroup" aria-labelledby="t-oque">
-            <label class="gc"><input data-clarity-mask="true" type="radio" name="oque" value="site">
-              <span class="gc-in">
-                <svg class="gc-il" viewBox="0 0 120 90" aria-hidden="true"><defs><linearGradient id="il-a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a6e6ff"/><stop offset="1" stop-color="#3a86ff"/></linearGradient></defs>
-                  <rect x="8" y="10" width="104" height="72" rx="10" fill="#0b1830" stroke="url(#il-a)" stroke-width="2.5"/><path d="M8 24h104" stroke="url(#il-a)" stroke-width="2.5"/><circle cx="18" cy="17" r="2.5" fill="#3fd2ff"/><circle cx="26" cy="17" r="2.5" fill="#3a86ff"/>
-                  <rect class="il-pulsa" x="18" y="32" width="50" height="8" rx="4" fill="#a6e6ff"/><rect x="18" y="45" width="34" height="5" rx="2.5" fill="#3a86ff" opacity=".6"/><rect x="18" y="58" width="28" height="12" rx="6" fill="#3fd2ff"/><rect x="76" y="32" width="26" height="38" rx="6" fill="#3a86ff" opacity=".35"/></svg>
-                <b>Site com agenda</b><small>Barbearia, salão, clínica: o cliente marca o horário sozinho</small>
-              </span></label>
-            <label class="gc"><input data-clarity-mask="true" type="radio" name="oque" value="cardapio">
-              <span class="gc-in">
-                <svg class="gc-il" viewBox="0 0 120 90" aria-hidden="true"><defs><linearGradient id="il-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34e0c0"/><stop offset="1" stop-color="#3fd2ff"/></linearGradient></defs>
-                  <rect x="38" y="6" width="44" height="78" rx="9" fill="#0b1830" stroke="url(#il-b)" stroke-width="2.5"/><circle cx="60" cy="27" r="10" fill="none" stroke="#34e0c0" stroke-width="2.5"/><path d="M53 27h14" stroke="#34e0c0" stroke-width="2"/>
-                  <rect x="45" y="44" width="20" height="4" rx="2" fill="#a6e6ff"/><rect x="69" y="44" width="7" height="4" rx="2" fill="#34e0c0"/><rect x="45" y="54" width="16" height="4" rx="2" fill="#a6e6ff" opacity=".7"/><rect x="69" y="54" width="7" height="4" rx="2" fill="#34e0c0" opacity=".7"/><rect class="il-pulsa" x="45" y="68" width="30" height="8" rx="4" fill="#34e0c0"/>
-                  <g opacity=".8"><rect x="88" y="34" width="20" height="20" rx="3" fill="none" stroke="#3fd2ff" stroke-width="2"/><rect x="92" y="38" width="5" height="5" fill="#3fd2ff"/><rect x="99" y="45" width="5" height="5" fill="#3fd2ff"/><rect x="92" y="45" width="3" height="3" fill="#3fd2ff"/></g></svg>
-                <b>Cardápio digital</b><small>Pedido no WhatsApp, QR na mesa</small>
-              </span></label>
-          </div>
-          <p class="outros-t" id="t-outros">Ou um projeto sob medida</p>
-          <div class="pequenos" role="radiogroup" aria-labelledby="t-outros">
-            <label class="gc gc-mini"><input data-clarity-mask="true" type="radio" name="oque" value="sistema">
-              <span class="gc-in">
-                <svg class="gc-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 4v16M11.5 15l2.5-3 2 2 2.5-3.5"/></svg>
-                <b>Sistema sob medida</b><small>Organiza o trabalho, lê documentos</small><span class="gc-preco">Preço a consultar</span>
-              </span></label>
-            <label class="gc gc-mini"><input data-clarity-mask="true" type="radio" name="oque" value="automacao">
-              <span class="gc-in">
-                <svg class="gc-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3 5 13.5h6L10 21l8.5-11h-6z"/></svg>
-                <b>Automação</b><small>Tarefas que se fazem sozinhas</small><span class="gc-ex">Ex.: chegou pedido → avisa o cliente no WhatsApp e anota na planilha</span><span class="gc-preco">Preço a consultar</span>
-              </span></label>
+          <div class="fala"><svg class="robo" id="robo-ps" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
+            <div class="balao"><p class="ps-kick">Oi! Eu sou o robô da ClickGo.</p><h1 id="t-oque" class="ps-t" tabindex="-1">O que vamos criar para você?</h1><p class="ps-d">Leva uns 2 minutos. A prévia é grátis.</p></div></div>
+          <div class="resp">
+            <div class="grandes" role="radiogroup" aria-labelledby="t-oque">
+              <label class="gc"><input data-clarity-mask="true" type="radio" name="oque" value="site">
+                <span class="gc-in"><span class="gc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h2M12 14h2M8 17h2"/></svg></span>
+                  <span class="gc-tx"><b>Site com agenda</b><small>Barbearia, salão, clínica: o cliente marca o horário sozinho</small></span></span></label>
+              <label class="gc"><input data-clarity-mask="true" type="radio" name="oque" value="cardapio">
+                <span class="gc-in"><span class="gc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8M4 3v5a3 3 0 0 0 6 0V3M7 11v10M17 21V3c-2.5 1.5-4 4.5-4 8h4"/></svg></span>
+                  <span class="gc-tx"><b>Cardápio digital</b><small>Pedido no WhatsApp, QR Code na mesa</small></span></span></label>
+            </div>
+            <p class="outros-t" id="t-outros">Ou um projeto sob medida</p>
+            <div class="pequenos" role="radiogroup" aria-labelledby="t-outros">
+              <label class="gc gc-mini"><input data-clarity-mask="true" type="radio" name="oque" value="sistema">
+                <span class="gc-in"><span class="gc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 4v16M11.5 15l2.5-3 2 2 2.5-3.5"/></svg></span>
+                  <span class="gc-tx"><b>Sistema sob medida</b><small>Organiza o trabalho, lê documentos</small><span class="gc-preco">Preço a consultar</span></span></span></label>
+              <label class="gc gc-mini"><input data-clarity-mask="true" type="radio" name="oque" value="automacao">
+                <span class="gc-in"><span class="gc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3 5 13.5h6L10 21l8.5-11h-6z"/></svg></span>
+                  <span class="gc-tx"><b>Automação</b><small>Tarefas que se fazem sozinhas</small><span class="gc-ex">Ex.: chegou pedido → avisa o cliente no WhatsApp e anota na planilha</span><span class="gc-preco">Preço a consultar</span></span></span></label>
+            </div>
           </div>
         </section>
 
-        <!-- 2. negócio e ramo -->
+        <!-- 2. nome do negócio -->
         <section class="ps" data-p="negocio" aria-labelledby="t-negocio" hidden>
-          <h2 id="t-negocio" class="ps-t" tabindex="-1">Como se chama o seu negócio?</h2>
-          <label class="cp"><span class="cp-r">Nome do negócio</span><input data-clarity-mask="true" name="negocio" required maxlength="80" autocomplete="organization" placeholder="Barbearia Dois Irmãos" enterkeyhint="next"></label>
-          <label class="cp"><span class="cp-r">Ramo</span><input data-clarity-mask="true" name="ramo" id="ramo" required maxlength="60" placeholder="Barbearia" enterkeyhint="next"></label>
-          <div class="sug" id="ramos" aria-label="Sugestões de ramo"></div>
+          <div class="fala"><svg class="robo" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
+            <div class="balao"><p class="ps-kick" data-kick="{tipo}, anotado!">Boa escolha!</p><h2 id="t-negocio" class="ps-t" tabindex="-1">Como se chama o seu negócio?</h2></div></div>
+          <div class="resp">
+            <label class="cp cp-grande"><span class="cp-r vh">Nome do negócio</span><input data-clarity-mask="true" name="negocio" required maxlength="80" autocomplete="organization" autocapitalize="words" placeholder="Ex.: Barbearia Dois Irmãos" enterkeyhint="next"></label>
+          </div>
         </section>
 
-        <!-- 3. cidade -->
+        <!-- 3. ramo -->
+        <section class="ps" data-p="ramo" aria-labelledby="t-ramo" hidden>
+          <div class="fala"><svg class="robo" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
+            <div class="balao"><p class="ps-kick" data-kick="Prazer, {nome}!">Prazer!</p><h2 id="t-ramo" class="ps-t" tabindex="-1">Qual é o ramo?</h2><p class="ps-d">Toque numa sugestão ou escreva do seu jeito.</p></div></div>
+          <div class="resp">
+            <label class="cp cp-grande"><span class="cp-r vh">Ramo</span><input data-clarity-mask="true" name="ramo" id="ramo" required maxlength="60" autocapitalize="sentences" placeholder="Ex.: Barbearia" enterkeyhint="next"></label>
+            <div class="sug" id="ramos" aria-label="Sugestões de ramo"></div>
+          </div>
+        </section>
+
+        <!-- 4. cidade -->
         <section class="ps" data-p="cidade" aria-labelledby="t-cidade" hidden>
-          <h2 id="t-cidade" class="ps-t" tabindex="-1">Em que cidade?</h2>
-          <p class="ps-d">Ajuda a gente a falar a língua dos seus clientes.</p>
-          <label class="cp"><span class="cp-r">Cidade</span><input data-clarity-mask="true" name="cidade" required maxlength="80" autocomplete="address-level2" placeholder="Brasília - DF" enterkeyhint="next"></label>
+          <div class="fala"><svg class="robo" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
+            <div class="balao"><p class="ps-kick" data-kick="{ramo}, que legal.">Anotado.</p><h2 id="t-cidade" class="ps-t" tabindex="-1">Em que cidade vocês atendem?</h2><p class="ps-d">Ajuda a gente a falar a língua dos seus clientes.</p></div></div>
+          <div class="resp">
+            <label class="cp cp-grande"><span class="cp-r vh">Cidade</span><input data-clarity-mask="true" name="cidade" required maxlength="80" autocomplete="address-level2" autocapitalize="words" placeholder="Ex.: Brasília - DF" enterkeyhint="next"></label>
+          </div>
         </section>
 
-        <!-- 4. o que precisa fazer (depende da escolha) -->
+        <!-- 5. o que precisa (depende da escolha) -->
         <section class="ps" data-p="precisa" aria-labelledby="t-precisa" hidden>
-          <h2 id="t-precisa" class="ps-t" tabindex="-1">O que ele precisa fazer?</h2>
-          <p class="ps-d" id="d-precisa">Marque quantos quiser.</p>
-          <div class="ops" data-para="site" role="group" aria-labelledby="t-precisa">
-            <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="contato"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg>Receber contato no WhatsApp</span></label>
-            <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="agendar"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h2M12 14h2"/></svg>Agendar horário</span></label>
-            <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="vender"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2.5l2.2 11h10.6L20.5 8H7"/><circle cx="9.5" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg>Vender online</span></label>
-            <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="catalogo"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Catálogo com muitos itens</span></label>
-            <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="paginas"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5z"/><path d="m3 13 9 5 9-5"/></svg>Várias páginas</span></label>
-            <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="login"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>Área do cliente com login</span></label>
+          <div class="fala"><svg class="robo" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
+            <div class="balao"><p class="ps-kick">Agora a parte boa.</p><h2 id="t-precisa" class="ps-t" tabindex="-1">O que ele precisa fazer?</h2><p class="ps-d" id="d-precisa">Marque quantos quiser.</p></div></div>
+          <div class="resp">
+            <div class="ops" data-para="site" role="group" aria-labelledby="t-precisa">
+              <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="contato"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg>Receber contato no WhatsApp</span></label>
+              <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="agendar"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h2M12 14h2"/></svg>Agendar horário</span></label>
+              <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="vender"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2.5l2.2 11h10.6L20.5 8H7"/><circle cx="9.5" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg>Vender online</span></label>
+              <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="catalogo"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Catálogo com muitos itens</span></label>
+              <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="paginas"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5z"/><path d="m3 13 9 5 9-5"/></svg>Várias páginas</span></label>
+              <label class="op"><input data-clarity-mask="true" type="checkbox" name="precisa" value="login"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>Área do cliente com login</span></label>
+            </div>
+            <div class="ops" data-para="cardapio" role="group" aria-labelledby="t-precisa">
+              <label class="op"><input data-clarity-mask="true" type="checkbox" name="cpx" value="whats"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9 9.5c.5 2.5 2.5 4.5 5 5"/></svg>Pedido no WhatsApp</span></label>
+              <label class="op"><input data-clarity-mask="true" type="checkbox" name="cpx" value="entrega"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="17" r="2.5"/><circle cx="18" cy="17" r="2.5"/><path d="M8.5 17h7M14 7h3l3 6v4M3 13h11V7H3z"/></svg>Entrega com taxa por bairro</span></label>
+              <label class="op"><input data-clarity-mask="true" type="checkbox" name="cpx" value="qr"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2"/></svg>QR Code na mesa</span></label>
+              <label class="op"><input data-clarity-mask="true" type="checkbox" name="cpx" value="muitos"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>Muitos itens (mais de 30)</span></label>
+            </div>
+            <div class="sis-q" data-para="sistema automacao">
+              <label class="cp"><span class="cp-r" id="r-sisfaz">O que o sistema precisa fazer?</span><textarea data-clarity-mask="true" name="sis_faz" id="sis-faz" maxlength="600" rows="3" placeholder="Com as suas palavras" data-conta="600"></textarea></label>
+              <div class="exs" id="exs" aria-label="Exemplos"></div>
+              <div class="cp"><span class="cp-r" id="r-env">Envolve</span>
+                <div class="quad" role="group" aria-labelledby="r-env">
+                  <label class="qd"><input data-clarity-mask="true" type="checkbox" name="sis_env" value="WhatsApp"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/></svg>WhatsApp</span></label>
+                  <label class="qd"><input data-clarity-mask="true" type="checkbox" name="sis_env" value="planilha"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M4 15h16M10 4v16"/></svg>Planilha</span></label>
+                  <label class="qd"><input data-clarity-mask="true" type="checkbox" name="sis_env" value="pagamento"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10.5h18M7 15h3"/></svg>Pagamento</span></label>
+                  <label class="qd"><input data-clarity-mask="true" type="checkbox" name="sis_env" value="PDFs"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>PDFs</span></label>
+                  <label class="qd"><input data-clarity-mask="true" type="checkbox" name="sis_env" value="login"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>Login</span></label>
+                </div></div>
+              <div class="cp"><span class="cp-r" id="r-quem">Quantas pessoas usam?</span>
+                <div class="pills" role="radiogroup" aria-labelledby="r-quem">
+                  <label class="pl"><input data-clarity-mask="true" type="radio" name="sis_quem" value="Só eu"><span>Só eu</span></label>
+                  <label class="pl"><input data-clarity-mask="true" type="radio" name="sis_quem" value="2 a 5"><span>2 a 5</span></label>
+                  <label class="pl"><input data-clarity-mask="true" type="radio" name="sis_quem" value="6 a 20"><span>6 a 20</span></label>
+                  <label class="pl"><input data-clarity-mask="true" type="radio" name="sis_quem" value="Mais de 20"><span>Mais de 20</span></label>
+                </div></div>
+            </div>
           </div>
-          <div class="ops" data-para="cardapio" role="group" aria-labelledby="t-precisa">
-            <label class="op"><input data-clarity-mask="true" type="checkbox" name="cpx" value="whats"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9 9.5c.5 2.5 2.5 4.5 5 5"/></svg>Pedido no WhatsApp</span></label>
-            <label class="op"><input data-clarity-mask="true" type="checkbox" name="cpx" value="entrega"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="17" r="2.5"/><circle cx="18" cy="17" r="2.5"/><path d="M8.5 17h7M14 7h3l3 6v4M3 13h11V7H3z"/></svg>Entrega com taxa por bairro</span></label>
-            <label class="op"><input data-clarity-mask="true" type="checkbox" name="cpx" value="qr"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2"/></svg>QR Code na mesa</span></label>
-            <label class="op"><input data-clarity-mask="true" type="checkbox" name="cpx" value="muitos"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>Muitos itens (mais de 30)</span></label>
+        </section>
+
+        <!-- 6. serviços / itens do cardápio (fica de fora em sistema e automação) -->
+        <section class="ps" data-p="servicos" aria-labelledby="t-servicos" hidden>
+          <div class="fala"><svg class="robo" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
+            <div class="balao"><p class="ps-kick">Isso aparece no site do jeito que você escrever.</p><h2 id="t-servicos" class="ps-t" tabindex="-1">Quais serviços e preços?</h2><p class="ps-d">Opcional. Pode pular e mandar depois.</p></div></div>
+          <div class="resp">
+            <label class="cp" id="cp-servicos"><span class="cp-r" id="r-servicos">Serviços e preços</span><textarea data-clarity-mask="true" name="servicos" maxlength="1200" rows="3" placeholder="Corte R$ 40, barba R$ 30" aria-describedby="d-servicos" data-conta="1200"></textarea><small class="cp-dica" id="d-servicos"></small></label>
+            <!-- cardápio: foto ou PDF do cardápio atual (a ClickGo lê os itens e preços e o cliente confere no chat antes da prévia) -->
+            <div class="cp" id="cp-cardfoto" hidden><span class="cp-r" id="r-cardfoto">Tem o cardápio atual? <i>opcional</i></span>
+              <small class="cp-dica cp-dica-cima" id="d-cardfoto">Mande a foto ou o PDF do cardápio que você já usa: a gente lê os itens e os preços e te mostra para conferir antes de montar.</small>
+              <label class="drop drop-mini" id="drop-card">
+                <input data-clarity-mask="true" type="file" accept="image/*,application/pdf" multiple id="card-input" class="vh" aria-describedby="d-cardfoto">
+                <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="10" y="6" width="28" height="36" rx="5"/><path d="M17 16h14M17 23h14M17 30h9"/></svg>
+                <b>Enviar foto ou PDF do cardápio</b><small id="card-cont">até 2 imagens ou páginas</small>
+              </label>
+              <div class="miniat" id="card-fotos" aria-live="polite"></div>
+            </div>
           </div>
-          <div class="sis-q" data-para="sistema automacao">
-            <label class="cp"><span class="cp-r" id="r-sisfaz">O que o sistema precisa fazer?</span><textarea data-clarity-mask="true" name="sis_faz" id="sis-faz" maxlength="600" rows="3" placeholder="Com as suas palavras"></textarea></label>
-            <div class="exs" id="exs" aria-label="Exemplos"></div>
-            <div class="cp"><span class="cp-r" id="r-env">Envolve</span>
-              <div class="quad" role="group" aria-labelledby="r-env">
-                <label class="qd"><input data-clarity-mask="true" type="checkbox" name="sis_env" value="WhatsApp"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/></svg>WhatsApp</span></label>
-                <label class="qd"><input data-clarity-mask="true" type="checkbox" name="sis_env" value="planilha"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M4 15h16M10 4v16"/></svg>Planilha</span></label>
-                <label class="qd"><input data-clarity-mask="true" type="checkbox" name="sis_env" value="pagamento"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10.5h18M7 15h3"/></svg>Pagamento</span></label>
-                <label class="qd"><input data-clarity-mask="true" type="checkbox" name="sis_env" value="PDFs"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>PDFs</span></label>
-                <label class="qd"><input data-clarity-mask="true" type="checkbox" name="sis_env" value="login"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>Login</span></label>
-              </div></div>
-            <div class="cp"><span class="cp-r" id="r-quem">Quantas pessoas usam?</span>
-              <div class="pills" role="radiogroup" aria-labelledby="r-quem">
-                <label class="pl"><input data-clarity-mask="true" type="radio" name="sis_quem" value="Só eu"><span>Só eu</span></label>
-                <label class="pl"><input data-clarity-mask="true" type="radio" name="sis_quem" value="2 a 5"><span>2 a 5</span></label>
-                <label class="pl"><input data-clarity-mask="true" type="radio" name="sis_quem" value="6 a 20"><span>6 a 20</span></label>
-                <label class="pl"><input data-clarity-mask="true" type="radio" name="sis_quem" value="Mais de 20"><span>Mais de 20</span></label>
+        </section>
+
+        <!-- 7. cores -->
+        <section class="ps" data-p="cores" aria-labelledby="t-cores" hidden>
+          <div class="fala"><svg class="robo" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
+            <div class="balao"><p class="ps-kick" data-kick="Vamos deixar a cara de {nome}.">Vamos deixar com a sua cara.</p><h2 id="t-cores" class="ps-t" tabindex="-1">Quais são as cores da marca?</h2><p class="ps-d">Opcional. Toque numa dupla, escolha ou escreva.</p></div></div>
+          <div class="resp">
+            <div class="cp"><span class="cp-r vh" id="r-cores">Cores da marca</span>
+              <div class="paletas" id="paletas" role="group" aria-labelledby="r-cores"></div>
+              <div class="cores-livre">
+                <label class="cor-pick" title="Cor principal"><input data-clarity-mask="true" type="color" id="cor1" value="#3fd2ff" aria-label="Cor principal"></label>
+                <label class="cor-pick" title="Cor de apoio"><input data-clarity-mask="true" type="color" id="cor2" value="#0e1522" aria-label="Cor de apoio"></label>
+                <input data-clarity-mask="true" name="cores" id="cores" maxlength="120" placeholder="ou escreva: preto e dourado" aria-labelledby="r-cores" enterkeyhint="next">
               </div></div>
           </div>
         </section>
 
-        <!-- 5. detalhes (opcional) -->
-        <section class="ps" data-p="detalhes" aria-labelledby="t-detalhes" hidden>
-          <h2 id="t-detalhes" class="ps-t" tabindex="-1">Quer caprichar nos detalhes?</h2>
-          <p class="ps-d">Tudo opcional. Quanto mais, mais parecido com você.</p>
-          <label class="cp"><span class="cp-r" id="r-quer">O que não pode faltar?</span><textarea data-clarity-mask="true" name="quer" maxlength="1500" rows="3" placeholder="Fotos do espaço, botão para agendar"></textarea></label>
-          <label class="cp" id="cp-servicos"><span class="cp-r" id="r-servicos">Serviços e preços</span><textarea data-clarity-mask="true" name="servicos" maxlength="1200" rows="2" placeholder="Corte R$ 40, barba R$ 30" aria-describedby="d-servicos"></textarea><small class="cp-dica" id="d-servicos"></small></label>
-          <!-- cardápio: foto ou PDF do cardápio atual (a ClickGo lê os itens e preços e o cliente confere no chat antes da prévia) -->
-          <div class="cp" id="cp-cardfoto" hidden><span class="cp-r" id="r-cardfoto">Tem o cardápio atual? <i>opcional</i></span>
-            <small class="cp-dica cp-dica-cima" id="d-cardfoto">Mande a foto ou o PDF do cardápio que você já usa: a gente lê os itens e os preços e te mostra para conferir antes de montar.</small>
-            <label class="drop drop-mini" id="drop-card">
-              <input data-clarity-mask="true" type="file" accept="image/*,application/pdf" multiple id="card-input" class="vh" aria-describedby="d-cardfoto">
-              <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="10" y="6" width="28" height="36" rx="5"/><path d="M17 16h14M17 23h14M17 30h9"/></svg>
-              <b>Enviar foto ou PDF do cardápio</b><small id="card-cont">até 2 imagens ou páginas</small>
-            </label>
-            <div class="miniat" id="card-fotos" aria-live="polite"></div>
-          </div>
-          <div class="cp"><span class="cp-r" id="r-cores">Cores da marca</span>
-            <div class="paletas" id="paletas" role="group" aria-labelledby="r-cores"></div>
-            <div class="cores-livre">
-              <label class="cor-pick" title="Cor principal"><input data-clarity-mask="true" type="color" id="cor1" value="#3fd2ff" aria-label="Cor principal"></label>
-              <label class="cor-pick" title="Cor de apoio"><input data-clarity-mask="true" type="color" id="cor2" value="#0a1426" aria-label="Cor de apoio"></label>
-              <input data-clarity-mask="true" name="cores" id="cores" maxlength="120" placeholder="ou escreva: preto e dourado" aria-labelledby="r-cores" enterkeyhint="next">
-            </div></div>
-        </section>
-
-        <!-- 6. fotos -->
+        <!-- 8. fotos -->
         <section class="ps" data-p="fotos" aria-labelledby="t-fotos" hidden>
-          <h2 id="t-fotos" class="ps-t" tabindex="-1">Tem fotos?</h2>
-          <p class="ps-d">Logo, fachada, equipe ou trabalhos. Até 3. Sem foto, usamos imagens ilustrativas.</p>
-          <label class="drop" id="drop">
-            <input data-clarity-mask="true" type="file" accept="image/*" multiple id="foto-input" class="vh">
-            <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="10" width="36" height="28" rx="6"/><circle cx="17" cy="20" r="3.5"/><path d="m8 34 10-9 7 6 6-5 9 8"/></svg>
-            <b>Arraste aqui ou toque para escolher</b><small id="foto-cont">0 de 3</small>
-          </label>
-          <div class="miniat" id="fotos" aria-live="polite"></div>
+          <div class="fala"><svg class="robo" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
+            <div class="balao"><p class="ps-kick">Foto de verdade faz toda a diferença.</p><h2 id="t-fotos" class="ps-t" tabindex="-1">Tem fotos?</h2><p class="ps-d">Logo, fachada, equipe ou trabalhos. Até 3. Sem foto, usamos imagens ilustrativas.</p></div></div>
+          <div class="resp">
+            <label class="drop" id="drop">
+              <input data-clarity-mask="true" type="file" accept="image/*" multiple id="foto-input" class="vh">
+              <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="10" width="36" height="28" rx="6"/><circle cx="17" cy="20" r="3.5"/><path d="m8 34 10-9 7 6 6-5 9 8"/></svg>
+              <b>Toque para escolher ou arraste aqui</b><small id="foto-cont">0 de 3</small>
+            </label>
+            <div class="miniat" id="fotos" aria-live="polite"></div>
+          </div>
         </section>
 
-        <!-- 7. contato -->
+        <!-- 9. recado: escrever e/ou gravar um áudio (opcional) -->
+        <section class="ps" data-p="falar" aria-labelledby="t-falar" hidden>
+          <div class="fala"><svg class="robo" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
+            <div class="balao"><p class="ps-kick">Quase lá!</p><h2 id="t-falar" class="ps-t" tabindex="-1">Quer contar mais alguma coisa?</h2><p class="ps-d">Escreva ou grave um áudio. Tudo opcional.</p></div></div>
+          <div class="resp">
+            <label class="cp"><span class="cp-r" id="r-quer">O que não pode faltar?</span><textarea data-clarity-mask="true" name="quer" maxlength="1500" rows="3" placeholder="Fotos do espaço, botão para agendar" data-conta="1500"></textarea></label>
+            <!-- gravador (MediaRecorder): o microfone só é pedido no clique; até 2 min; vai junto com o pedido -->
+            <div class="grav" id="grav" data-estado="pronto" data-clarity-mask="true">
+              <p class="grav-ou" aria-hidden="true">ou</p>
+              <button type="button" class="grav-bt" id="grav-iniciar">
+                <span class="grav-mic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></span>
+                <span class="grav-bt-tx"><b>Gravar um áudio</b><small>Até 2 minutos. Se preferir falar, fale.</small></span>
+              </button>
+              <div class="grav-rec" role="group" aria-label="Gravando áudio">
+                <span class="grav-ponto" aria-hidden="true"></span>
+                <span class="grav-tempo" id="grav-tempo" aria-live="off">0:00</span><span class="grav-max">/ 2:00</span>
+                <span class="grav-ondas" id="grav-ondas" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                <button type="button" class="grav-ic" id="grav-pausar" aria-label="Pausar"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="ic-pausa" d="M9 6v12M15 6v12"/><path class="ic-volta" d="M8 5.5v13l10.5-6.5z"/></svg></button>
+                <button type="button" class="grav-fim" id="grav-parar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Pronto</button>
+              </div>
+              <div class="grav-ok" role="group" aria-label="Seu áudio">
+                <button type="button" class="grav-play" id="grav-ouvir" aria-label="Ouvir o áudio"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="ic-play" d="M8 5.5v13l10.5-6.5z"/><path class="ic-pausa" d="M9 6v12M15 6v12"/></svg></button>
+                <span class="grav-barra" aria-hidden="true"><i id="grav-prog"></i></span>
+                <span class="grav-dur" id="grav-dur">0:00</span>
+                <button type="button" class="grav-txt" id="grav-refazer">Regravar</button>
+                <button type="button" class="grav-ic grav-x" id="grav-apagar" aria-label="Apagar o áudio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+              </div>
+              <p class="grav-msg" id="grav-msg" role="status" hidden></p>
+              <audio id="grav-audio" preload="metadata"></audio>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. contato -->
         <section class="ps" data-p="contato" aria-labelledby="t-contato" hidden>
-          <h2 id="t-contato" class="ps-t" tabindex="-1">Onde te avisamos?</h2>
-          <p class="ps-d" id="avisos-sub">Mandamos o link da prévia no seu e-mail.</p>
-          <label class="cp"><span class="cp-r" id="rot-email">E-mail <i>obrigatório</i></span><input data-clarity-mask="true" name="email" type="email" maxlength="120" autocomplete="email" placeholder="voce@email.com" required enterkeyhint="next" inputmode="email"></label>
-          <label class="cp"><span class="cp-r" id="rot-whats">WhatsApp <i>recomendado</i></span><input data-clarity-mask="true" name="whatsapp" type="tel" inputmode="tel" maxlength="20" autocomplete="tel" placeholder="(61) 99999-9999" enterkeyhint="next"></label>
-          <label class="cp"><span class="cp-r">Instagram do negócio <i>opcional</i></span><input data-clarity-mask="true" name="instagram" maxlength="60" placeholder="@seunegocio" autocapitalize="off" enterkeyhint="next"></label>
+          <div class="fala"><svg class="robo" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
+            <div class="balao"><p class="ps-kick">Última pergunta.</p><h2 id="t-contato" class="ps-t" tabindex="-1">Onde te avisamos?</h2><p class="ps-d" id="avisos-sub">Mandamos o link da prévia no seu e-mail.</p></div></div>
+          <div class="resp">
+            <label class="cp"><span class="cp-r" id="rot-email">E-mail <i>obrigatório</i></span><input data-clarity-mask="true" name="email" type="email" maxlength="120" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="voce@email.com" required enterkeyhint="next" inputmode="email"><small class="cp-dica cp-sug" id="email-sug" hidden></small></label>
+            <label class="cp"><span class="cp-r" id="rot-whats">WhatsApp <i>recomendado</i></span><input data-clarity-mask="true" name="whatsapp" type="tel" inputmode="tel" maxlength="20" autocomplete="tel-national" placeholder="(61) 99999-9999" enterkeyhint="next"></label>
+            <label class="cp"><span class="cp-r">Instagram do negócio <i>opcional</i></span><input data-clarity-mask="true" name="instagram" maxlength="60" placeholder="@seunegocio" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done"></label>
+          </div>
         </section>
 
-        <!-- 8. revisão -->
+        <!-- 11. revisão -->
         <section class="ps" data-p="revisao" aria-labelledby="t-revisao" hidden>
-          <h2 id="t-revisao" class="ps-t" tabindex="-1">Tudo certo?</h2>
-          <dl class="rev" id="rev" data-clarity-mask="true"></dl>
-          <p class="aviso-sub" id="continuar-aviso" hidden>O pedido novo <b>substitui</b> o anterior deste aparelho. O antigo é cancelado sem custo.</p>
-          <div class="isca" aria-hidden="true"><label>Site<input data-clarity-mask="true" name="site_url" tabindex="-1" autocomplete="off"></label></div>
-          <label class="aceite"><input data-clarity-mask="true" type="checkbox" name="aceite" required><span class="aceite-cx" aria-hidden="true"></span><span>Concordo que a ClickGo use esses dados só para este pedido. <a href="/privacidade.html" target="_blank" rel="noopener">Privacidade</a> · <a href="/termos.html" target="_blank" rel="noopener">Termos</a></span></label>
-          <label class="aceite aceite-port"><input type="checkbox" name="portfolio" checked><span class="aceite-cx" aria-hidden="true"></span><span>Autorizo a ClickGo a mostrar meu site no portfólio (prints, link e nome do negócio, nunca dados dos meus clientes). Dá para mudar depois na sua página. <a href="/termos.html#portfolio" target="_blank" rel="noopener">Como funciona</a></span></label>
-          <div id="cg-turnstile" class="cg-turnstile" hidden></div>
-          <p class="rod-legal">ClickGo · CNPJ 50.522.870/0001-07 · <a href="mailto:contato@clickgo.dev.br">contato@clickgo.dev.br</a> · <a class="" data-zap data-zap-pedido href="https://wa.me/5561984717809?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20pedido%20de%20site%20na%20ClickGo." target="_blank" rel="noopener">WhatsApp <span data-zap-num>(61) 98471-7809</span></a> · <a href="/exclusao-de-dados/" target="_blank" rel="noopener">Exclusão de dados</a></p>
+          <div class="fala"><svg class="robo" width="52" height="44" aria-hidden="true"><use href="#robo"/></svg>
+            <div class="balao"><p class="ps-kick">Prontinho.</p><h2 id="t-revisao" class="ps-t" tabindex="-1">Tudo certo?</h2><p class="ps-d">Toque em “Mudar” para corrigir.</p></div></div>
+          <div class="resp">
+            <dl class="rev" id="rev" data-clarity-mask="true"></dl>
+            <p class="aviso-sub" id="continuar-aviso" hidden>O pedido novo <b>substitui</b> o anterior deste aparelho. O antigo é cancelado sem custo.</p>
+            <div class="isca" aria-hidden="true"><label>Site<input data-clarity-mask="true" name="site_url" tabindex="-1" autocomplete="off"></label></div>
+            <label class="aceite"><input data-clarity-mask="true" type="checkbox" name="aceite" required><span class="aceite-cx" aria-hidden="true"></span><span>Concordo que a ClickGo use esses dados só para este pedido. <a href="/privacidade.html" target="_blank" rel="noopener">Privacidade</a> · <a href="/termos.html" target="_blank" rel="noopener">Termos</a></span></label>
+            <label class="aceite aceite-port"><input type="checkbox" name="portfolio" checked><span class="aceite-cx" aria-hidden="true"></span><span>Autorizo a ClickGo a mostrar meu site no portfólio (prints, link e nome do negócio, nunca dados dos meus clientes). Dá para mudar depois na sua página. <a href="/termos.html#portfolio" target="_blank" rel="noopener">Como funciona</a></span></label>
+            <div id="cg-turnstile" class="cg-turnstile" hidden></div>
+            <p class="rod-legal">ClickGo · CNPJ 50.522.870/0001-07 · <a href="mailto:contato@clickgo.dev.br">contato@clickgo.dev.br</a> · <a class="" data-zap data-zap-pedido href="https://wa.me/5561984717809?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20pedido%20de%20site%20na%20ClickGo." target="_blank" rel="noopener">WhatsApp <span data-zap-num>(61) 98471-7809</span></a> · <a href="/exclusao-de-dados/" target="_blank" rel="noopener">Exclusão de dados</a></p>
+          </div>
         </section>
       </div>
 
@@ -288,6 +345,6 @@
 <script src="/contato.js"></script>
 <script src="/cg-comum.js"></script>
 <script src="/pixel.js?v=2"></script>
-<script src="/esboco.js?v=sv1"></script>
+<script src="/esboco.js?v=c3"></script>
 </body>
 </html>

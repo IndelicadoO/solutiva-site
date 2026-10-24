@@ -74,44 +74,11 @@
   function oque() { return val('oque'); }
   function projeto() { var t = oque(); return t === 'sistema' || t === 'automacao'; }
 
-  /* ---------- fundo vivo: malha de pontos (pausa com a aba oculta e com menos movimento) ---------- */
-  (function fundo() {
-    // sem vidro (dono 23/10/2026): o CSS esconde a malha; escondida, nem liga o laço (celular leve)
-    var cv = $('#fundo'); if (!cv || !cv.getContext || getComputedStyle(cv).display === 'none') return;
-    var cx = cv.getContext('2d'), pts = [], w = 0, h = 0, dpr = 1, raf = 0, mx = -999, my = -999;
-    function medir() {
-      dpr = Math.min(window.devicePixelRatio || 1, 1.5); w = innerWidth; h = innerHeight;
-      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      var n = Math.max(26, Math.min(70, Math.round(w * h / 19000)));
-      pts = []; for (var i = 0; i < n; i++) pts.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22, r: Math.random() * 1.4 + .5 });
-    }
-    function quadro() {
-      cx.clearRect(0, 0, w, h);
-      var lim = 128 * 128;
-      for (var i = 0; i < pts.length; i++) {
-        var p = pts[i];
-        if (!menosMov) { p.x += p.vx; p.y += p.vy; if (p.x < -20) p.x = w + 20; else if (p.x > w + 20) p.x = -20; if (p.y < -20) p.y = h + 20; else if (p.y > h + 20) p.y = -20; }
-        var dxm = p.x - mx, dym = p.y - my, dm = dxm * dxm + dym * dym;
-        if (dm < 22000 && !menosMov) { p.x += dxm * .004; p.y += dym * .004; }
-        for (var j = i + 1; j < pts.length; j++) {
-          var q = pts[j], dx = p.x - q.x, dy = p.y - q.y, d = dx * dx + dy * dy;
-          if (d < lim) { cx.strokeStyle = 'rgba(110,200,255,' + (0.13 * (1 - d / lim)).toFixed(3) + ')'; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(q.x, q.y); cx.stroke(); }
-        }
-        cx.fillStyle = 'rgba(166,230,255,.55)'; cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 6.283); cx.fill();
-      }
-      if (!menosMov) raf = requestAnimationFrame(quadro);
-    }
-    function ligar() { cancelAnimationFrame(raf); if (!document.hidden) raf = requestAnimationFrame(quadro); }
-    medir(); ligar();
-    var tm; addEventListener('resize', function () { clearTimeout(tm); tm = setTimeout(function () { medir(); if (menosMov) quadro(); }, 150); });
-    document.addEventListener('visibilitychange', function () { if (document.hidden) cancelAnimationFrame(raf); else ligar(); });
-    addEventListener('pointermove', function (e) { mx = e.clientX; my = e.clientY; }, { passive: true });
-  })();
+  /* (24/10/2026) a malha de pontos do fundo saiu: fundo sólido, leve no celular */
 
   /* ---------- mascote ---------- */
-  var roboPs = $('#robo-ps');
   function robo(classe, el) {
-    el = el || roboPs; if (!el) return;
+    el = el || (passos[atual] && passos[atual].querySelector('.robo')); if (!el) return;
     el.classList.remove('r-acena', 'r-ok', 'r-nao', 'r-festa');
     void el.getBoundingClientRect();
     el.classList.add(classe);
@@ -275,10 +242,13 @@
     // cardápio (22/10/2026): lista de itens e preços, um por linha, e/ou a foto/PDF do cardápio atual (lido pela ClickGo)
     var card = t === 'cardapio';
     $('#r-servicos').textContent = card ? 'Itens e preços' : 'Serviços e preços';
+    $('#t-servicos').textContent = card ? 'Quais itens e preços?' : 'Quais serviços e preços?';
     form.elements.servicos.placeholder = card ? 'Lanches:\nX-Burger | R$ 25,90 | pão brioche e cheddar\nBatata frita | R$ 16\n\nBebidas:\nRefrigerante lata | R$ 6' : 'Corte R$ 40, barba R$ 30';
     form.elements.servicos.rows = card ? 6 : 2;
     $('#d-servicos').textContent = card ? 'Um item por linha: nome | preço | descrição (opcional). Categoria com dois-pontos ("Bebidas:"). Pode deixar em branco e mandar só a foto do cardápio abaixo.' : '';
     $('#cp-cardfoto').hidden = !card;
+    form.elements.negocio.placeholder = card ? 'Ex.: Pizzaria Bella Massa' : pj ? 'Ex.: Contabilidade Silva' : 'Ex.: Barbearia Dois Irmãos';
+    $('#ramo').placeholder = card ? 'Ex.: Pizzaria' : pj ? 'Ex.: Escritório' : 'Ex.: Barbearia';
     $('#t-fotos').textContent = pj ? 'Tem prints ou fotos?' : 'Tem fotos?';
     desenharRamos();
   }
@@ -288,11 +258,11 @@
   PALETAS.forEach(function (pl) {
     var b = document.createElement('button'); b.type = 'button'; b.className = 'paleta'; b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', pl[0]); b.title = pl[0];
     b.innerHTML = '<i></i>'; b.firstChild.style.setProperty('--a', pl[1]); b.firstChild.style.setProperty('--b', pl[2]);
-    b.addEventListener('click', function () { coresIn.value = pl[0] + ' (' + pl[1] + ', ' + pl[2] + ')'; cor1.value = pl[1]; cor2.value = pl[2]; marcarPaleta(); salvar(); previaJa(); robo('r-ok'); });
+    b.addEventListener('click', function () { coresIn.value = pl[0] + ' (' + pl[1] + ', ' + pl[2] + ')'; cor1.value = pl[1]; cor2.value = pl[2]; marcarPaleta(); salvar(); previaJa(); atualizarBotao(); marcarOk(coresIn); robo('r-ok'); });
     paletasBox.appendChild(b);
   });
   function marcarPaleta() { var v = coresIn.value; $$('.paleta', paletasBox).forEach(function (b, i) { b.setAttribute('aria-pressed', String(v.indexOf(PALETAS[i][1]) >= 0 && v.indexOf(PALETAS[i][2]) >= 0)); }); }
-  function corLivre() { coresIn.value = ('Cores ' + cor1.value + ' e ' + cor2.value).slice(0, 120); marcarPaleta(); salvar(); previaJa(); }
+  function corLivre() { coresIn.value = ('Cores ' + cor1.value + ' e ' + cor2.value).slice(0, 120); marcarPaleta(); salvar(); previaJa(); atualizarBotao(); }
   cor1.addEventListener('input', corLivre); cor2.addEventListener('input', corLivre);
   coresIn.addEventListener('input', marcarPaleta);
 
@@ -418,25 +388,28 @@
   dropCard.addEventListener('drop', function (e) { receberCard(e.dataTransfer && e.dataTransfer.files); });
 
   /* ---------- rascunho local ---------- */
+  // v3 (24/10/2026): guarda o NOME do passo (a ordem mudou). Áudio e fotos não vão para o rascunho (só texto e escolhas).
   var CAMPOS = ['negocio', 'ramo', 'cidade', 'quer', 'servicos', 'cores', 'whatsapp', 'email', 'instagram', 'sis_faz'];
   var agSalvar = 0;
   function salvar() {
     clearTimeout(agSalvar);
     agSalvar = setTimeout(function () {
-      var r = { v: 2, passo: atual, oque: oque(), precisa: marcados('precisa'), cpx: marcados('cpx'), sis_quem: val('sis_quem'), sis_env: marcados('sis_env') };
+      var r = { v: 3, passo: ordem[atual], oque: oque(), precisa: marcados('precisa'), cpx: marcados('cpx'), sis_quem: val('sis_quem'), sis_env: marcados('sis_env') };
       CAMPOS.forEach(function (k) { r[k] = form.elements[k].value; });
       store.set(RASCUNHO, JSON.stringify(r));
     }, 250);
   }
   function restaurar() {
     var r; try { r = JSON.parse(store.get(RASCUNHO) || 'null'); } catch (e) { r = null; }
-    if (!r || r.v !== 2) return 0;
+    if (!r || (r.v !== 2 && r.v !== 3)) return 0;
+    if (r.v === 2) r.passo = 0; // rascunho do formulário antigo: os dados ficam, o passo recomeça
     CAMPOS.forEach(function (k) { if (typeof r[k] === 'string') form.elements[k].value = r[k]; });
     var marca = function (nome, lista) { $$('[name="' + nome + '"]', form).forEach(function (i) { i.checked = (lista || []).indexOf(i.value) >= 0; }); };
     marca('oque', [r.oque]); marca('precisa', r.precisa); marca('cpx', r.cpx); marca('sis_quem', [r.sis_quem]); marca('sis_env', r.sis_env);
     marcarPaleta();
     var hex = String(r.cores || '').match(/#[0-9a-f]{6}\b/ig); if (hex) { cor1.value = hex[0]; if (hex[1]) cor2.value = hex[1]; }
-    return Math.max(0, Math.min(Number(r.passo) || 0, ordem.indexOf('revisao')));
+    var i = typeof r.passo === 'string' ? ordem.indexOf(r.passo) : 0;
+    return Math.max(0, Math.min(i, ordem.indexOf('revisao')));
   }
 
   /* ---------- validação por passo ---------- */
@@ -450,10 +423,8 @@
   function validar(p) {
     switch (p) {
       case 'oque': return oque() ? '' : 'Escolha uma das opções.';
-      case 'negocio':
-        if (!val('negocio')) return campoErro('negocio', 'Diga o nome do negócio.');
-        if (!val('ramo')) return campoErro('ramo', 'Diga o ramo (ex.: barbearia, clínica, restaurante).');
-        return '';
+      case 'negocio': return val('negocio') ? '' : campoErro('negocio', 'Só o nome já basta.');
+      case 'ramo': return val('ramo') ? '' : campoErro('ramo', 'Toque numa sugestão ou escreva o ramo.');
       case 'cidade': return val('cidade') ? '' : campoErro('cidade', 'Diga a cidade.');
       case 'precisa': return projeto() && !val('sis_faz') ? campoErro('sis_faz', 'Conta em poucas palavras o que precisa (ou toque num exemplo).') : '';
       case 'contato':
@@ -462,42 +433,87 @@
         if (!waOficial && !emailOk()) return campoErro('email', 'Deixe o seu e-mail: é por ele que a gente te avisa do pedido.');
         if (zap.length < 10 && !emailOk()) return campoErro('whatsapp', 'Deixe um WhatsApp (com DDD) ou um e-mail para a gente te avisar.');
         return '';
+      case 'falar': return grav.estado === 'gravando' || grav.estado === 'pausado' ? 'Toque em "Pronto" para terminar o áudio (ou apague).' : '';
       case 'revisao': return form.elements.aceite.checked ? '' : campoErro('aceite', 'Marque que concorda com o uso dos dados para montar a prévia.');
     }
     return '';
   }
   function mostrarErro(msg) { erro.textContent = msg || ''; erro.hidden = !msg; if (msg) { var r = erro.getBoundingClientRect(), nav = $('#nav').getBoundingClientRect(); if (r.bottom > nav.top - 8 || r.top < 0) erro.scrollIntoView({ block: 'center', behavior: menosMov ? 'auto' : 'smooth' }); } }
 
-  /* ---------- navegação ---------- */
-  var OPCIONAIS = { precisa: 1, detalhes: 1, fotos: 1 };
+  /* ---------- navegação (conversa: um passo por vez; "servicos" fica de fora em sistema e automação) ---------- */
+  var OPCIONAIS = { precisa: 1, servicos: 1, cores: 1, fotos: 1, falar: 1 };
+  function ativo(p) { return !(p === 'servicos' && projeto()); }
+  function ativos() { return ordem.filter(ativo); }
+  function vizinho(i, d) { for (var j = i + d; j >= 0 && j < ordem.length; j += d) if (ativo(ordem[j])) return j; return -1; }
   function temAlgo(p) {
     if (p === 'precisa') { var t = oque(); return t === 'cardapio' ? marcados('cpx').length > 0 : projeto() ? true : marcados('precisa').length > 0; }
-    if (p === 'detalhes') return !!(val('quer') || val('servicos') || val('cores') || (oque() === 'cardapio' && cardFotos.length));
+    if (p === 'servicos') return !!(val('servicos') || (oque() === 'cardapio' && cardFotos.length));
+    if (p === 'cores') return !!val('cores');
     if (p === 'fotos') return fotos.length > 0;
+    if (p === 'falar') return !!(val('quer') || grav.dataUrl);
     return true;
   }
   function atualizarBotao() {
     var p = ordem[atual];
     botao.classList.toggle('enviar', p === 'revisao');
+    botao.classList.toggle('pular', !!(OPCIONAIS[p] && !temAlgo(p)) && p !== 'revisao' && !daRevisao);
     if (p === 'revisao') botaoTxt.textContent = antigo && trocar ? 'Enviar pedido novo' : 'Pedir minha prévia';
     else if (daRevisao) botaoTxt.textContent = 'Voltar à revisão';
     else botaoTxt.textContent = OPCIONAIS[p] && !temAlgo(p) ? 'Pular' : 'Continuar';
   }
+  // frase do robô com o que a pessoa já respondeu ("Prazer, Barbearia Dois Irmãos!"); textContent, nunca HTML
+  var ROT_CURTO = { site: 'Site com agenda', cardapio: 'Cardápio digital', sistema: 'Sistema sob medida', automacao: 'Automação' };
+  function curto(t, n) { t = String(t || ''); return t.length > n ? t.slice(0, n - 1) + '…' : t; }
+  function personalizar(ps) {
+    var k = ps.querySelector('[data-kick]'); if (!k) return;
+    if (!k.hasAttribute('data-kick-padrao')) k.setAttribute('data-kick-padrao', k.textContent);
+    var mapa = { nome: curto(val('negocio'), 32), ramo: curto(val('ramo'), 28), tipo: ROT_CURTO[oque()] || '' };
+    var modelo = k.getAttribute('data-kick'), falta = false;
+    var tx = modelo.replace(/\{(\w+)\}/g, function (m, c) { if (!mapa[c]) falta = true; return mapa[c] || ''; });
+    tx = falta ? k.getAttribute('data-kick-padrao') : tx;
+    k.textContent = tx.charAt(0).toUpperCase() + tx.slice(1);
+  }
+  // balão da pessoa: a resposta do passo anterior (toque para mudar)
+  var eco = $('#eco'), ecoTxt = $('#eco-txt'), ecoDe = -1;
+  function respostaDe(p) {
+    switch (p) {
+      case 'oque': return ROT_CURTO[oque()] || '';
+      case 'negocio': return val('negocio');
+      case 'ramo': return val('ramo');
+      case 'cidade': return val('cidade');
+      case 'precisa': return resumoPrecisa();
+      case 'servicos': return val('servicos') ? val('servicos').replace(/:\s*\n\s*/g, ': ').replace(/\s*\n\s*/g, ' · ') : (cardFotos.length ? 'Mandei o cardápio atual' : '');
+      case 'cores': return val('cores');
+      case 'fotos': return fotos.length ? fotos.length + (fotos.length > 1 ? ' fotos' : ' foto') : '';
+      case 'falar': return [grav.dataUrl ? 'Áudio de ' + tempo(grav.seg) : '', val('quer')].filter(Boolean).join(' · ');
+      case 'contato': return val('email') || val('whatsapp');
+    }
+    return '';
+  }
+  function mostrarEco(i) {
+    var j = vizinho(i, -1), tx = j >= 0 && ordem[i] !== 'revisao' ? respostaDe(ordem[j]) : '';
+    ecoDe = j; eco.hidden = !tx;
+    if (tx) { ecoTxt.textContent = curto(tx.replace(/\s+/g, ' '), 70); eco.setAttribute('aria-label', 'Sua resposta: ' + curto(tx, 70) + '. Toque para mudar'); }
+  }
+  eco.addEventListener('click', function () { if (ecoDe >= 0) { daRevisao = false; irPara(ecoDe, true); } });
   function irPara(i, volta) {
     if (i < 0 || i >= passos.length) return;
+    if (!ativo(ordem[i])) { i = vizinho(i, volta ? -1 : 1); if (i < 0) return; }
     limparErros(); mostrarErro('');
+    if (ordem[atual] === 'falar' && i !== atual) gravPararOuvir();
     passos[atual].hidden = true;
     atual = i;
-    var ps = passos[i]; ps.hidden = false;
+    var ps = passos[i]; personalizar(ps); ps.hidden = false;
     ps.classList.toggle('volta', !!volta);
     ps.style.animation = 'none'; void ps.offsetWidth; ps.style.animation = '';
-    var n = i + 1, total = passos.length;
+    var lista = ativos(), n = lista.indexOf(ordem[i]) + 1, total = lista.length;
     $('#prog-barra').style.transform = 'scaleX(' + (n / total) + ')';
     $('#prog').setAttribute('aria-valuenow', String(n)); $('#prog').setAttribute('aria-valuemax', String(total));
-    $('#passo-txt').textContent = 'Passo ' + n + ' de ' + total;
+    $('#passo-txt').textContent = n + ' de ' + total;
     voltar.hidden = i === 0;
+    mostrarEco(i);
     $('#lgpd').hidden = ordem[i] !== 'revisao';
-    if (ordem[i] === 'revisao') { daRevisao = false; montarRevisao(); }
+    if (ordem[i] === 'revisao') { daRevisao = false; montarRevisao(); cfDesenhar(); }
     atualizarBotao();
     salvar();
     var t = ps.querySelector('.ps-t');
@@ -512,10 +528,10 @@
     if (p === 'revisao') return enviar();
     if (daRevisao) { irPara(ordem.indexOf('revisao')); return; }
     robo('r-ok');
-    irPara(atual + 1);
+    irPara(vizinho(atual, 1));
   }
   form.addEventListener('submit', function (e) { e.preventDefault(); if (!enviando) avancar(); });
-  voltar.addEventListener('click', function () { daRevisao = false; irPara(atual - 1, true); });
+  voltar.addEventListener('click', function () { daRevisao = false; irPara(vizinho(atual, -1), true); });
   // Enter avança (textarea mantém a quebra de linha; Ctrl/Cmd+Enter avança também)
   form.addEventListener('keydown', function (e) {
     if (e.key !== 'Enter' || e.isComposing) return;
@@ -535,10 +551,180 @@
     gc.addEventListener('pointerdown', function () { ja = r.checked; });
     gc.addEventListener('click', function (e) { if (ja && e.detail > 0 && ordem[atual] === 'oque') { ja = false; setTimeout(avancar, 120); } });
   });
-  // brilho que segue o dedo/mouse nos cartões grandes
-  $$('.gc-in').forEach(function (c) { c.addEventListener('pointermove', function (e) { var r = c.getBoundingClientRect(); c.style.setProperty('--mx', (e.clientX - r.left) + 'px'); c.style.setProperty('--my', (e.clientY - r.top) + 'px'); }); });
   form.addEventListener('input', function (e) { if (e.target.closest('.cp-err')) { e.target.closest('.cp-err').classList.remove('cp-err'); e.target.removeAttribute('aria-invalid'); mostrarErro(''); } previaJa(); salvar(); atualizarBotao(); });
   form.addEventListener('change', function () { previaJa(); salvar(); atualizarBotao(); });
+
+  /* ---------- gravador de áudio (24/10/2026; opcional) ----------
+     O microfone só é pedido no clique em "Gravar". Até 2 min ou ~580 KB (o servidor aceita 600 KB e confere os bytes do formato).
+     Vai no pedido como data URL (campo audio); a ClickGo transcreve no PC e o texto entra no briefing. Não fica no rascunho. */
+  var GRAV_MAX_SEG = 120, GRAV_MAX_BYTES = 580 * 1024, GRAV_MIN_BYTES = 1024;
+  var grav = { estado: 'pronto', rec: null, stream: null, pedacos: [], bytes: 0, tipo: '', seg: 0, acum: 0, desde: 0, tm: 0, dataUrl: '', blobUrl: '', ctx: null, an: null, raf: 0 };
+  var gBox = $('#grav'), gAudio = $('#grav-audio'), gMsg = $('#grav-msg'), gTempo = $('#grav-tempo'), gDur = $('#grav-dur'), gProg = $('#grav-prog'), gOndas = $$('#grav-ondas i');
+  function tempo(s) { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+  function gEstado(e) { grav.estado = e; gBox.setAttribute('data-estado', e); atualizarBotao(); }
+  function gAviso(msg) { gMsg.textContent = msg || ''; gMsg.hidden = !msg; }
+  function gTipo() {
+    var op = ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/webm'];
+    for (var i = 0; i < op.length; i++) { try { if (MediaRecorder.isTypeSupported(op[i])) return op[i]; } catch (e) { /* */ } }
+    return '';
+  }
+  function gSoltar() {
+    clearInterval(grav.tm); cancelAnimationFrame(grav.raf);
+    if (grav.stream) grav.stream.getTracks().forEach(function (t) { t.stop(); });
+    grav.stream = null;
+    if (grav.ctx) { try { grav.ctx.close(); } catch (e) { /* */ } }
+    grav.ctx = null; grav.an = null;
+    gOndas.forEach(function (o) { o.style.transform = ''; });
+  }
+  function gSegundos() { return grav.acum + (grav.estado === 'gravando' ? (performance.now() - grav.desde) / 1000 : 0); }
+  function gTique() {
+    var s = gSegundos(); gTempo.textContent = tempo(Math.floor(s));
+    if (s >= GRAV_MAX_SEG) gParar();
+  }
+  function gOndasLoop() {
+    if (!grav.an) return;
+    var d = new Uint8Array(grav.an.fftSize); grav.an.getByteTimeDomainData(d);
+    var soma = 0; for (var i = 0; i < d.length; i++) { var v = (d[i] - 128) / 128; soma += v * v; }
+    var nivel = Math.min(1, Math.sqrt(soma / d.length) * 4);
+    for (var j = gOndas.length - 1; j > 0; j--) gOndas[j].style.transform = gOndas[j - 1].style.transform;
+    gOndas[0].style.transform = 'scaleY(' + (grav.estado === 'gravando' ? .15 + nivel * .85 : .15).toFixed(2) + ')';
+    grav.raf = requestAnimationFrame(gOndasLoop);
+  }
+  function gLimpar() {
+    gSoltar();
+    try { gAudio.pause(); } catch (e) { /* */ }
+    if (grav.blobUrl) { URL.revokeObjectURL(grav.blobUrl); }
+    gAudio.removeAttribute('src');
+    grav.blobUrl = ''; grav.dataUrl = ''; grav.pedacos = []; grav.bytes = 0; grav.seg = 0; grav.acum = 0; grav.rec = null;
+    gProg.style.transform = 'scaleX(0)'; gBox.classList.remove('tocando');
+  }
+  function gIniciar() {
+    gAviso('');
+    if (!window.MediaRecorder || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !gTipo()) {
+      gEstado('indisponivel'); gAviso('Este navegador não grava áudio aqui. Sem problema: escreva acima.'); return;
+    }
+    gLimpar();
+    gEstado('pedindo');
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (st) {
+      grav.stream = st; grav.tipo = gTipo();
+      var rec;
+      try { rec = new MediaRecorder(st, { mimeType: grav.tipo, audioBitsPerSecond: 32000 }); } catch (e) { rec = new MediaRecorder(st); grav.tipo = rec.mimeType || grav.tipo; }
+      grav.rec = rec;
+      rec.ondataavailable = function (ev) {
+        if (!ev.data || !ev.data.size) return;
+        grav.pedacos.push(ev.data); grav.bytes += ev.data.size;
+        if (grav.bytes >= GRAV_MAX_BYTES && rec.state !== 'inactive') gParar();
+      };
+      rec.onstop = gTerminou;
+      rec.start(1000);
+      grav.acum = 0; grav.desde = performance.now();
+      gEstado('gravando'); gTempo.textContent = '0:00';
+      grav.tm = setInterval(gTique, 250);
+      if (!menosMov) {
+        try {
+          var AC = window.AudioContext || window.webkitAudioContext;
+          grav.ctx = new AC(); grav.an = grav.ctx.createAnalyser(); grav.an.fftSize = 512;
+          grav.ctx.createMediaStreamSource(st).connect(grav.an); gOndasLoop();
+        } catch (e) { grav.an = null; }
+      }
+      robo('r-ok');
+    }).catch(function (e) {
+      gSoltar(); gEstado('pronto');
+      gAviso(e && (e.name === 'NotAllowedError' || e.name === 'SecurityError') ? 'O microfone ficou bloqueado. Tudo bem: escreva acima ou libere o microfone no navegador.' : 'Não achei um microfone. Pode escrever acima.');
+    });
+  }
+  function gPausar() {
+    var r = grav.rec; if (!r) return;
+    if (grav.estado === 'gravando' && r.state === 'recording' && r.pause) { r.pause(); grav.acum = gSegundos(); gEstado('pausado'); }
+    else if (grav.estado === 'pausado' && r.state === 'paused') { r.resume(); grav.desde = performance.now(); gEstado('gravando'); }
+    $('#grav-pausar').setAttribute('aria-label', grav.estado === 'pausado' ? 'Continuar gravando' : 'Pausar');
+  }
+  function gParar() {
+    var r = grav.rec; if (!r || r.state === 'inactive') return;
+    grav.seg = gSegundos(); clearInterval(grav.tm);
+    gEstado('salvando');
+    try { r.stop(); } catch (e) { gTerminou(); }
+  }
+  function gTerminou() {
+    gSoltar();
+    var base = String(grav.tipo || (grav.rec && grav.rec.mimeType) || '').split(';')[0] || 'audio/webm';
+    var blob = new Blob(grav.pedacos, { type: base });
+    if (blob.size < GRAV_MIN_BYTES || grav.seg < 1) { gLimpar(); gEstado('pronto'); gAviso('Ficou curtinho demais. Tente de novo.'); return; }
+    if (blob.size > 600 * 1024) { gLimpar(); gEstado('pronto'); gAviso('O áudio ficou grande demais. Tente um mais curto.'); return; }
+    var leitor = new FileReader();
+    leitor.onload = function () {
+      var b64 = String(leitor.result || '').split(',')[1] || '';
+      grav.dataUrl = 'data:' + base + ';base64,' + b64;
+      grav.blobUrl = URL.createObjectURL(blob); gAudio.src = grav.blobUrl;
+      gDur.textContent = tempo(grav.seg);
+      gEstado('gravado'); robo('r-ok'); salvar();
+    };
+    leitor.onerror = function () { gLimpar(); gEstado('pronto'); gAviso('Não deu para guardar o áudio. Tente de novo.'); };
+    leitor.readAsDataURL(blob);
+  }
+  function gravPararOuvir() {
+    try { gAudio.pause(); } catch (e) { /* */ }
+    if (grav.estado === 'gravando' || grav.estado === 'pausado') gParar();
+  }
+  $('#grav-iniciar').addEventListener('click', gIniciar);
+  $('#grav-pausar').addEventListener('click', gPausar);
+  $('#grav-parar').addEventListener('click', gParar);
+  $('#grav-refazer').addEventListener('click', gIniciar);
+  $('#grav-apagar').addEventListener('click', function () { gLimpar(); gEstado('pronto'); gAviso(''); $('#grav-iniciar').focus(); });
+  $('#grav-ouvir').addEventListener('click', function () { if (!grav.blobUrl) return; if (gAudio.paused) { var p = gAudio.play(); if (p && p.catch) p.catch(function () { /* */ }); } else gAudio.pause(); });
+  gAudio.addEventListener('play', function () { gBox.classList.add('tocando'); $('#grav-ouvir').setAttribute('aria-label', 'Pausar o áudio'); });
+  gAudio.addEventListener('pause', function () { gBox.classList.remove('tocando'); $('#grav-ouvir').setAttribute('aria-label', 'Ouvir o áudio'); });
+  gAudio.addEventListener('ended', function () { gProg.style.transform = 'scaleX(0)'; });
+  gAudio.addEventListener('timeupdate', function () { var d = grav.seg || 1; gProg.style.transform = 'scaleX(' + Math.min(1, gAudio.currentTime / d).toFixed(3) + ')'; gDur.textContent = tempo(gAudio.paused ? grav.seg : gAudio.currentTime); });
+  addEventListener('pagehide', gSoltar);
+
+  /* ---------- campos que ajudam a digitar ---------- */
+  // WhatsApp: (61) 99999-9999 enquanto digita (só números; tira o +55)
+  var zapIn = form.elements.whatsapp;
+  zapIn.addEventListener('input', function () {
+    var d = zapIn.value.replace(/\D/g, '');
+    if (d.length > 11 && d.slice(0, 2) === '55') d = d.slice(2);
+    d = d.slice(0, 11);
+    var f = d.length <= 2 ? (d ? '(' + d : '') : '(' + d.slice(0, 2) + ') ' + (d.length <= 6 ? d.slice(2) : d.length <= 10 ? d.slice(2, 6) + '-' + d.slice(6) : d.slice(2, 7) + '-' + d.slice(7));
+    if (zapIn.selectionStart === zapIn.value.length || document.activeElement !== zapIn) zapIn.value = f;
+  });
+  // Instagram: aceita link ou nome e deixa "@nome"
+  var igIn = form.elements.instagram;
+  igIn.addEventListener('blur', function () {
+    var v = igIn.value.trim().replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/[/?#].*$/, '').replace(/\s+/g, '').replace(/^@+/, '');
+    igIn.value = v ? '@' + v.slice(0, 58) : ''; salvar();
+  });
+  // e-mail: sugere a correção dos erros de digitação mais comuns
+  var emIn = form.elements.email, emSug = $('#email-sug');
+  var DOM_ERRADO = { 'gmial.com': 'gmail.com', 'gmai.com': 'gmail.com', 'gmal.com': 'gmail.com', 'gamil.com': 'gmail.com', 'gmail.con': 'gmail.com', 'gmail.co': 'gmail.com', 'gmail.com.br': 'gmail.com', 'gmaill.com': 'gmail.com', 'hotmal.com': 'hotmail.com', 'hotmial.com': 'hotmail.com', 'hotmail.con': 'hotmail.com', 'hotmai.com': 'hotmail.com', 'outlok.com': 'outlook.com', 'outlook.con': 'outlook.com', 'yahoo.con': 'yahoo.com', 'yaho.com': 'yahoo.com', 'icloud.con': 'icloud.com', 'uol.com': 'uol.com.br', 'bol.com': 'bol.com.br' };
+  function emailSugerir() {
+    var v = emIn.value.trim(), m = v.match(/^([^@\s]+)@([^@\s]+)$/), certo = m && DOM_ERRADO[m[2].toLowerCase()];
+    emSug.hidden = !certo; emSug.innerHTML = '';
+    if (!certo) return;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'sug-bt'; b.textContent = m[1] + '@' + certo;
+    b.addEventListener('click', function () { emIn.value = m[1] + '@' + certo; emSug.hidden = true; marcarOk(emIn); salvar(); emIn.focus(); });
+    emSug.appendChild(document.createTextNode('Quis dizer ')); emSug.appendChild(b); emSug.appendChild(document.createTextNode('?'));
+  }
+  emIn.addEventListener('blur', emailSugerir);
+  emIn.addEventListener('input', function () { if (!emSug.hidden) emailSugerir(); });
+  // sinal de "certo" no campo preenchido
+  function marcarOk(el) {
+    var cp = el.closest && el.closest('.cp'); if (!cp) return;
+    var v = String(el.value || '').trim(), ok = !!v;
+    if (el.name === 'email') ok = emailOk();
+    if (el.name === 'whatsapp') ok = v.replace(/\D/g, '').length >= 10;
+    cp.classList.toggle('cp-ok', ok);
+  }
+  $$('.cp input:not([type=file]):not([type=color]):not([type=radio]):not([type=checkbox]), .cp textarea', form).forEach(function (el) {
+    el.addEventListener('input', function () { marcarOk(el); });
+    el.addEventListener('blur', function () { marcarOk(el); });
+  });
+  // contador discreto nas caixas de texto longas (aparece perto do limite)
+  $$('textarea[data-conta]', form).forEach(function (ta) {
+    var max = Number(ta.getAttribute('data-conta')), c = document.createElement('small'); c.className = 'conta'; c.setAttribute('aria-hidden', 'true'); ta.parentNode.appendChild(c);
+    function contar() { var n = ta.value.length; c.textContent = n + '/' + max; c.classList.toggle('on', n > max * .7); }
+    ta.addEventListener('input', contar); contar();
+  });
 
   /* ---------- revisão ---------- */
   var ROT_OQUE = { site: 'Site com agenda', cardapio: 'Cardápio digital', sistema: 'Sistema sob medida', automacao: 'Automação' };
@@ -554,9 +740,12 @@
       ['Negócio', [val('negocio'), val('ramo')].filter(Boolean).join(' · '), 'negocio'],
       ['Cidade', val('cidade'), 'cidade'],
       [oque() === 'sistema' ? 'O sistema' : oque() === 'automacao' ? 'A automação' : 'Precisa', resumoPrecisa(), 'precisa'],
-      ['Detalhes', [val('quer'), val('servicos'), val('cores')].filter(Boolean).join(' · '), 'detalhes'],
-      oque() === 'cardapio' && cardFotos.length ? ['Cardápio atual', cardFotos.length + (cardFotos.length > 1 ? ' imagens' : ' imagem') + ': a gente lê os itens e preços e te mostra para conferir', 'detalhes'] : null,
+      projeto() ? null : [oque() === 'cardapio' ? 'Itens e preços' : 'Serviços', val('servicos'), 'servicos'],
+      oque() === 'cardapio' && cardFotos.length ? ['Cardápio atual', cardFotos.length + (cardFotos.length > 1 ? ' imagens' : ' imagem') + ': a gente lê os itens e preços e te mostra para conferir', 'servicos'] : null,
+      ['Cores', val('cores'), 'cores'],
       ['Fotos', fotos.length ? fotos.length + (fotos.length > 1 ? ' fotos' : ' foto') : '', 'fotos'],
+      ['Recado', val('quer'), 'falar'],
+      grav.dataUrl ? ['Áudio', 'Áudio de ' + tempo(grav.seg) + ': a gente ouve e transcreve', 'falar'] : null,
       ['Contato', [val('email'), val('whatsapp'), val('instagram')].filter(Boolean).join(' · '), 'contato']
     ];
     linhas = linhas.filter(Boolean);
@@ -565,7 +754,7 @@
       var d = document.createElement('div'); d.style.animationDelay = (i * 40) + 'ms';
       var dt = document.createElement('dt'); dt.textContent = l[0];
       var dd = document.createElement('dd'); var tx = l[1].length > 160 ? l[1].slice(0, 158) + '…' : l[1]; dd.textContent = tx || 'Nada'; if (!tx) dd.className = 'vazio';
-      var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Alterar'; b.setAttribute('aria-label', 'Alterar ' + l[0].toLowerCase());
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Mudar'; b.setAttribute('aria-label', 'Mudar ' + l[0].toLowerCase());
       b.addEventListener('click', function () { daRevisao = true; irPara(ordem.indexOf(l[2]), true); });
       d.appendChild(dt); d.appendChild(dd); d.appendChild(b); dl.appendChild(d);
     });
@@ -666,7 +855,7 @@
     var corpo = {
       negocio: val('negocio'), ramo: val('ramo'), cidade: val('cidade'), tipo: oque() === 'cardapio' ? 'Cardápio digital' : 'site', quer: montarQuer(), servicos: projeto() ? '' : val('servicos'),
       cores: val('cores'), whatsapp: val('whatsapp'), email: val('email'), instagram: val('instagram'), site_url: val('site_url'), t0: t0, aceite: true, portfolio: !(form.elements.portfolio && !form.elements.portfolio.checked), fotos: oque() === 'cardapio' ? cardFotos.concat(fotos).slice(0, 3) : fotos,
-      precisa: montarPrecisa(), turnstile: cf.token || undefined,
+      precisa: montarPrecisa(), turnstile: cf.token || undefined, audio: grav.dataUrl || undefined,
       substitui: antigo && trocar ? { id: antigo.id, k: antigo.k } : undefined
     };
     var animacao = montando();
@@ -697,7 +886,7 @@
     if (menosMov) return;
     var cv = $('#confete'), cx = cv.getContext('2d'), dpr = Math.min(window.devicePixelRatio || 1, 1.5), w = innerWidth, h = innerHeight;
     cv.width = w * dpr; cv.height = h * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var cores = ['#a6e6ff', '#3fd2ff', '#34e0c0', '#3a86ff', '#ffffff'], ps = [], ini = performance.now();
+    var cores = ['#9fe6ff', '#3fd2ff', '#4c8df6', '#2d6be0', '#eef2f8'], ps = [], ini = performance.now();
     for (var i = 0; i < 110; i++) { var a = -Math.PI / 2 + (Math.random() - .5) * 1.6, v = 7 + Math.random() * 8; ps.push({ x: w / 2, y: h * .42, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: Math.random() * 6.28, vr: (Math.random() - .5) * .3, s: 4 + Math.random() * 5, c: cores[i % cores.length] }); }
     (function q(t) {
       var dt = (t - ini) / 1000; cx.clearRect(0, 0, w, h);
@@ -714,6 +903,7 @@
     var rTipo = form.querySelector('[name="oque"][value="' + tipoUrl + '"]'); if (rTipo) rTipo.checked = true;
   }
   ajustarTipo(); desenharFotos(); marcarRamo();
+  $$('.cp input, .cp textarea', form).forEach(function (el) { if (el.value && el.type !== 'file' && el.type !== 'color') marcarOk(el); });
   if (!form.hidden) { irPara(inicio); if (inicio === 0) robo('r-acena'); }
   atualizarPrevia();
 })();
