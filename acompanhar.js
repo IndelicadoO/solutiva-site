@@ -133,6 +133,8 @@
     if (window.CGSala) window.CGSala.desenhar(r, { mandar: mandar, toast: toast });
     // extras (vitrine, caixinhas antes do Pix), tela de mudança e "guarde este link": cg-sala-extras.js
     if (window.CGSalaExtras) window.CGSalaExtras.desenhar(r, { mandar: mandar, toast: toast, copiar: copiarTexto });
+    // subir de plano (só pacotes acima do atual que o app mandou; a diferença é do servidor): cg-sala-planos.js
+    if (window.CGSalaPlanos) window.CGSalaPlanos.desenhar(r, { mandar: mandar, toast: toast });
     // sistema sob medida: a página vira a SALA DO PROJETO (projeto.js); nada de pacote, aprovar, editor ou Pix
     if (proj) {
       cta.hidden = true; $('pacotes').hidden = true; $('resumo-pac').hidden = true; $('aba-editor').hidden = true; $('ir-editar').hidden = true; $('pix').hidden = true;
@@ -210,8 +212,9 @@
     $('pix-pronto').hidden = !mostra;
     if (prep && !mostra) { $('giro').hidden = true; $('status-t').textContent = 'Prévia aprovada!'; $('status-s').textContent = 'Obrigado! O pagamento do sinal aparece logo abaixo.'; }
     if (!mostra) return;
-    $('pix-titulo').textContent = ext ? 'Pague o seu extra: ' + (i.extraNome || 'extra') : rest ? 'Pague o restante e coloque o seu site no ar' : 'Pague o sinal e garanta o seu site';
-    $('pix-rotulo').textContent = ext ? 'Extra (pagamento único)' : rest ? 'Restante (50%)' : 'Sinal (50%)';
+    var upg = ext && i.extraTipo === 'upgrade'; // diferença da implantação na troca de plano (cg-sala-planos.js)
+    $('pix-titulo').textContent = upg ? 'Pague a diferença e suba para o ' + (i.extraNome || 'plano novo') : ext ? 'Pague o seu extra: ' + (i.extraNome || 'extra') : rest ? 'Pague o restante e coloque o seu site no ar' : 'Pague o sinal e garanta o seu site';
+    $('pix-rotulo').textContent = upg ? 'Diferença da implantação (uma vez)' : ext ? 'Extra (pagamento único)' : rest ? 'Restante (50%)' : 'Sinal (50%)';
     $('pix-garante-sinal').hidden = rest || ext; $('pix-garante-restante').hidden = !rest;
     // 1º o e-mail (obrigatório: recibo e link da página); depois o Pix na página (QR + copia e cola); o cartão do MP fica
     // como opção secundária. Sem Pix (Mercado Pago desligado ou fora): o link do MP ou a chave Pix, como antes.
