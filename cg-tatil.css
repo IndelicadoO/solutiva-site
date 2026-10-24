@@ -129,7 +129,104 @@ body > .topo { -webkit-backdrop-filter: none; backdrop-filter: none; background:
 .cg-chat-cab img { animation: cgFlutua 4.5s ease-in-out infinite; }
 @keyframes cgFlutua { 50% { transform: translateY(-3px) rotate(-3deg); } }
 
+/* ============================================================================================
+   v2 (24/10/2026, dono aprovou o estilo com ajustes): fundo com profundidade, ícones coloridos, "tudo se mexe"
+   ============================================================================================ */
+.mk { background: var(--cg-marca-forte); box-shadow: .09em .09em 0 #12306e; }
+
+/* ---------- FUNDO: blocos sólidos da marca, em camadas, à deriva bem devagar (cg-tatil.js cria o .cg-fundo).
+   Sem vidro, sem blur, sem degradê: só formas chapadas um tom acima do fundo, com a mesma sombra sólida dos botões. ---------- */
+body { background-color: transparent !important; }
+html { background-color: var(--cg-fundo); }
+/* página inicial: as seções .canto são opacas e cobrem a abertura; o fundo fica DENTRO de cada uma (isolation = acima do fundo
+   da seção, abaixo do conteúdo), em posições alternadas */
+.canto { position: relative; isolation: isolate; overflow-x: clip; }
+.canto::before, .canto::after { content: ""; position: absolute; z-index: -1; pointer-events: none; will-change: transform; }
+.canto::before { width: 360px; height: 360px; left: -170px; top: 12%; border-radius: 56px; background: #0b1220; border: 2px solid #131c2d; box-shadow: 16px 16px 0 #04070d; rotate: 14deg; animation: t-deriva 46s ease-in-out infinite alternate; }
+.canto::after { width: 120px; height: 120px; right: 7%; top: 9%; border-radius: 50%; border: 2px solid #1d3b57; animation: t-deriva 34s ease-in-out -9s infinite alternate-reverse; }
+.canto:nth-of-type(even)::before { left: auto; right: -160px; top: auto; bottom: 8%; border-radius: 50%; rotate: 0deg; }
+.canto:nth-of-type(even)::after { right: auto; left: 6%; top: auto; bottom: 10%; width: 54px; height: 54px; border-radius: 16px; background: #12244a; border-color: #1c3466; box-shadow: 6px 6px 0 #04070d; rotate: 22deg; }
+@media (max-width: 699px) { .canto::before { width: 220px; height: 220px; } .canto::after { display: none; } }
+.cg-fundo { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.cg-fundo i { position: absolute; display: block; background: #0b1220; border: 2px solid #131c2d; box-shadow: 16px 16px 0 #04070d; border-radius: 56px; will-change: transform; }
+.cg-fundo i:nth-child(1) { width: 380px; height: 380px; left: -150px; top: 90px; rotate: 14deg; animation: t-deriva 44s ease-in-out infinite alternate; }
+.cg-fundo i:nth-child(2) { width: 300px; height: 300px; right: -110px; top: 38%; border-radius: 50%; animation: t-deriva 52s ease-in-out -12s infinite alternate-reverse; }
+.cg-fundo i:nth-child(3) { width: 460px; height: 220px; left: 24%; bottom: -150px; rotate: -9deg; animation: t-deriva 60s ease-in-out -30s infinite alternate; }
+.cg-fundo i:nth-child(4) { width: 110px; height: 110px; right: 16%; top: 12%; border-radius: 50%; background: transparent; border: 2px solid #1d3b57; box-shadow: none; animation: t-deriva 36s ease-in-out -8s infinite alternate; }
+.cg-fundo i:nth-child(5) { width: 54px; height: 54px; left: 9%; bottom: 22%; border-radius: 16px; background: #12244a; border-color: #1c3466; box-shadow: 6px 6px 0 #04070d; rotate: 22deg; animation: t-deriva 30s ease-in-out -4s infinite alternate-reverse; }
+.cg-fundo i:nth-child(6) { width: 26px; height: 26px; right: 30%; bottom: 14%; border-radius: 9px; background: #2a2416; border-color: #4d4224; box-shadow: 4px 4px 0 #04070d; rotate: -14deg; animation: t-deriva 26s ease-in-out -15s infinite alternate; }
+@keyframes t-deriva { from { transform: translate3d(0, 0, 0) rotate(0deg); } to { transform: translate3d(34px, -46px, 0) rotate(8deg); } }
+@media (max-width: 699px) {
+  .cg-fundo i:nth-child(1) { width: 230px; height: 230px; left: -120px; top: 120px; }
+  .cg-fundo i:nth-child(2) { width: 190px; height: 190px; right: -95px; }
+  .cg-fundo i:nth-child(3) { width: 280px; height: 140px; left: 10%; bottom: -100px; }
+  .cg-fundo i:nth-child(4), .cg-fundo i:nth-child(6) { display: none; }
+}
+
+/* ---------- ÍCONES COLORIDOS: 5 famílias sólidas (fundo escuro do tom + traço claro do tom), uma por sentido.
+   ciano = digital/link/site, azul = agenda/sistema/confiança, mostarda = comida/dinheiro/preço, tomate = voz/urgência/energia,
+   verde = WhatsApp. Nada de carnaval: o tom só aparece no ícone, nunca no cartão inteiro. ---------- */
+.ic-c { --icf: #4fd6ff; --icb: #0f2733; --icd: #1d4a5c; }
+.ic-a { --icf: #7aabff; --icb: #13233f; --icd: #284477; }
+.ic-m { --icf: #e2c27e; --icb: #29231a; --icd: #4d4224; }
+.ic-t { --icf: #ec9178; --icb: #2d1c18; --icd: #593329; }
+.ic-v { --icf: #6fd39a; --icb: #13271d; --icd: #24503a; }
+
+/* ---------- TUDO SE MEXE: respiração, entrada ao rolar, reação ao toque ----------
+   Usa as propriedades independentes translate/rotate/scale: convivem com o transform de hover/afundar sem brigar. */
+.t-ic { animation: t-respira 4.6s ease-in-out var(--td, 0s) infinite; }
+.t-ic.t-mexe { animation: t-respira 4.6s ease-in-out var(--td, 0s) infinite, t-mexe .6s var(--t-mola); }
+@keyframes t-respira { 0%, 100% { translate: 0 0; rotate: 0deg; } 50% { translate: 0 -2px; rotate: -5deg; } }
+@keyframes t-mexe { 0% { scale: 1; } 30% { scale: 1.22; } 55% { scale: .92; } 80% { scale: 1.06; } 100% { scale: 1; } }
+.t-entra { opacity: 0; translate: 0 22px; scale: .96; }
+.t-entra.t-visto { opacity: 1; translate: 0 0; scale: 1; transition: opacity .55s ease, translate .8s var(--t-mola), scale .8s var(--t-mola); transition-delay: var(--te, 0s); }
+
+/* logo: respira e dá uma piscadinha de clique de tempos em tempos; o "Go" dá um pulinho */
+.cg-mk-logo { animation: t-logo 6s ease-in-out 2.4s infinite; }
+@keyframes t-logo { 0%, 70%, 100% { translate: 0 0; rotate: 0deg; } 78% { translate: 0 -3px; rotate: -8deg; } 86% { translate: 0 0; rotate: 5deg; } 92% { rotate: -2deg; } }
+.cg-mk-wm b { animation: t-go 6s ease-in-out 2.6s infinite; }
+.cg-mk.cg-mk-vai .cg-mk-wm b { animation: cgMkGo .8s var(--t-mola) .32s both, t-go 6s ease-in-out 2.6s infinite; }
+@keyframes t-go { 0%, 76%, 100% { translate: 0 0; } 82% { translate: 0 -4px; } 88% { translate: 0 0; } }
+
+/* robozinho da marca (mesmo desenho do formulário) em qualquer página: pisca, luz da antena, fala */
+.cg-robo { display: block; overflow: visible; flex: none; }
+.cg-robo .r-bd, .cg-robo .r-be, .cg-robo .r-olhos, .cg-robo .r-luz, .cg-robo .r-boca { transform-box: fill-box; }
+.cg-robo-chat .cg-robo { width: 64px; height: 54px; animation: t-flutua 4.5s ease-in-out infinite, t-balanca 7s ease-in-out infinite; }
+.cg-robo-chat { --a-olhos: t-pisca 5.5s infinite; --a-luz: t-luz 2.4s ease-in-out infinite; --a-boca: none; }
+.cg-robo-chat.t-visto { --a-boca: t-fala .17s ease-in-out .9s 10 alternate; }
+.cg-robo-chat .cg-robo.t-mexe { animation: t-flutua 4.5s ease-in-out infinite, t-balanca 7s ease-in-out infinite, t-mexe .6s var(--t-mola); }
+.cg-robo-chat .r-olhos { transform-origin: 50% 50%; animation: var(--a-olhos); }
+.cg-robo-chat .r-luz { transform-origin: 50% 50%; animation: var(--a-luz); }
+.cg-robo-chat .r-boca { transform-origin: 50% 50%; animation: var(--a-boca); }
+@keyframes t-flutua { 50% { translate: 0 -5px; } }
+@keyframes t-balanca { 0%, 100% { rotate: 0 1 0 0deg; } 25% { rotate: 0 1 0 -18deg; } 60% { rotate: 0 1 0 14deg; } }
+@keyframes t-pisca { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+@keyframes t-luz { 50% { opacity: .55; } }
+@keyframes t-fala { from { transform: scale(1, 1); } to { transform: scale(.82, 2.3); } }
+
+/* chatzinho do robô na página inicial */
+.cg-robo-chat { display: flex; align-items: flex-end; gap: 12px; margin-top: 26px; max-width: 460px; perspective: 500px; }
+.cg-robo-chat .cg-bal { position: relative; flex: 1; min-width: 0; padding: 14px 16px; border: 2px solid var(--cg-linha-2); border-radius: 22px 22px 22px 6px; background: var(--cg-sup-2); box-shadow: 5px 5px 0 var(--t-sombra-cor); color: var(--cg-txt); font-size: 1rem; line-height: 1.4; transform-origin: 0 100%; }
+.cg-robo-chat .cg-bal b { color: var(--cg-destaque); }
+.cg-robo-chat .cg-bal::after { content: ""; position: absolute; left: 18px; top: 50%; margin-top: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--cg-txt-3); box-shadow: 12px 0 0 var(--cg-txt-3), 24px 0 0 var(--cg-txt-3); opacity: 0; }
+.js-tatil .cg-robo-chat .cg-bal { opacity: 0; transform: perspective(700px) rotateY(-24deg) scale(.86); }
+.js-tatil .cg-robo-chat .cg-bal > span { opacity: 0; }
+.js-tatil .cg-robo-chat.t-visto .cg-bal { opacity: 1; transform: none; transition: opacity .4s ease, transform .7s var(--t-mola); }
+.js-tatil .cg-robo-chat.t-visto .cg-bal::after { animation: t-digitando .9s ease-out .35s both; }
+.js-tatil .cg-robo-chat.t-visto .cg-bal > span { opacity: 1; transition: opacity .4s ease 1.2s; }
+@keyframes t-digitando { 0%, 75% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ícones da página inicial: coloridos e vivos */
+.cf-ic { background: var(--icb, var(--cg-sup)); border-color: var(--icd, var(--cg-linha)); box-shadow: 3px 3px 0 var(--t-sombra-cor); }
+.cf-ic .cf-tr, .cf-ic .cf-onda { stroke: var(--icf, var(--cg-destaque)); }
+.cf-ic .cf-pt, .cf-ic .cf-bl { fill: var(--icf, var(--cg-destaque)); }
+.cf-ic .cf-ck { stroke: var(--icb, var(--cg-sup)); }
+.cf-selos li { border: var(--t-borda); border-radius: 16px; box-shadow: 3px 3px 0 var(--t-sombra-cor); }
+.cf-selos svg { stroke: var(--icf, var(--cg-destaque)); }
+.checks li::before { background: var(--icf, var(--cg-destaque)); }
+
 @media (prefers-reduced-motion: reduce) {
-  .cg-mk *, .mk, .cg-msg, .cg-chat-cab img, .t3d { animation: none !important; transition: none !important; }
+  .cg-mk *, .cg-mk-logo, .mk, .cg-msg, .cg-chat-cab img, .t3d, .t-ic, .cg-fundo i, .canto::before, .canto::after, .cg-robo, .cg-robo *, .cg-robo-chat * { animation: none !important; transition: none !important; }
   .t3d { transform: none !important; }
+  .t-entra, .js-tatil .cg-robo-chat .cg-bal, .js-tatil .cg-robo-chat .cg-bal > span { opacity: 1 !important; translate: none !important; scale: none !important; transform: none !important; }
 }
