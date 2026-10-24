@@ -20,8 +20,11 @@
   function data(iso) { try { return new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }); } catch (e) { return ''; } }
   function fotosDe(input, lista, max, onde) {
     var fs = Array.prototype.slice.call(input.files || [], 0, Math.max(0, max - lista.length)); input.value = '';
-    return Promise.all(fs.map(function (f) { return CG.comprimir(f).catch(function () { return null; }); })).then(function (us) {
-      us.forEach(function (u) { if (u) lista.push(u); });
+    // várias fotos: lado menor, e o total fica abaixo do limite de envio da nuvem (3 MB por mensagem)
+    return Promise.all(fs.map(function (f) { return CG.comprimir(f, max > 1 ? 1024 : 1280).catch(function () { return null; }); })).then(function (us) {
+      var LIM = 2600000, soma = lista.reduce(function (t, u) { return t + u.length; }, 0), cortou = false;
+      us.forEach(function (u) { if (!u) return; if (soma + u.length > LIM) { cortou = true; return; } soma += u.length; lista.push(u); });
+      if (cortou && api) api.toast('Fotos pesadas demais para uma vez só: mande as outras numa segunda mensagem.');
       onde.innerHTML = ''; lista.forEach(function (u) { var im = document.createElement('img'); im.src = u; im.alt = ''; onde.appendChild(im); });
     });
   }
