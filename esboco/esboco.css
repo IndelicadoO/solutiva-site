@@ -184,7 +184,7 @@ button, input, textarea { font: inherit; color: inherit; }
 }
 .cp-grande input:not([type=checkbox]):not([type=radio]):not([type=color]) { min-height: 64px; font-size: 1.2rem; font-weight: 500; padding: 17px 48px 17px 18px; border-radius: 18px; }
 .cp textarea { resize: vertical; min-height: 104px; }
-.cp input::placeholder, .cp textarea::placeholder, .cores-livre input::placeholder { color: #75839b; }
+.cp input::placeholder, .cp textarea::placeholder, .cores-livre input::placeholder { color: #9aa6bb; }
 .cp input:hover, .cp textarea:hover { border-color: var(--borda-3); }
 .cp input:focus, .cp textarea:focus, .cores-livre input[name=cores]:focus { outline: none; border-color: var(--ciano); box-shadow: 0 0 0 3px rgba(63, 210, 255, .2); }
 .cp.cp-err input, .cp.cp-err textarea { border-color: var(--erro); box-shadow: 0 0 0 3px rgba(255, 138, 155, .14); animation: treme .4s var(--suave); }
@@ -724,3 +724,17 @@ button, input, textarea { font: inherit; color: inherit; }
   .fala > .robo, .drop svg { animation: none !important; rotate: none !important; }
   .tq, .grandes > .gc, .pequenos > .gc { animation: none !important; }
 }
+
+/* ÍCONES COLORIDOS (24/10/2026, dono: cores que façam sentido na paleta, sem carnaval). Mesmas 5 famílias do cg-tatil.css:
+   ciano = digital/site, azul = agenda/sistema/segurança, mostarda = comida/venda/dinheiro, tomate = energia/entrega, verde = WhatsApp.
+   O tom fica só no ícone; selecionado, o ícone enche com a cor da família. */
+.gc input[value="site"] + .gc-in, .op input[value="agendar"] + span, .op input[value="login"] + span, .op input[value="paginas"] + span,
+.gc input[value="sistema"] + .gc-in, .qd input[value="login"] + span, .qd input[value="planilha"] + span { --icf: #7aabff; --icb: #13233f; --icd: #284477; }
+.gc input[value="cardapio"] + .gc-in, .op input[value="vender"] + span, .op input[value="catalogo"] + span, .op input[value="muitos"] + span,
+.qd input[value="pagamento"] + span { --icf: #e2c27e; --icb: #29231a; --icd: #4d4224; }
+.gc input[value="automacao"] + .gc-in, .op input[value="entrega"] + span, .qd input[value="PDFs"] + span { --icf: #ec9178; --icb: #2d1c18; --icd: #593329; }
+.op input[value="contato"] + span, .op input[value="whats"] + span, .qd input[value="WhatsApp"] + span { --icf: #6fd39a; --icb: #13271d; --icd: #24503a; }
+.op input[value="qr"] + span { --icf: #4fd6ff; --icb: #0f2733; --icd: #1d4a5c; }
+.gc-ic, .op svg { stroke: var(--icf, var(--ciano)); background: var(--icb, var(--sup-3)); border: 2px solid var(--icd, var(--linha-2)); }
+.qd svg { stroke: var(--icf, var(--ciano)); }
+.gc input:checked + .gc-in .gc-ic, .op input:checked + span svg { background: var(--icf, var(--ciano)); stroke: var(--tinta); border-color: transparent; }
