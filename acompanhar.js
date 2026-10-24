@@ -195,7 +195,7 @@
     qrBuscando = id;
     CG.chamar('/pedido/' + encodeURIComponent(ID) + '/pix-img', { chave: K }).then(function (r) {
       qrBuscando = '';
-      if (!r || r.id !== id || !/^[A-Za-z0-9+/]{100,40000}={0,2}$/.test(String(r.b64 || ''))) return;
+      if (!r || r.id !== id || !/^iVBORw0KGgo[A-Za-z0-9+/]{90,40000}={0,2}$/.test(String(r.b64 || ''))) return;
       var im = $('pix-qr'); im.src = 'data:image/png;base64,' + r.b64; im.hidden = false; $('pix-qr-carregando').hidden = true; qrCarregado = id;
     }).catch(function () { qrBuscando = ''; $('pix-qr-carregando').textContent = 'Use o código abaixo (copia e cola).'; });
   }
