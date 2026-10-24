@@ -9,6 +9,12 @@
   'use strict';
   var d = document, w = window, html = d.documentElement;
   html.classList.remove('sem-js'); html.classList.add('js');
+  // Paletas em teste (24/10, dono escolhe): ?paleta=quente|eletrico|fofo|cobalto|atual troca os tokens de cor (v8.css) e fica
+  // guardada para as outras páginas. Só nomes da lista entram no atributo. Quando o dono escolher, a vencedora vira o :root.
+  try {
+    var pm = /[?&]paleta=([a-z]+)/.exec(w.location.search), pal = pm ? pm[1] : w.localStorage.getItem('cg-paleta');
+    if (pal && /^(quente|eletrico|fofo|cobalto|atual)$/.test(pal)) { html.setAttribute('data-paleta', pal); w.localStorage.setItem('cg-paleta', pal); }
+  } catch (e) {}
   var reduz = w.matchMedia && w.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // transição "pulada" (outra começou antes, aba escondida) rejeita a promessa finished: não é erro, só silencia
   var troca = function (fn) { if (!reduz && d.startViewTransition) { var t = d.startViewTransition(fn); if (t && t.finished && t.finished.catch) t.finished.catch(function () {}); if (t && t.ready && t.ready.catch) t.ready.catch(function () {}); } else fn(); };
