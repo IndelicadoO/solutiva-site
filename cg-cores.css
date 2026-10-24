@@ -1,6 +1,6 @@
 /* ClickGo: PALETA ÚNICA do site (24/10/2026; dono: "cores legais, não colorido, cores boas que conversam entre si").
    Base neutra (noite) + 1 cor de marca (o azul do robô) + 1 de destaque (o ciano dos olhos do robô). Nada de verde-água,
-   lilás ou céu como cores próprias: viram marca/destaque. Contraste AA conferido nos 4 fundos (texto 3 = 5,4:1 no mais claro).
+   lilás ou céu como cores próprias: viram marca/destaque. Contraste AA conferido nos 4 fundos (24/10: texto 2 e 3 clareados a pedido do dono, "cinza difícil de ler": >= 8:1 em todos os fundos).
    Vem por ÚLTIMO em todas as páginas (início, /esboco/, /acompanhar/, privacidade, termos, exclusão) e reaponta as variáveis
    antigas de cada CSS para estes tokens, sem reescrever os arquivos. Erro (vermelho suave) é só para aviso de campo. */
 :root {
@@ -12,8 +12,8 @@
   --cg-linha: #232f44;
   --cg-linha-2: #33425c;
   --cg-txt: #eef2f8;
-  --cg-txt-2: #aab6ca;
-  --cg-txt-3: #8d9ab2;
+  --cg-txt-2: #ccd5e3;
+  --cg-txt-3: #b3bed0;
   /* marca: azul do robô */
   --cg-marca: #4c8df6;
   --cg-marca-forte: #2d6be0;
