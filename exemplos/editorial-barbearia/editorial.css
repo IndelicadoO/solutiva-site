@@ -1,0 +1,141 @@
+/* Modelo EDITORIAL (plano Completo, sob medida) · exemplo fictício "Barbearia Alto da Serra" · ClickGo 24/10/2026
+   Regras: sem vidro/blur/gradiente; só transform e opacity animam; prefers-reduced-motion respeitado; sem biblioteca. */
+:root {
+  --fundo: #141210; --papel: #1c1915; --txt: #f3ede4; --suave: #b9ae9f; --linha: #2b2621; --cor: #d9a441; --cor-txt: #141210;
+  --titulo: 'Instrument Serif', Georgia, serif; --corpo: 'Onest', system-ui, sans-serif;
+  --ease: cubic-bezier(.2,.7,.2,1); --dur: .6s;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; color-scheme: dark; }
+html, body { overflow-x: clip; }
+body { margin: 0; background: var(--fundo); color: var(--txt); font: 400 1rem/1.6 var(--corpo); -webkit-font-smoothing: antialiased; }
+img, video { display: block; max-width: 100%; }
+a { color: inherit; }
+em { font-style: italic; color: var(--cor); }
+:focus-visible { outline: 3px solid var(--cor); outline-offset: 3px; border-radius: 4px; }
+.pular { position: absolute; left: 16px; top: -60px; background: var(--cor); color: var(--cor-txt); padding: 10px 14px; border-radius: 6px; z-index: 50; font-weight: 700; text-decoration: none; }
+.pular:focus { top: 12px; }
+.demo { margin: 0; padding: 8px 16px; background: var(--cor); color: var(--cor-txt); font-size: .85rem; text-align: center; }
+.demo b { font-weight: 700; }
+
+/* Topo */
+.topo { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 24px; padding: 14px 24px; background: var(--fundo); border-bottom: 1px solid var(--linha); }
+.marca { font: 400 1.4rem/1 var(--titulo); text-decoration: none; letter-spacing: .01em; }
+.menu { display: none; gap: 22px; margin-left: auto; }
+.menu a { text-decoration: none; color: var(--suave); font-size: .95rem; position: relative; }
+.menu a::after { content: ''; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; background: var(--cor); transform: scaleX(0); transform-origin: left; transition: transform .3s var(--ease); }
+.menu a:hover::after, .menu a:focus-visible::after { transform: scaleX(1); }
+.topo .bt { margin-left: auto; padding: 10px 16px; }
+@media (min-width: 900px) { .menu { display: flex; } .topo .bt { margin-left: 0; } }
+
+/* Botão com texto que sobe (duas cópias, só transform) */
+.bt { display: inline-flex; align-items: center; gap: 10px; background: var(--cor); color: var(--cor-txt); text-decoration: none; font-weight: 700; padding: 14px 22px; border-radius: 999px; transition: transform .25s var(--ease); }
+.bt:hover { transform: translateY(-2px); }
+.bt:active { transform: scale(.96); }
+.bt .t { position: relative; display: block; overflow: hidden; height: 1.3em; line-height: 1.3; }
+.bt .t span { display: block; transition: transform .35s var(--ease); }
+.bt .t span + span { position: absolute; left: 0; top: 100%; }
+.bt:hover .t span, .bt:focus-visible .t span { transform: translateY(-100%); }
+.bt .seta { display: inline-block; transition: transform .3s var(--ease); }
+.bt:hover .seta { transform: translateX(4px); }
+.bt-sec { background: transparent; color: var(--txt); border: 1px solid var(--suave); }
+
+/* Abertura em vídeo */
+.abre { position: relative; min-height: 92svh; display: grid; align-items: end; color: #fff; isolation: isolate; }
+.abre-fundo, .abre-fundo img, .abre-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.abre-fundo { z-index: -2; overflow: hidden; }
+.abre-fundo img { transform: scale(1.06); transition: transform 1.8s var(--ease); }
+.abre.pronto .abre-fundo img { transform: scale(1); }
+.abre-video { opacity: 0; transition: opacity .8s ease; }
+.abre-video.tocando { opacity: 1; }
+.veu { position: absolute; inset: 0; z-index: -1; background: rgba(14,12,10,.55); } /* véu sólido, sem gradiente */
+.abre-txt { position: relative; padding: 48px 24px 72px; max-width: 920px; }
+.claq { margin: 0 0 14px; font-size: .9rem; letter-spacing: .14em; text-transform: uppercase; color: var(--cor); }
+h1 { margin: 0 0 18px; font: 400 clamp(2.6rem, 8vw, 6rem)/1 var(--titulo); letter-spacing: -.01em; }
+h1 .l { display: block; overflow: hidden; }
+h1 .l > span, h1 .l > em { display: block; }
+.sub { max-width: 520px; font-size: 1.1rem; color: #e6ded2; margin: 0 0 26px; }
+.acoes { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.rolar { position: absolute; right: 24px; bottom: 20px; margin: 0; font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; color: var(--suave); display: flex; align-items: center; gap: 10px; }
+.rolar span { width: 1px; height: 36px; background: var(--cor); transform-origin: top; }
+
+/* Entradas na abertura (só transform/opacity) */
+.abre .claq, .abre .sub, .abre .acoes, .abre .rolar { opacity: 0; transform: translateY(16px); }
+h1 .l > * { transform: translateY(110%); }
+.abre.pronto .claq, .abre.pronto .sub, .abre.pronto .acoes, .abre.pronto .rolar { opacity: 1; transform: none; transition: opacity .7s ease, transform .7s var(--ease); }
+.abre.pronto .sub { transition-delay: .55s; } .abre.pronto .acoes { transition-delay: .7s; } .abre.pronto .rolar { transition-delay: 1s; }
+.abre.pronto h1 .l > * { transform: none; transition: transform .9s var(--ease); }
+.abre.pronto h1 .l:nth-child(2) > * { transition-delay: .15s; }
+
+/* Seções */
+.sec { padding: 88px 0; border-top: 1px solid var(--linha); }
+.in { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.rotulo { margin: 0 0 10px; font-size: .85rem; letter-spacing: .16em; text-transform: uppercase; color: var(--cor); }
+h2 { margin: 0 0 20px; font: 400 clamp(2rem, 5vw, 3.6rem)/1.05 var(--titulo); letter-spacing: -.01em; }
+.lead { max-width: 620px; font-size: 1.15rem; color: var(--suave); margin: 0 0 28px; }
+.nota { color: var(--suave); font-size: .9rem; margin: 28px 0 0; }
+
+/* Revelar ao rolar: classe .rv, JS põe .vi (fallback). Com animation-timeline o CSS faz sozinho. */
+.rv { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s var(--ease); transition-delay: calc(var(--d, 0) * 80ms); }
+.rv.vi { opacity: 1; transform: none; }
+
+/* Índice de serviços */
+.indice { display: grid; gap: 28px; }
+.lista { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+.lista li { border-top: 1px solid var(--linha); }
+.lista li:last-child { border-bottom: 1px solid var(--linha); }
+.lista a { display: grid; grid-template-columns: 44px 1fr auto; gap: 16px; align-items: baseline; padding: 20px 8px; text-decoration: none; transition: transform .35s var(--ease), background-color .35s; border-radius: 8px; }
+.lista a:hover, .lista a:focus-visible, .lista a.ativo { transform: translateX(10px); background: var(--papel); }
+.lista .n { font: 400 .95rem var(--corpo); color: var(--cor); }
+.lista .nome { font: 400 1.5rem/1.15 var(--titulo); }
+.lista .nome small { display: block; font: 400 .92rem/1.4 var(--corpo); color: var(--suave); margin-top: 4px; }
+.lista .dur { font-size: .9rem; color: var(--suave); white-space: nowrap; }
+.vis { display: none; }
+@media (min-width: 900px) {
+  .indice { grid-template-columns: 1.1fr .9fr; align-items: start; }
+  .vis { display: block; position: sticky; top: 90px; aspect-ratio: 4/5; border-radius: 18px; overflow: hidden; background: var(--papel); }
+  .vis img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.08); transition: opacity .45s ease, transform .9s var(--ease); }
+  .vis img.on { opacity: 1; transform: scale(1); }
+}
+
+/* A casa: faixa que corre (duas cópias + translateX(-50%)) e foto grande */
+.casa .in { padding-bottom: 36px; }
+.fita { overflow: hidden; border-top: 1px solid var(--linha); border-bottom: 1px solid var(--linha); padding: 14px 0; }
+.fita-in { display: flex; gap: 48px; width: max-content; white-space: nowrap; font: 400 1.6rem/1 var(--titulo); color: var(--suave); animation: corre 28s linear infinite; }
+.fita-in span::after { content: '✦'; color: var(--cor); margin-left: 48px; font-size: .8em; }
+@keyframes corre { to { transform: translateX(-50%); } }
+.grande { margin: 48px auto 0; max-width: 1120px; padding: 0 24px; }
+.grande img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 18px; }
+.grande figcaption { margin-top: 12px; color: var(--suave); font-size: .9rem; }
+
+/* Equipe */
+.equipe { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.equipe li { background: var(--papel); border: 1px solid var(--linha); border-radius: 18px; padding: 24px; display: grid; gap: 6px; transition: transform .35s var(--ease); }
+.equipe li:hover { transform: translateY(-4px); }
+.equipe li.rv { transition: opacity .7s ease, transform .7s var(--ease); transition-delay: calc(var(--d, 0) * 80ms); }
+.equipe .ini { width: 56px; height: 56px; border-radius: 50%; background: var(--cor); color: var(--cor-txt); display: grid; place-items: center; font: 400 1.6rem var(--titulo); margin-bottom: 8px; }
+.equipe b { font-size: 1.2rem; }
+.equipe span:last-child { color: var(--suave); }
+
+/* Fim */
+.fim { background: var(--papel); }
+.selo { display: inline-flex; align-items: center; gap: 8px; color: var(--suave); font-size: .95rem; }
+.selo i { width: 10px; height: 10px; border-radius: 50%; background: #35c26b; }
+.rodape { border-top: 1px solid var(--linha); padding: 32px 0; color: var(--suave); font-size: .9rem; }
+.rodape p { margin: 4px 0; }
+
+/* Transição de entrada da página inteira (View Transitions entre documentos, quando houver) */
+@view-transition { navigation: auto; }
+
+/* Celular pequeno */
+@media (max-width: 480px) { .abre-txt { padding: 40px 16px 64px; } .in, .grande { padding-left: 16px; padding-right: 16px; } .lista a { grid-template-columns: 36px 1fr; } .lista .dur { grid-column: 2; } .rolar { display: none; } }
+
+/* Movimento reduzido: tudo visível, nada anima */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rv, .abre .claq, .abre .sub, .abre .acoes, .abre .rolar, h1 .l > * { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .abre-fundo img { transform: none; transition: none; }
+  .fita-in { animation: none; }
+  .bt, .lista a, .equipe li, .vis img, .menu a::after { transition: none; }
+  .abre-video { display: none; }
+}

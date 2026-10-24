@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="sem-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Trabalho · ClickGo (protótipo v8)</title>
+<meta name="description" content="Página de um trabalho do portfólio da ClickGo (protótipo).">
+<meta name="theme-color" content="#070b13">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- fontes do Google sem travar a pintura (CSP sem inline: o v8.js cola o link; sem JS, o noscript): o texto aparece na fonte do sistema e troca -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Instrument+Serif:ital@1&family=Onest:wght@400;500;700&display=swap" data-fontes>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Instrument+Serif:ital@1&family=Onest:wght@400;500;700&display=swap"></noscript>
+<link rel="stylesheet" href="v8.css?v=p1">
+<!-- síncrono de propósito (3 KB): a página precisa saber QUAL trabalho é antes do primeiro quadro, para a transição compartilhada -->
+<script src="v8-trabalho.js?v=p1"></script>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<header class="topo">
+  <a class="marca" href="home-v8.html" aria-label="ClickGo, início"><img src="assets/logo-clickgo.webp" width="32" height="32" alt="">Click<b>Go</b></a>
+  <nav class="menu" aria-label="Seções">
+    <a href="home-v8.html#cardapio">Cardápio digital</a>
+    <a href="home-v8.html#site">Site com agenda</a>
+    <a href="home-v8.html#portfolio" aria-current="true">Feitos por nós</a>
+    <a href="home-v8.html#perguntas">Perguntas</a>
+  </nav>
+  <a class="btn btn-sec btn-mini" data-contato="principal" href="https://ig.me/m/clickgo.dev" target="_blank" rel="noopener"><span class="t"><span>Falar com a gente</span><span aria-hidden="true">Chama no direct</span></span></a>
+</header>
+
+<main id="conteudo">
+  <section class="trab-topo">
+    <div class="sec-in">
+      <a class="voltar" href="home-v8.html#portfolio"><span class="seta" aria-hidden="true" style="transform:rotate(180deg)">→</span> Todos os trabalhos</a>
+      <p class="rotulo" style="margin-top:22px"><b id="t-num">01</b> <span id="t-tipo">Trabalho</span></p>
+      <h1 id="t-nome" style="max-width:20ch">Trabalho</h1>
+      <p class="sub" id="t-desc"></p>
+      <figure class="trab-hero"><img id="t-img" src="assets/hero-poster.webp" width="1280" height="720" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="trab-meta">
+        <div><small>O que tem</small><span id="t-tem"></span></div>
+        <div><small>Como foi feito</small><span id="t-como"></span></div>
+        <div><small>No ar</small><a id="t-link" href="home-v8.html" target="_blank" rel="noopener">—</a></div>
+      </div>
+      <div class="acoes">
+        <a class="btn btn-prim" data-contato="esboco" href="/esboco/"><span class="t"><span>Quero um assim</span><span aria-hidden="true">Prévia grátis</span></span> <span class="seta" aria-hidden="true">→</span></a>
+      </div>
+      <nav class="prox" aria-label="Outros trabalhos">
+        <a id="t-ant" href="home-v8.html#portfolio"><small>Anterior</small><b>—</b></a>
+        <a id="t-prox" href="home-v8.html#portfolio"><small>Próximo</small><b>—</b></a>
+      </nav>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <p>Atendimento online para todo o Brasil, todos os dias, das 7h às 22h</p>
+    <p class="rodape-links">
+      <a data-zap href="https://wa.me/5561984717809" target="_blank" rel="noopener">WhatsApp <span data-zap-num>(61) 98471-7809</span></a>
+      <a href="privacidade.html">Privacidade</a>
+      <a href="termos.html">Termos</a>
+      <a href="mailto:contato@clickgo.dev.br">contato@clickgo.dev.br</a>
+    </p>
+    <p>© <span id="ano">2026</span> ClickGo · CNPJ 50.522.870/0001-07</p>
+  </div>
+</footer>
+
+<script src="pixel.js?v=2" defer></script>
+<script src="contato.js" defer></script>
+<script src="v8.js?v=p1" defer></script>
+</body>
+</html>
