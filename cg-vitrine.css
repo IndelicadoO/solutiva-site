@@ -503,6 +503,7 @@
 .cga-cl-batimento svg{display:block;width:100%;height:auto;overflow:visible}
 .cga-cl-batimento .cga-m{transform-box:fill-box;transform-origin:50% 50%}
 @media (prefers-reduced-motion: reduce){.cga-cl-batimento *{animation:none!important;transition:none!important}}
+.cga-cl-batimento svg{overflow:hidden}
 .cga-cl-batimento .cga-cb-linha{fill:none;stroke:var(--c1);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;opacity:0}
 .cga-cl-batimento .cga-cb-capa rect{fill:var(--cf)}
 .cga-cl-batimento .cga-cb-capa .cga-cb-scan{fill:var(--c2)}
