@@ -373,6 +373,8 @@ h2 { font: 800 clamp(1.8rem, 4.6vw, 3.4rem)/1.02 var(--titulo); letter-spacing: 
 }
 
 
+/* passagem do palco escuro para o creme: a faixa entra de baixo e aparece (view-timeline; sem suporte, .rv por classe) */
+.fita-g.rv { --d: 0; }
 /* ===== v9: faixa GIGANTE em lima atravessando a tela (duas cópias + translateX(-50%); para no hover) ===== */
 .fita-g { overflow: hidden; padding: clamp(18px, 3vw, 34px) 0; border-top: 2px solid var(--linha-2); border-bottom: 2px solid var(--linha-2); background: var(--fundo); }
 .fita-g-in { display: flex; width: max-content; animation: v8-corre 40s linear infinite; }
