@@ -18,6 +18,48 @@
     mk.addEventListener('touchstart', function () { clicar(mk); }, { passive: true });
   });
 
+  document.documentElement.classList.add('js-tatil');
+
+  // 4. fundo com profundidade: blocos sólidos à deriva (o CSS desenha; aqui só entra no DOM)
+  if (!document.querySelector('.cg-fundo, .canto')) {
+    var fd = document.createElement('div'); fd.className = 'cg-fundo'; fd.setAttribute('aria-hidden', 'true');
+    for (var k = 0; k < 6; k++) fd.appendChild(document.createElement('i'));
+    document.body.insertBefore(fd, document.body.firstChild);
+  }
+
+  // 5. ícones vivos: respiram (com atraso escalonado) e pulam no toque
+  var icones = document.querySelectorAll('.cf-ic, .cf-selos svg, .gc-ic, .op svg, .qd svg, .tq-ic, .cg-mk-logo, .checks li');
+  Array.prototype.forEach.call(icones, function (el, n) {
+    if (!el.classList.contains('cg-mk-logo') && !el.matches('.checks li')) { el.classList.add('t-ic'); el.style.setProperty('--td', (-(n % 7) * .55).toFixed(2) + 's'); }
+  });
+  document.addEventListener('pointerdown', function (e) {
+    var alvo = e.target.closest && e.target.closest('.cf-p, .cf-selos li, .gc, .op, .qd, .cg-robo-chat, .grav-bt');
+    if (!alvo) return;
+    var ic = alvo.querySelector('.t-ic') || alvo.querySelector('.cg-robo');
+    if (!ic) return;
+    ic.classList.remove('t-mexe'); void ic.getBoundingClientRect(); ic.classList.add('t-mexe');
+  }, { passive: true });
+  document.addEventListener('animationend', function (e) { if (e.animationName === 't-mexe') e.target.classList.remove('t-mexe'); });
+
+  // 6. entrada ao rolar: só o que começa abaixo da dobra (o que já está na tela não pisca)
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('t-visto'); io.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    var altura = window.innerHeight;
+    var entram = document.querySelectorAll('.ficha-bloco, .faq-lista details, .escolha a, .legal h2, .cg-cartao');
+    var grupo = null, ordem = 0;
+    Array.prototype.forEach.call(entram, function (el) {
+      if (el.getBoundingClientRect().top < altura) return;
+      if (el.parentElement !== grupo) { grupo = el.parentElement; ordem = 0; }
+      el.style.setProperty('--te', Math.min(ordem++, 5) * 70 + 'ms');
+      el.classList.add('t-entra'); io.observe(el);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.cg-robo-chat'), function (el) { io.observe(el); });
+  } else {
+    Array.prototype.forEach.call(document.querySelectorAll('.cg-robo-chat'), function (el) { el.classList.add('t-visto'); });
+  }
+
   if (!fino) return;
 
   // 2. robô que olha para o mouse (o do passo visível)
