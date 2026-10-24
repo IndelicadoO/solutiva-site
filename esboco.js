@@ -679,7 +679,7 @@
   addEventListener('pagehide', gSoltar);
 
   /* ---------- campos que ajudam a digitar ---------- */
-  // WhatsApp: (61) 99999-9999 enquanto digita (só números; tira o +55)
+  // WhatsApp: (DDD) 99999-9999 enquanto digita (só números; tira o +55)
   var zapIn = form.elements.whatsapp;
   zapIn.addEventListener('input', function () {
     var d = zapIn.value.replace(/\D/g, '');
