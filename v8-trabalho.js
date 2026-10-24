@@ -15,6 +15,7 @@
     clickgo: { n: '03', tipo: 'Vitrine', nome: 'ClickGo', desc: 'Este site: a vitrine, o formulário que pede a prévia, a página de acompanhamento e a sala do cliente.', tem: 'Prévia grátis, pagamento pelo Mercado Pago, sala do site com chat e mudanças', como: 'Site estático no Render + Cloudflare, sem script de fora além da medição; cabeçalhos de segurança (CSP)', link: 'https://clickgo.dev.br', img: 'assets/hero-poster.webp', w: 1280, h: 720, vt: 'trab-clickgo' },
     editorial: { n: '04', tipo: 'Exemplo (fictício)', nome: 'Modelo Editorial', desc: 'Demonstração do plano Completo, sob medida: barbearia fictícia "Alto da Serra" com abertura em vídeo, índice de serviços que revela a foto e transições entre seções. Não é cliente.', tem: 'Abertura em vídeo (só no computador), índice de serviços com duração, faixa que corre, equipe, horário com chamada para a agenda', como: 'HTML, CSS e 2 KB de JS próprios; só transform e opacity animam; Lighthouse mobile 100', link: 'exemplos/editorial-barbearia/', img: 'assets/port-editorial-desktop.webp', w: 1200, h: 750, vt: 'trab-editorial' }
   };
+  var pg = (location.pathname.split('/').pop() || 'trabalho-v8.html');
   var ordem = ['eah', 'orbix', 'clickgo', 'editorial'];
   var p = (new URLSearchParams(location.search).get('p') || '').toLowerCase();
   if (!T[p]) p = 'eah';
@@ -27,8 +28,8 @@
     g('t-tem').textContent = t.tem; g('t-como').textContent = t.como;
     var l = g('t-link'); l.textContent = t.link.replace(/^https?:\/\//, ''); l.href = t.link;
     var im = g('t-img'); im.src = t.img; im.width = t.w; im.height = t.h; im.alt = 'Tela do site ' + t.nome; im.style.viewTransitionName = t.vt;
-    var a = g('t-ant'); a.href = 'trabalho-v8.html?p=' + ordem[(i + ordem.length - 1) % ordem.length]; a.querySelector('b').textContent = ant.nome;
-    var x = g('t-prox'); x.href = 'trabalho-v8.html?p=' + ordem[(i + 1) % ordem.length]; x.querySelector('b').textContent = prox.nome;
+    var a = g('t-ant'); a.href = pg + '?p=' + ordem[(i + ordem.length - 1) % ordem.length]; a.querySelector('b').textContent = ant.nome;
+    var x = g('t-prox'); x.href = pg + '?p=' + ordem[(i + 1) % ordem.length]; x.querySelector('b').textContent = prox.nome;
   }
   // o script roda no <head>: espera o corpo existir, mas ANTES do primeiro quadro (DOMContentLoaded vem antes da pintura)
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pronto); else pronto();
