@@ -1,0 +1,17 @@
+/* ClickGo · extras antes da compra (início + formulário). Sólido, sem vidro/blur/brilho; movimento só transform/opacity. */
+.especial .esp-t { margin: 0 0 6px; font: 800 clamp(1.5rem, 4vw, 2.2rem)/1.1 'Bricolage Grotesque', system-ui, sans-serif; }
+.especial .esp-sub { margin: 0 0 18px; max-width: 46ch; opacity: .85; }
+.especial .esp-lista { min-height: 120px; }
+.especial:not([hidden]) .esp-lista { animation: esp-sobe .6s cubic-bezier(.16, 1, .3, 1) both; }
+
+#cg-form-extras { display: grid; gap: 8px; margin: 14px 0 6px; padding: 14px; border-radius: 16px; border: 1px solid var(--cg-linha-2, #33425c); background: var(--cg-sup-2, #141d2d); animation: esp-sobe .4s cubic-bezier(.16, 1, .3, 1) both; }
+.cfe-t { margin: 0; font-weight: 800; }
+.cfe-sub, .cfe-desc { margin: 0; font-size: .84rem; opacity: .8; }
+.cfe-desc { display: block; margin-top: 2px; }
+#cg-form-extras { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.cfe-op { margin: 0; min-width: 0; }
+.cfe-op > span:last-child { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.cfe-total { margin: 0; font-weight: 700; font-size: .9rem; color: var(--cg-destaque-claro, #9fe6ff); }
+.cfe-total:empty { display: none; }
+@keyframes esp-sobe { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .especial .esp-lista, #cg-form-extras { animation: none; } }

@@ -131,6 +131,8 @@
     sugestoes();
     // site no ar: a página vira a SALA DO SITE (sala.js)
     if (window.CGSala) window.CGSala.desenhar(r, { mandar: mandar, toast: toast });
+    // extras (vitrine, caixinhas antes do Pix), tela de mudança e "guarde este link": cg-sala-extras.js
+    if (window.CGSalaExtras) window.CGSalaExtras.desenhar(r, { mandar: mandar, toast: toast, copiar: copiarTexto });
     // sistema sob medida: a página vira a SALA DO PROJETO (projeto.js); nada de pacote, aprovar, editor ou Pix
     if (proj) {
       cta.hidden = true; $('pacotes').hidden = true; $('resumo-pac').hidden = true; $('aba-editor').hidden = true; $('ir-editar').hidden = true; $('pix').hidden = true;
@@ -200,7 +202,7 @@
     }).catch(function () { qrBuscando = ''; $('pix-qr-carregando').textContent = 'Use o código abaixo (copia e cola).'; });
   }
   function desenharPix(prep) {
-    var i = estado.info || {}, rest = !!(i.restanteLiberado && !i.publicado && !i.cancelado), mostra = rest || !!(i.pixLiberado && !i.sinalRecebido && !i.publicado && !i.cancelado);
+    var i = estado.info || {}, rest = !!(i.restanteLiberado && !i.publicado && !i.cancelado), ext = !!(i.publicado && Number(i.extraValor) > 0 && !i.cancelado), mostra = rest || ext || !!(i.pixLiberado && !i.sinalRecebido && !i.publicado && !i.cancelado);
     desenharAvisoPag();
     $('pix').hidden = !(mostra || prep);
     $('pix-preparando').hidden = mostra || !prep;
@@ -208,9 +210,9 @@
     $('pix-pronto').hidden = !mostra;
     if (prep && !mostra) { $('giro').hidden = true; $('status-t').textContent = 'Prévia aprovada!'; $('status-s').textContent = 'Obrigado! O pagamento do sinal aparece logo abaixo.'; }
     if (!mostra) return;
-    $('pix-titulo').textContent = rest ? 'Pague o restante e coloque o seu site no ar' : 'Pague o sinal e garanta o seu site';
-    $('pix-rotulo').textContent = rest ? 'Restante (50%)' : 'Sinal (50%)';
-    $('pix-garante-sinal').hidden = rest; $('pix-garante-restante').hidden = !rest;
+    $('pix-titulo').textContent = ext ? 'Pague o seu extra: ' + (i.extraNome || 'extra') : rest ? 'Pague o restante e coloque o seu site no ar' : 'Pague o sinal e garanta o seu site';
+    $('pix-rotulo').textContent = ext ? 'Extra (pagamento único)' : rest ? 'Restante (50%)' : 'Sinal (50%)';
+    $('pix-garante-sinal').hidden = rest || ext; $('pix-garante-restante').hidden = !rest;
     // 1º o e-mail (obrigatório: recibo e link da página); depois o Pix na página (QR + copia e cola); o cartão do MP fica
     // como opção secundária. Sem Pix (Mercado Pago desligado ou fora): o link do MP ou a chave Pix, como antes.
     var contato = !!i.precisaContato, pix = !contato && temPix(i);
@@ -228,7 +230,7 @@
     $('pix-nota').hidden = mp || pix || contato; $('pix-comprovante').hidden = mp || pix || contato;
     if (mp) $('pix-cartao-link').href = i.cartaoUrl;
     if (i.querCartao && !$('pix-cartao').disabled) { $('pix-cartao').disabled = true; $('pix-cartao').innerHTML = 'Pedido de cartão enviado. O link chega na conversa.'; }
-    var sinal = rest ? Number(i.restante) || 0 : Number(i.sinal) || 0, chave = String(i.pixChave || '');
+    var sinal = ext ? Number(i.extraValor) || 0 : rest ? Number(i.restante) || 0 : Number(i.sinal) || 0, chave = String(i.pixChave || '');
     $('pix-valor').parentNode.hidden = !sinal;
     $('pix-valor').textContent = brl2(sinal);
     $('pix-chave-box').hidden = mp || pix || contato || !chave; $('pix-sem').hidden = mp || pix || contato || !!chave;

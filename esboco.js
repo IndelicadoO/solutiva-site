@@ -871,7 +871,8 @@
       negocio: val('negocio'), ramo: val('ramo'), cidade: val('cidade'), tipo: oque() === 'cardapio' ? 'Cardápio digital' : 'site', quer: montarQuer(), servicos: projeto() ? '' : val('servicos'),
       cores: val('cores'), whatsapp: val('whatsapp'), email: val('email'), instagram: val('instagram'), site_url: val('site_url'), t0: t0, aceite: true, portfolio: !(form.elements.portfolio && !form.elements.portfolio.checked), fotos: oque() === 'cardapio' ? cardFotos.concat(fotos).slice(0, 3) : fotos,
       precisa: montarPrecisa(), turnstile: cf.token || undefined, audio: grav.dataUrl || undefined,
-      substitui: antigo && trocar ? { id: antigo.id, k: antigo.k } : undefined
+      substitui: antigo && trocar ? { id: antigo.id, k: antigo.k } : undefined,
+      extras: window.CGFormExtras ? window.CGFormExtras.ids() : undefined
     };
     var animacao = montando();
     var pedido = CG.chamar('/pedido', { metodo: 'POST', corpo: corpo });

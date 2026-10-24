@@ -1,0 +1,17 @@
+/* ClickGo · /entrar (código de 6 números). Sólido, sem vidro; movimento só transform/opacity. Base: /conectar/conectar.css */
+.en-form { display: grid; gap: 10px; margin-top: 18px; }
+.en-rot { font-size: .86rem; font-weight: 700; color: var(--txt); }
+.en-campo { width: 100%; min-height: 54px; padding: 0 16px; border-radius: 14px; border: 1px solid var(--linha); background: var(--sup-2); color: var(--txt); font: 500 1.04rem/1 'Onest', system-ui, sans-serif; transition: border-color .2s; }
+.en-campo:focus { border-color: var(--ac); outline: none; }
+.en-codigo { font: 800 1.6rem/1 var(--titulo); letter-spacing: .4em; text-align: center; }
+.en-cf { min-height: 0; }
+.en-link { margin-top: 14px; background: none; border: 0; padding: 6px 0; color: var(--ac-2); font: 500 .9rem/1.3 'Onest', sans-serif; text-decoration: underline; cursor: pointer; }
+.en-lista { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 10px; }
+.en-lista a { display: block; padding: 14px 16px; border-radius: 14px; background: var(--sup-2); border: 1px solid var(--linha); color: var(--txt); text-decoration: none; transition: transform .25s var(--mola); }
+.en-lista a:hover { transform: translateY(-2px); }
+.en-lista a:active { transform: scale(.98); }
+.en-lista b { display: block; font: 800 1.05rem/1.2 var(--titulo); }
+.en-lista small { color: var(--txt-2); }
+.en-treme { animation: en-treme .4s; }
+@keyframes en-treme { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@media (prefers-reduced-motion: reduce) { .en-lista a, .en-campo { transition: none; } .en-treme { animation: none; } }

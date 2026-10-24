@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entrar na sala do seu site | ClickGo</title>
+<meta name="description" content="Perdeu o link do seu pedido? Digite o seu WhatsApp ou e-mail e receba um código para entrar na sala do seu site.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#070b13">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Onest:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/conectar/conectar.css?v=1">
+<link rel="stylesheet" href="/entrar/entrar.css?v=1">
+</head>
+<body>
+<header class="cn-topo">
+  <a class="cn-marca" href="/" aria-label="ClickGo, início"><img src="/assets/logo-clickgo.webp" width="30" height="30" alt=""><span>Click<b>Go</b></span></a>
+</header>
+<main class="cn-wrap">
+  <section class="cn-cartao cn-entra" id="passo-1">
+    <p class="cn-rotulo">Entrar sem senha</p>
+    <h1>Abra a sala do seu site</h1>
+    <p class="cn-sub">Digite o WhatsApp ou o e-mail que você usou no pedido. Mandamos um código de 6 números.</p>
+    <form id="f-contato" class="en-form" novalidate>
+      <label class="en-rot" for="contato">WhatsApp com DDD ou e-mail</label>
+      <input class="en-campo" id="contato" name="contato" type="text" inputmode="email" autocomplete="email" maxlength="120" placeholder="(61) 99999-0000 ou voce@email.com" required>
+      <div id="cg-turnstile" class="en-cf" hidden></div>
+      <button class="cn-btn" id="b-codigo" type="submit">Receber o código</button>
+      <p class="cn-msg" id="m-contato" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section class="cn-cartao cn-entra" id="passo-2" hidden>
+    <p class="cn-rotulo">Quase lá</p>
+    <h1>Digite o código</h1>
+    <p class="cn-sub" id="enviado-para">Se esse contato tiver um pedido com a gente, o código chega em instantes. Ele vale 10 minutos.</p>
+    <form id="f-codigo" class="en-form" novalidate>
+      <label class="en-rot" for="codigo">Código de 6 números</label>
+      <input class="en-campo en-codigo" id="codigo" name="codigo" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="000000" required>
+      <button class="cn-btn" id="b-entrar" type="submit">Entrar</button>
+      <p class="cn-msg" id="m-codigo" role="status" aria-live="polite"></p>
+    </form>
+    <button class="en-link" id="b-outro" type="button">Usar outro contato ou pedir outro código</button>
+  </section>
+
+  <section class="cn-cartao cn-entra" id="passo-3" hidden>
+    <p class="cn-rotulo">Achamos</p>
+    <h1>Qual pedido você quer abrir?</h1>
+    <ul class="en-lista" id="lista"></ul>
+  </section>
+
+  <div class="cn-info cn-entra">
+    <p><b>Não chegou?</b> Confira o spam do e-mail. O código só vai para o contato que está no seu pedido.</p>
+    <p>Precisa de ajuda? <a href="mailto:contato@clickgo.dev.br">contato@clickgo.dev.br</a> · <a data-zap href="https://wa.me/5561984717809?text=Ol%C3%A1!%20Perdi%20o%20link%20do%20meu%20pedido%20na%20ClickGo." target="_blank" rel="noopener">WhatsApp (61) 98471-7809</a></p>
+  </div>
+</main>
+<script src="/cg-comum.js"></script>
+<script src="/entrar/entrar.js?v=1"></script>
+</body>
+</html>
