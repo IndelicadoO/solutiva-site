@@ -527,7 +527,7 @@
     }
     if (nome === 'zap') {
       var atual = zapAtual();
-      p.innerHTML = '<p class="cg-dica">Número dos botões de WhatsApp e telefone do site.</p><div style="display:flex;gap:8px;margin-bottom:10px"><input class="cg-entrada" inputmode="tel" placeholder="(61) 99999-9999"><button class="cg-btn cg-btn-linha cg-btn-mini" type="button">Trocar</button></div>';
+      p.innerHTML = '<p class="cg-dica">Número dos botões de WhatsApp e telefone do site.</p><div style="display:flex;gap:8px;margin-bottom:10px"><input class="cg-entrada" inputmode="tel" placeholder="(DDD) 99999-9999"><button class="cg-btn cg-btn-linha cg-btn-mini" type="button">Trocar</button></div>';
       var inp = p.querySelector('input'); inp.value = atual ? atual.replace(/^55/, '') : '';
       p.querySelector('button').onclick = function () {
         var d = inp.value.replace(/\D/g, '');
