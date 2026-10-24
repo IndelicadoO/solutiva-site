@@ -14,7 +14,7 @@
 <!-- fontes do Google sem travar a pintura (CSP sem inline: o v9.js cola o link; sem JS, o noscript) -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Instrument+Serif:ital@1&family=Onest:wght@400;500;700&display=swap" data-fontes>
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Instrument+Serif:ital@1&family=Onest:wght@400;500;700&display=swap"></noscript>
-<link rel="stylesheet" href="v9.css?v=p1">
+<link rel="stylesheet" href="v9.css?v=h1">
 </head>
 <body>
 <a class="skip" href="#inicio">Pular para o conteúdo</a>
@@ -32,8 +32,11 @@
 </header>
 
 <main id="inicio">
-  <!-- ABERTURA: animação própria em canvas ("site sendo montado", v9.js) atrás; tipografia gigante na frente -->
-  <section class="abre" aria-labelledby="h1">
+  <!-- HISTÓRIA: palco preso ao topo enquanto a página rola (~4 telas). A animação em canvas (v9.js) conta a ClickGo em
+       4 capítulos: o cardápio se monta → o pedido chega no WhatsApp → a agenda se preenche → o site no ar.
+       As legendas trocam por CSS scroll-driven (animation-timeline) com fallback por classe; movimento reduzido = quadros parados. -->
+  <section class="historia" id="historia" aria-labelledby="h1" data-cap="0" style="--p:0">
+   <div class="abre">
     <canvas class="abre-canvas" aria-hidden="true"></canvas>
     <div class="abre-txt">
       <p class="claq">Cardápio digital e site com agenda</p>
@@ -45,7 +48,15 @@
       </div>
       <p class="selo"><i aria-hidden="true"></i>Atendimento todo dia, 7h–22h</p>
     </div>
-    <a class="rolar" href="#cardapio" aria-label="Rolar para o cardápio digital"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+    <div class="caps">
+      <div class="cap" data-cap="1"><b>01</b><p class="cap-t">O cardápio se monta.</p><p>Categorias, itens e a foto do prato: o cliente abre pelo QR Code ou pelo link, sem instalar nada.</p></div>
+      <div class="cap" data-cap="2"><b>02</b><p class="cap-t">O pedido chega no seu WhatsApp.</p><p>Ele toca no +, confere e envia. Você recebe a mensagem pronta no seu celular.</p></div>
+      <div class="cap" data-cap="3"><b>03</b><p class="cap-t">A agenda se preenche sozinha.</p><p>Barbearia, salão ou clínica: o cliente escolhe dia e hora e o horário fica reservado.</p></div>
+      <div class="cap" data-cap="4"><b>04</b><p class="cap-t">Seu site no ar.</p><p>Prévia grátis antes, ajustes depois, e a gente publica no seu endereço.</p></div>
+    </div>
+    <div class="hist-barra" aria-hidden="true"><i></i><span data-n="0"></span><span data-n="1"></span><span data-n="2"></span><span data-n="3"></span><span data-n="4"></span></div>
+    <a class="rolar" href="#cardapio" aria-label="Rolar para o primeiro capítulo"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+   </div>
   </section>
 
   <!-- FAIXA GIGANTE em lima atravessando a tela (duas cópias) -->
@@ -72,11 +83,11 @@
           <div class="fone" role="group" aria-label="Demonstração interativa de um cardápio digital (exemplo fictício)">
             <div class="tela">
               <div class="tela-cab"><b>Forno da Vila</b><small>Exemplo fictício · aberto até 23h</small></div>
-              <div class="chips" role="tablist" aria-label="Categorias">
-                <button class="chip" type="button" role="tab" aria-pressed="true" data-cat="pizzas">Pizzas</button>
-                <button class="chip" type="button" role="tab" aria-pressed="false" data-cat="massas">Massas</button>
-                <button class="chip" type="button" role="tab" aria-pressed="false" data-cat="bebidas">Bebidas</button>
-                <button class="chip" type="button" role="tab" aria-pressed="false" data-cat="doces">Doces</button>
+              <div class="chips" aria-label="Categorias">
+                <button class="chip" type="button" aria-pressed="true" data-cat="pizzas">Pizzas</button>
+                <button class="chip" type="button" aria-pressed="false" data-cat="massas">Massas</button>
+                <button class="chip" type="button" aria-pressed="false" data-cat="bebidas">Bebidas</button>
+                <button class="chip" type="button" aria-pressed="false" data-cat="doces">Doces</button>
               </div>
               <div class="itens" id="itens" aria-live="polite"></div>
               <div class="carrinho" id="carrinho" aria-live="polite"><span><span class="n" id="carrinho-n">0</span>Ver pedido</span><span id="carrinho-t">R$ 0,00</span></div>
@@ -263,6 +274,6 @@
 
 <script src="pixel.js?v=2" defer></script>
 <script src="contato.js" defer></script>
-<script src="v9.js?v=p1" defer></script>
+<script src="v9.js?v=h1" defer></script>
 </body>
 </html>

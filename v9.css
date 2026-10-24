@@ -83,7 +83,48 @@ button { font: inherit; color: inherit; }
 .filtro, .chip, .dia, .hora { border-radius: 4px 4px 12px 4px !important; }
 
 /* ===== abertura v9: canvas próprio atrás ("site sendo montado", v9.js), tipografia gigante na frente ===== */
-.abre { position: relative; color: var(--abre-txt); min-height: 100vh; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; isolation: isolate; padding: 110px var(--gut) 44px; background: var(--abre-fundo); }
+/* a história: bloco alto (4 telas); o palco .abre fica preso ao topo e a animação avança conforme a rolagem */
+.historia { position: relative; height: 420vh; height: 420svh; background: var(--abre-fundo); view-timeline-name: --hist; view-timeline-axis: block; }
+.abre { position: sticky; top: 0; height: 100vh; height: 100svh; color: var(--abre-txt); display: flex; align-items: flex-end; overflow: hidden; isolation: isolate; padding: 110px var(--gut) 44px; background: var(--abre-fundo); }
+/* capítulo 0 (título) some quando a história começa; legendas 1–4 entram e saem; barra de progresso embaixo */
+.abre-txt { position: relative; z-index: 1; }
+.caps { position: absolute; left: var(--gut); right: var(--gut); bottom: 56px; pointer-events: none; }
+.cap { position: absolute; left: 0; bottom: 0; max-width: 40ch; opacity: 0; transform: translateY(24px); }
+.cap b { display: inline-block; font: 700 .8rem/1 'Onest', sans-serif; letter-spacing: .14em; color: var(--abre-ac); margin-bottom: 14px; }
+.cap b::before { content: ''; display: inline-block; width: 26px; height: 2px; background: var(--abre-ac); vertical-align: middle; margin-right: 10px; }
+.cap .cap-t { font: 800 clamp(1.7rem, 4.2vw, 3rem)/1 var(--titulo); letter-spacing: -.03em; text-wrap: balance; }
+.cap p { margin-top: 12px; color: var(--abre-txt-2); font-size: 1.05rem; max-width: 36ch; text-wrap: pretty; }
+.hist-barra { position: absolute; left: var(--gut); right: var(--gut); bottom: 22px; height: 2px; background: var(--abre-sup); }
+.hist-barra i { position: absolute; inset: 0; background: var(--abre-ac); transform-origin: left; transform: scaleX(var(--p, 0)); }
+.hist-barra span { position: absolute; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--abre-sup); border: 2px solid var(--abre-txt-2); transform: translateX(-50%); }
+.hist-barra span[data-n="0"] { left: 0; } .hist-barra span[data-n="1"] { left: 12%; } .hist-barra span[data-n="2"] { left: 36%; } .hist-barra span[data-n="3"] { left: 58%; } .hist-barra span[data-n="4"] { left: 80%; }
+.historia[data-cap="1"] span[data-n="1"], .historia[data-cap="2"] span[data-n="2"], .historia[data-cap="3"] span[data-n="3"], .historia[data-cap="4"] span[data-n="4"], .hist-barra span[data-n="0"] { background: var(--abre-ac); border-color: var(--abre-ac); }
+.historia:not([data-cap="0"]) .abre-txt { pointer-events: none; }
+.historia:not([data-cap="0"]) .rolar { opacity: 0; pointer-events: none; }
+.rolar { transition: opacity .3s; }
+@media (prefers-reduced-motion: no-preference) {
+  /* com suporte: a rolagem move as legendas (sem JS no meio); sem suporte: o v9.js põe data-cap e as transições fazem a troca */
+  @supports (animation-timeline: view()) {
+    .abre-txt { animation: hist-some linear both; animation-timeline: --hist; animation-range: contain 3% contain 11%; }
+    .cap { animation: hist-cap linear both; animation-timeline: --hist; }
+    .cap[data-cap="1"] { animation-range: contain 10% contain 36%; }
+    .cap[data-cap="2"] { animation-range: contain 34% contain 58%; }
+    .cap[data-cap="3"] { animation-range: contain 56% contain 80%; }
+    .cap[data-cap="4"] { animation-range: contain 78% contain 100%; animation-name: hist-cap-fim; }
+  }
+  @supports not (animation-timeline: view()) {
+    .abre-txt, .cap { transition: opacity .45s, transform .6s var(--mola); }
+    .historia:not([data-cap="0"]) .abre-txt { opacity: 0; transform: translateY(-24px); }
+    .historia[data-cap="1"] .cap[data-cap="1"], .historia[data-cap="2"] .cap[data-cap="2"], .historia[data-cap="3"] .cap[data-cap="3"], .historia[data-cap="4"] .cap[data-cap="4"] { opacity: 1; transform: none; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .historia:not([data-cap="0"]) .abre-txt { opacity: 0; }
+  .historia[data-cap="1"] .cap[data-cap="1"], .historia[data-cap="2"] .cap[data-cap="2"], .historia[data-cap="3"] .cap[data-cap="3"], .historia[data-cap="4"] .cap[data-cap="4"] { opacity: 1; transform: none; }
+}
+@keyframes hist-some { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-24px); } }
+@keyframes hist-cap { 0% { opacity: 0; transform: translateY(24px); } 18% { opacity: 1; transform: none; } 82% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-16px); } }
+@keyframes hist-cap-fim { 0% { opacity: 0; transform: translateY(24px); } 18% { opacity: 1; transform: none; } 100% { opacity: 1; transform: none; } }
 /* a abertura é escura: tokens próprios para texto, destaque e botões */
 .abre .claq, .abre h1 em { color: var(--abre-ac); } .abre .claq::before { background: var(--abre-ac); } .abre h1 .oco { -webkit-text-stroke-color: var(--abre-ac); }
 .abre .sub, .abre .selo { color: var(--abre-txt-2); }
@@ -99,7 +140,7 @@ button { font: inherit; color: inherit; }
 .claq { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px; font: 700 .8rem/1 'Onest', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--ac); }
 .claq::before { content: ''; width: 26px; height: 2px; background: var(--ac); transform-origin: left; animation: v8-cresce .9s var(--mola) both; }
 h1 { font: 800 clamp(2.5rem, 9vw, 6.4rem)/.92 var(--titulo); letter-spacing: -.045em; max-width: 12ch; text-wrap: balance; }
-@media (min-width: 900px) { h1 { font-size: clamp(3.4rem, 6.6vw, 6.4rem); } }
+@media (min-width: 900px) { h1 { font-size: clamp(3rem, 5.3vw, 5.4rem); } }
 h1 em, h2 em { font: italic 400 1.04em var(--serifa); color: var(--ac); letter-spacing: 0; }
 h1 .oco { color: transparent; -webkit-text-stroke: 2px var(--ac); }
 @supports not (-webkit-text-stroke: 2px #000) { h1 .oco { color: var(--ac); } }
@@ -111,7 +152,8 @@ h1 .oco { color: transparent; -webkit-text-stroke: 2px var(--ac); }
 .selo i { width: 8px; height: 8px; border-radius: 50%; background: var(--zap); animation: v8-pulsa 2.4s ease-in-out infinite; }
 .rolar { position: absolute; right: var(--gut); bottom: 44px; display: none; width: 46px; height: 46px; border: 2px solid var(--txt); border-radius: 4px 4px 14px 4px; box-shadow: 3px 3px 0 var(--ac); color: var(--txt); text-decoration: none; place-items: center; background: var(--fundo); }
 .rolar svg { width: 18px; height: 18px; animation: v8-desce 1.8s ease-in-out infinite; }
-@media (min-width: 900px) { .rolar { display: grid; } .abre-txt { padding-right: 44%; } }
+@media (min-width: 900px) { .rolar { display: grid; } .abre-txt { padding-right: 50%; } .cap { max-width: 44ch; } }
+@media (max-width: 899px) { .cap .cap-t { font-size: clamp(1.6rem, 7.5vw, 2.2rem); } .cap p { font-size: .98rem; max-width: calc(100% - 96px); } .abre-txt { background: var(--abre-fundo); padding-top: 14px; } }
 
 /* faixa que corre (marquee): só transform; para no hover e no movimento reduzido */
 .fita { overflow: hidden; border-top: 1px solid var(--linha); border-bottom: 1px solid var(--linha); background: var(--sup); padding: 14px 0; }
@@ -303,6 +345,7 @@ h2 { font: 800 clamp(1.8rem, 4.6vw, 3.4rem)/1.02 var(--titulo); letter-spacing: 
 .rv { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
+    .sec-n { animation: v9-paralaxe linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
     .rv { animation: v8-rv linear both; animation-timeline: view(); animation-range: entry 0% entry 38%; }
     .trilha::before { animation: v8-cresce linear both; animation-timeline: view(); animation-range: entry 20% cover 55%; }
   }
@@ -313,6 +356,7 @@ h2 { font: 800 clamp(1.8rem, 4.6vw, 3.4rem)/1.02 var(--titulo); letter-spacing: 
     .js .trilha.in::before { transform: none; }
   }
 }
+@keyframes v9-paralaxe { from { transform: translateY(120px); } to { transform: translateY(-160px); } }
 @keyframes v8-rv { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
 @keyframes v8-sobe { to { transform: translateY(0); } }
 @keyframes v8-sobe-p { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -326,9 +370,7 @@ h2 { font: 800 clamp(1.8rem, 4.6vw, 3.4rem)/1.02 var(--titulo); letter-spacing: 
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .palavra > span { transform: none; }
   .carrinho, .confirma, .flut { transition: none; }
-  .abre-fundo video { display: none; }
 }
-@media (prefers-reduced-data: reduce) { .abre-fundo video { display: none; } }
 
 
 /* ===== v9: faixa GIGANTE em lima atravessando a tela (duas cópias + translateX(-50%); para no hover) ===== */
