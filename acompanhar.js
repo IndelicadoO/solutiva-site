@@ -405,6 +405,8 @@
       if (!r.appOnline) toast('Mensagem guardada. A resposta chega aqui em breve.');
     }).catch(function (e) { if (ehSumiu(e)) pedidoSumiu(); else toast(e.message); throw e; }).finally(function () { enviando = false; });
   }
+  // áudio na conversa (cg-chat-audio.js): grava, manda como "audio" e o robô responde à transcrição
+  if (window.CGChatAudio) window.CGChatAudio.ligar({ mandar: mandar, toast: toast });
   $('ver-de-novo').onclick = function () {
     var b = this; b.disabled = true; b.textContent = 'Publicando de novo…';
     mandar('', { tipo: 'reabrir' }).then(function () { toast('Pronto! Em instantes a prévia volta aqui, por mais 24 horas.'); }).catch(function () {}).finally(function () { setTimeout(function () { b.disabled = false; b.textContent = 'Ver a prévia de novo'; }, 8000); });

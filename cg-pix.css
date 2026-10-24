@@ -53,4 +53,18 @@
 .cg-fase-sinal p b { display: inline-block; width: 1.2em; color: #3ddc84; }
 .cg-fase-sinal p span { color: var(--txt-2); }
 
+/* áudio na conversa: microfone no acento tomate (único lugar dele), barra de gravação sólida no lugar do campo de texto */
+.cg-chat-mic { background: var(--t-tomate, #d9775f); color: #1b0b06; }
+.cg-chat-mic[aria-pressed="true"] { background: var(--t-tomate-escuro, #8c3f2f); color: #fff; }
+.cg-envio.gravando textarea, .cg-envio.gravando .cg-anexo, .cg-envio.gravando .cg-enviar, .cg-envio.gravando .cg-chat-mic { display: none; }
+.cg-chat-grav { flex: 1; display: flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 6px 0 14px; border-radius: 14px; border: 2px solid var(--t-tomate, #d9775f); background: var(--sup, #0b111c); font-variant-numeric: tabular-nums; }
+.cg-chat-grav[hidden] { display: none; }
+.cg-chat-grav small { color: var(--txt-2); }
+.cg-chat-grav-ponto { width: 10px; height: 10px; border-radius: 50%; background: var(--t-tomate, #d9775f); animation: cgGravPisca 1s ease-in-out infinite; }
+@keyframes cgGravPisca { 50% { opacity: .25; } }
+.cg-chat-grav-x { margin-left: auto; padding: 8px 10px; border: 0; background: none; color: var(--txt-2); font: inherit; font-size: .86rem; cursor: pointer; }
+.cg-chat-grav-ok { padding: 8px 12px; border-radius: 12px; border: 2px solid #15863f; background: #1fae5b; color: #fff; font: inherit; font-weight: 700; font-size: .86rem; cursor: pointer; box-shadow: 3px 3px 0 #0d4f27; }
+.cg-chat-grav-ok:active { transform: translate(3px, 3px); box-shadow: 0 0 0 transparent; }
+
+@media (prefers-reduced-motion: reduce) { .cg-chat-grav-ponto { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .cg-pix-qr, .cg-pac-dif span, .cg-zap-duvida a.cg-zap-btn, .cg-fase-sinal, .cg-seta-previa, .cg-seta-previa i { animation: none; transition: none; } }
