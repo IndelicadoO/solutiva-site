@@ -376,7 +376,7 @@
     $('ed-painel').innerHTML = '<p class="cg-dica">Carregando o seu site para editar…</p>';
     fetch(estado.previaUrl + (estado.previaUrl.indexOf('?') < 0 ? '?' : '&') + 'e=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (html) {
       var base = '<base href="' + estado.previaUrl.replace(/"/g, '') + '">';
-      var estilo = '<style id="cg-editor">[data-cg-alvo]{outline:2px dashed #3fd2ff!important;outline-offset:3px;cursor:pointer}[contenteditable]{outline:3px solid #34e0c0!important;outline-offset:3px;background:rgba(52,224,192,.08)}html{scroll-behavior:smooth}</style>';
+      var estilo = '<style id="cg-editor">[data-cg-alvo]{outline:2px dashed #3fd2ff!important;outline-offset:3px;cursor:pointer}[contenteditable]{outline:3px solid #4c8df6!important;outline-offset:3px;background:rgba(76,141,246,.08)}html{scroll-behavior:smooth}</style>';
       html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, function (m) { return m + base + estilo; }) : base + estilo + html;
       var f = $('ed-frame');
       // auditoria 23/10/2026: a prévia editada nunca roda script aqui dentro (mesma origem da página do pedido). O editor só

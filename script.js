@@ -308,7 +308,7 @@ const CONTATO = {
   var ctx = cv && cv.getContext('2d');
   if (!ctx) return;
   var W = 0, H = 0, DPR = 1, small = false, tris = [];
-  var COR = ['63,210,255', '58,134,255', '166,230,255', '52,224,192', '154,146,255'];
+  var COR = ['63,210,255', '76,141,246', '159,230,255']; // paleta única (cg-cores.css, 24/10/2026)
   function rnd(a, b) { return a + Math.random() * (b - a); }
 
   function resize() {

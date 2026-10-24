@@ -1,0 +1,44 @@
+/* ClickGo: PALETA ÚNICA do site (24/10/2026; dono: "cores legais, não colorido, cores boas que conversam entre si").
+   Base neutra (noite) + 1 cor de marca (o azul do robô) + 1 de destaque (o ciano dos olhos do robô). Nada de verde-água,
+   lilás ou céu como cores próprias: viram marca/destaque. Contraste AA conferido nos 4 fundos (texto 3 = 5,4:1 no mais claro).
+   Vem por ÚLTIMO em todas as páginas (início, /esboco/, /acompanhar/, privacidade, termos, exclusão) e reaponta as variáveis
+   antigas de cada CSS para estes tokens, sem reescrever os arquivos. Erro (vermelho suave) é só para aviso de campo. */
+:root {
+  /* base neutra */
+  --cg-fundo: #070b13;
+  --cg-sup: #0e1522;
+  --cg-sup-2: #141d2d;
+  --cg-sup-3: #1b2638;
+  --cg-linha: #232f44;
+  --cg-linha-2: #33425c;
+  --cg-txt: #eef2f8;
+  --cg-txt-2: #aab6ca;
+  --cg-txt-3: #8d9ab2;
+  /* marca: azul do robô */
+  --cg-marca: #4c8df6;
+  --cg-marca-forte: #2d6be0;
+  --cg-marca-fraca: rgba(76, 141, 246, .14);
+  /* destaque: ciano dos olhos do robô (botão principal, seleção, foco, progresso) */
+  --cg-destaque: #3fd2ff;
+  --cg-destaque-claro: #9fe6ff;
+  --cg-destaque-fraco: rgba(63, 210, 255, .12);
+  --cg-tinta: #04131c;
+  /* aviso de campo */
+  --cg-erro: #ff8a9b;
+
+  /* nomes antigos -> tokens (style.css, v5/v6/v7, sem-vidro, cg-form, esboco) */
+  --bg: var(--cg-fundo); --bg-2: var(--cg-sup); --preto: var(--cg-fundo); --noite: var(--cg-fundo);
+  --cartao: var(--cg-sup); --cartao-2: var(--cg-sup-2); --card: var(--cg-sup); --card-borda: var(--cg-linha);
+  --sup: var(--cg-sup); --sup-2: var(--cg-sup-2); --sup-3: var(--cg-sup-3); --vidro: var(--cg-sup);
+  --cf-sup: var(--cg-sup); --cf-linha: var(--cg-linha);
+  --linha: var(--cg-linha); --linha-2: var(--cg-linha-2); --linha-s: var(--cg-linha);
+  --borda: var(--cg-linha); --borda-2: var(--cg-linha-2); --borda-3: #4a5b78; --borda-forte: var(--cg-linha-2);
+  --txt: var(--cg-txt); --txt-2: var(--cg-txt-2); --txt-3: var(--cg-txt-3);
+  --ciano: var(--cg-destaque); --ac: var(--cg-destaque); --ac-fraco: var(--cg-destaque-fraco); --ceu: var(--cg-destaque-claro);
+  --agua: var(--cg-destaque); --ok: var(--cg-destaque);
+  --azul: var(--cg-marca); --violeta: var(--cg-marca); --lilas: var(--cg-marca);
+  --tinta: var(--cg-tinta); --erro: var(--cg-erro);
+  color-scheme: dark;
+}
+html, body { background-color: var(--cg-fundo); }
+::selection { background: var(--cg-marca-forte); color: #fff; }

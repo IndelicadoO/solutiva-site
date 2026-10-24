@@ -1,30 +1,30 @@
 /* ClickGo v7: minimalista. Fundo escuro, um acento ciano, tipografia forte, muito respiro, movimento discreto.
    Este arquivo vem depois do v5.css e o deixa mais limpo; as seções novas (fita de vídeos, mapa, animações) moram aqui. */
 :root {
-  --ac: #4cc9ff;
-  --ac-fraco: rgba(76, 201, 255, .14);
+  --ac: #3fd2ff;
+  --ac-fraco: rgba(63, 210, 255, .14);
   --linha: rgba(236, 247, 255, .1);
   --linha-2: rgba(236, 247, 255, .18);
-  --cartao: #070c16;
+  --cartao: #070b13;
 }
 
 /* ===== limpeza geral do v5 ===== */
 .grande em, h1 em { background: none; -webkit-text-fill-color: currentColor; color: var(--ac); }
 .medio em { color: var(--ac); }
-.btn-prim, .flutuante { color: #021019; background: var(--ac); box-shadow: none; }
-.btn-prim:hover { box-shadow: none; transform: translateY(-1px); background: #7ad8ff; }
+.btn-prim, .flutuante { color: #04131c; background: var(--ac); box-shadow: none; }
+.btn-prim:hover { box-shadow: none; transform: translateY(-1px); background: #7fdfff; }
 .btn-linha:hover { border-color: var(--ac); }
 .slate { color: var(--txt-2); }
-.slate b { color: var(--ac); background: transparent; border: 1px solid rgba(76, 201, 255, .45); }
+.slate b { color: var(--ac); background: transparent; border: 1px solid rgba(63, 210, 255, .45); }
 .claquete { color: var(--ac); }
-.escolha b { background: transparent; color: var(--ac); border: 1px solid rgba(76, 201, 255, .45); }
-.escolha a { background: rgba(2, 5, 12, .7); border-color: var(--linha-2); }
-.escolha a:hover { background: rgba(2, 5, 12, .85); border-color: var(--ac); }
+.escolha b { background: transparent; color: var(--ac); border: 1px solid rgba(63, 210, 255, .45); }
+.escolha a { background: rgba(7, 11, 19, .7); border-color: var(--linha-2); }
+.escolha a:hover { background: rgba(7, 11, 19, .85); border-color: var(--ac); }
 .checks li::before { background: var(--ac); }
 .linha-tempo b, .checks b, .btn-texto { color: var(--ac); }
 .ficha-bloco, .conversa, .tela { background: var(--cartao); border-color: var(--linha); }
 .ficha-bloco h3 { color: var(--ac); }
-.b.bot { background: var(--ac-fraco); border-color: rgba(76, 201, 255, .3); }
+.b.bot { background: var(--ac-fraco); border-color: rgba(63, 210, 255, .3); }
 .b.cli { background: rgba(236, 247, 255, .07); }
 .tela:hover { border-color: var(--linha-2); transform: none; }
 /* menos efeito: sem o "corte" de cena, vídeo de fundo mais calmo, entrada curta */
@@ -54,7 +54,7 @@
 /* o vídeo não recebe o mouse: assim o navegador não desenha o botão de "picture-in-picture"/tela cheia por cima do clipe */
 .rcard video, .vcard video { pointer-events: none; }
 .rcard video { display: block; width: 100%; height: 100%; object-fit: cover; }
-.rcard figcaption { position: absolute; left: 10px; bottom: 10px; padding: 5px 9px; border-radius: 999px; font: 600 .66rem/1 ui-monospace, Consolas, monospace; letter-spacing: .06em; color: var(--txt); background: rgba(2, 5, 12, .72); backdrop-filter: blur(6px); white-space: nowrap; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; }
+.rcard figcaption { position: absolute; left: 10px; bottom: 10px; padding: 5px 9px; border-radius: 999px; font: 600 .66rem/1 ui-monospace, Consolas, monospace; letter-spacing: .06em; color: var(--txt); background: rgba(7, 11, 19, .72); backdrop-filter: blur(6px); white-space: nowrap; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 699px) { .rcard figcaption { left: 8px; bottom: 8px; padding: 4px 7px; font-size: .58rem; letter-spacing: .02em; max-width: calc(100% - 16px); } }
 .v7-leg { margin-top: 22px; }
 /* sem animação: a fita vira uma faixa que se arrasta */
@@ -70,7 +70,7 @@ html:not(.js-reel) .reel { overflow-x: auto; -webkit-mask-image: none; mask-imag
 .vgrade { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 22px; }
 .vcard { position: relative; margin: 0; border-radius: 12px; overflow: hidden; background: #000; border: 1px solid var(--linha); aspect-ratio: 9 / 16; }
 .vcard video { width: 100%; height: 100%; object-fit: cover; }
-.vcard::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 62%, rgba(2, 5, 12, .9)); }
+.vcard::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 62%, rgba(7, 11, 19, .9)); }
 .vcard figcaption { position: absolute; left: 10px; right: 10px; bottom: 8px; z-index: 1; display: grid; }
 .vcard figcaption b { font: 700 .85rem/1.2 var(--titulo); }
 .vcard figcaption span { font-size: .74rem; color: var(--txt-2); }
@@ -99,7 +99,7 @@ html:not(.js-reel) .reel { overflow-x: auto; -webkit-mask-image: none; mask-imag
 .mapa.nivel2 .m-n2 { opacity: 1; pointer-events: auto; }
 .m-no { cursor: pointer; }
 .m-toque { fill: transparent; }
-.m-pulso { fill: #bdf0ff; filter: drop-shadow(0 0 4px var(--ac)); }
+.m-pulso { fill: #9fe6ff; filter: drop-shadow(0 0 4px var(--ac)); }
 .m-pulso.volta { fill: var(--ac); }
 .parado .m-pulsos { display: none; }
 .m-ramo { fill: none; stroke: var(--ac); stroke-width: 1.4; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: .8; }
@@ -116,7 +116,7 @@ html:not(.js-reel) .reel { overflow-x: auto; -webkit-mask-image: none; mask-imag
 .sis-lista > div.ativo dt { color: var(--ac); }
 .galhos { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .galhos li { font-size: .78rem; line-height: 1.2; padding: 4px 10px; border: 1px solid var(--linha-2); border-radius: 999px; color: var(--txt-2); transition: border-color .2s, color .2s; }
-.sis-lista > div.ativo .galhos li { border-color: rgba(76, 201, 255, .5); color: var(--txt); }
+.sis-lista > div.ativo .galhos li { border-color: rgba(63, 210, 255, .5); color: var(--txt); }
 .sis-lista { margin: 0; display: grid; }
 .sis-lista > div { display: grid; grid-template-columns: 9.5em 1fr; gap: 4px 20px; padding: 16px 0; border-top: 1px solid var(--linha); }
 .sis-lista > div:last-child { border-bottom: 1px solid var(--linha); }
@@ -146,10 +146,10 @@ html:not(.js-reel) .reel { overflow-x: auto; -webkit-mask-image: none; mask-imag
 
 /* 21/10/2026: venda puxada para o CARDÁPIO DIGITAL e para a velocidade (esboço em ~1 min) */
 .abertura h1.h1-rapido { font-size: clamp(2.6rem, 8.6vw, 7.6rem); }
-.btn-sec { color: var(--txt); border: 1px solid var(--borda); background: rgba(2, 5, 12, .6); }
+.btn-sec { color: var(--txt); border: 1px solid var(--borda); background: rgba(7, 11, 19, .6); }
 .btn-sec:hover { border-color: var(--ciano); transform: translateY(-2px); }
 .selo-atend { display: inline-flex; align-items: center; gap: 9px; margin-top: 18px; font-size: .92rem; color: var(--txt-2); }
-.selo-atend span { width: 8px; height: 8px; border-radius: 50%; background: var(--agua); box-shadow: 0 0 0 4px rgba(52, 224, 192, .18); }
+.selo-atend span { width: 8px; height: 8px; border-radius: 50%; background: var(--agua); box-shadow: 0 0 0 4px rgba(63, 210, 255, .18); }
 .cd9 { display: grid; gap: 40px; margin-top: 8px; }
 @media (min-width: 900px) { .cd9 { grid-template-columns: 1.15fr 1fr; gap: 64px; align-items: start; } }
 .cd9-preco { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin: 26px 0 10px; }
