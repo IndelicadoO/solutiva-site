@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Onest:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/conectar/conectar.css?v=1">
+<link rel="stylesheet" href="/conectar/conectar.css?v=2">
 </head>
 <body>
 <header class="cn-topo">
@@ -26,10 +26,12 @@
     <p class="cn-sub">Leva uns 5 minutos e só você consegue fazer, porque o número é seu.</p>
     <ol class="cn-lista">
       <li><b>Entre com o Facebook da empresa</b> (o mesmo da página ou do Instagram do negócio).</li>
-      <li><b>Escolha o número</b> do WhatsApp do negócio e confirme o código que chega por SMS ou ligação.</li>
+      <li><b>Escolha o número</b> do negócio. Se ele já está no app WhatsApp Business do celular, a Meta mostra um código para você confirmar no app; se for um número novo, o código chega por SMS ou ligação.</li>
       <li><b>Pronto.</b> Volte para a conversa com a ClickGo e diga "pronto".</li>
     </ol>
-    <button type="button" class="cn-btn" id="conectar" disabled>Conectar meu WhatsApp</button>
+    <button type="button" class="cn-btn" id="conectar" disabled>Conectar e continuar no app do celular</button>
+    <button type="button" class="cn-btn cn-btn-2" id="conectar-novo" disabled>Usar um número novo, só para o robô</button>
+    <p class="cn-dica">O primeiro mantém o seu WhatsApp Business funcionando no celular (versão 2.24.17 ou mais nova). O segundo é para um número que não está em nenhum app.</p>
     <p class="cn-msg" id="msg" role="status" aria-live="polite"></p>
   </section>
   <section class="cn-cartao cn-entra" id="feito" hidden>
@@ -40,10 +42,11 @@
   <section class="cn-info cn-entra">
     <p><b>API oficial da Meta.</b> A conta do WhatsApp continua sua; você pode tirar o acesso da ClickGo quando quiser, no Gerenciador de Negócios do Facebook.</p>
     <p><b>Horário.</b> Por enquanto o robô responde das 7h às 22h; o que chegar de madrugada ele responde a partir das 7h.</p>
-    <p><b>Custo da Meta.</b> As conversas que a Meta cobra são pagas por você, com a forma de pagamento cadastrada no seu Gerenciador do WhatsApp. Responder quem escreveu primeiro costuma ser grátis.</p>
+    <p><b>Custo da Meta.</b> Responder quem chamou o seu negócio é grátis. Mensagem que o seu negócio manda primeiro (lembrete, promoção) é cobrada pela Meta, no cartão que você cadastrar no Gerenciador do WhatsApp. O que você manda pelo app do celular continua grátis.</p>
+    <p><b>No app do celular.</b> Conversas e contatos continuam lá. Grupos não entram no robô, e o WhatsApp no computador (Windows) é desconectado.</p>
     <p>Dúvidas: <a href="https://wa.me/5561984717809" target="_blank" rel="noopener">fale com a ClickGo</a> · <a href="/termos.html#robo">termos</a> · <a href="/privacidade.html">privacidade</a></p>
   </section>
 </main>
-<script src="/conectar/conectar.js?v=1" defer></script>
+<script src="/conectar/conectar.js?v=2" defer></script>
 </body>
 </html>

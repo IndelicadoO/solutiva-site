@@ -35,6 +35,9 @@ a { color: var(--ac-2); }
 .cn-btn:hover:not(:disabled) { transform: translateY(-2px); background: var(--ac-2); }
 .cn-btn:active:not(:disabled) { transform: translateY(0) scale(.98); }
 .cn-btn:disabled { opacity: .5; cursor: wait; }
+.cn-btn-2 { margin-top: 10px; background: transparent; color: var(--txt); border: 1px solid var(--linha); min-height: 48px; font-size: .95rem; }
+.cn-btn-2:hover:not(:disabled) { background: var(--sup-2); }
+.cn-dica { margin: 14px 0 0; font-size: .84rem; color: var(--txt-2); text-align: center; }
 .cn-msg { min-height: 1.4em; margin-top: 12px; font-size: .9rem; color: var(--txt-2); text-align: center; }
 .cn-msg.erro { color: var(--erro); }
 
