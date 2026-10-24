@@ -1,0 +1,56 @@
+/* ClickGo: Pix na página do pedido (QR Code + copia e cola) e comparação dos pacotes. Sólido, sem vidro/blur; anima só
+   transform/opacity e respeita prefers-reduced-motion. */
+.cg-pix-cinza { display: block; color: var(--txt-2); font-size: .86rem; }
+.cg-pix-contato { display: grid; gap: 8px; padding: 12px 0; }
+.cg-pix-contato b { font-size: 1rem; }
+.cg-pix-contato label { font-size: .82rem; color: var(--txt-2); margin-top: 4px; }
+.cg-pix-contato input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--borda); background: var(--sup, #0b111c); color: var(--txt); font: inherit; font-size: 1rem; }
+.cg-pix-contato input:focus { outline: 2px solid var(--agua); outline-offset: 1px; }
+.cg-pix-erro { margin: 0; color: #ff8a8a; font-size: .86rem; }
+.cg-pix-qr { display: grid; gap: 10px; padding: 12px 0; justify-items: center; text-align: center; animation: cgPixEntra .35s ease-out both; }
+.cg-pix-qr-img { display: grid; place-items: center; width: 236px; height: 236px; border-radius: 16px; background: #fff; }
+.cg-pix-qr-img img { width: 220px; height: 220px; image-rendering: pixelated; }
+.cg-pix-qr-img span { color: #3a4556; font-size: .86rem; padding: 0 16px; }
+.cg-pix-qr code { display: block; width: 100%; max-height: 6.2em; overflow: auto; padding: 10px 12px; border-radius: 12px; background: var(--sup, #0b111c); border: 1px solid var(--borda); font-size: .78rem; text-align: left; word-break: break-all; user-select: all; }
+.cg-pix-espera { display: flex; align-items: center; gap: 8px; margin: 2px 0 0; color: var(--txt-2); font-size: .86rem; }
+.cg-pix-espera .cg-giro { width: 16px; height: 16px; flex: none; }
+.cg-pix-mp.secundario { background: none; color: var(--agua); border: 1px solid var(--borda); box-shadow: none; }
+@keyframes cgPixEntra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* pacotes: o que o maior tem a mais fica marcado; o menor mostra o que fica de fora */
+.cg-pac-mais { margin: 0; font-size: .8rem; font-weight: 700; color: var(--agua); }
+.cg-pac ul li.novo { color: var(--txt); font-weight: 600; }
+.cg-pac ul li.novo::before { content: '+'; font-weight: 800; font-size: 1.05em; }
+.cg-pac ul li.falta { color: var(--txt-2); opacity: .55; text-decoration: line-through; text-decoration-thickness: 1px; }
+.cg-pac ul li.falta::before { content: '–'; color: var(--txt-3, #6b778c); }
+.cg-pac ul li.falta-nota { padding-left: 0; font-size: .78rem; color: var(--txt-3, #8a96ab); }
+.cg-pac ul li.falta-nota::before { content: none; }
+.cg-pac-dif { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+.cg-pac-dif span { font-size: .76rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; color: var(--agua); border: 1px solid var(--agua); animation: cgPixEntra .3s ease-out both; }
+.cg-pac-dif b { width: 100%; font-size: .84rem; color: var(--txt-2); font-weight: 500; }
+
+/* "Dúvida? Chama no WhatsApp" (dono 24/10/2026): botão SÓLIDO verde com ícone, no topo (visível sem rolar no celular),
+   no estilo tátil: borda 2px, sombra sólida deslocada sem desfoque, afunda ao tocar. */
+.cg-zap-duvida { margin: 10px 0 0; }
+.cg-zap-duvida a.cg-zap-btn { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 10px 18px 10px 14px; border-radius: 16px; background: #1fae5b; color: #fff; border: 2px solid #15863f; box-shadow: 4px 4px 0 #0d4f27; font-weight: 700; font-size: .98rem; text-decoration: none; -webkit-tap-highlight-color: transparent; transition: transform .18s var(--t-mola, ease), box-shadow .18s ease; }
+.cg-zap-duvida a.cg-zap-btn:hover { color: #fff; transform: translate(-1px, -1px); }
+.cg-zap-duvida a.cg-zap-btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 transparent; }
+.cg-zap-duvida a.cg-zap-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.cg-zap-btn svg { flex: none; }
+.cg-zap-btn small { font-weight: 500; font-size: .8rem; opacity: .9; }
+@media (max-width: 420px) { .cg-zap-duvida a.cg-zap-btn { width: 100%; justify-content: center; } .cg-zap-btn small { display: none; } }
+
+/* setinha "a prévia está logo abaixo" (site pronto, falta o restante): sólida, tátil, quique leve só com transform */
+.cg-seta-previa { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 48px; margin-top: 8px; padding: 8px 14px; border-radius: 16px; border: 2px solid var(--t-borda-cor, #33425c); background: var(--sup, #0b111c); color: var(--txt); font: inherit; font-weight: 700; font-size: .92rem; cursor: pointer; box-shadow: var(--t-sombra-p, 3px 3px 0 #1a2741); -webkit-tap-highlight-color: transparent; transition: transform .18s ease, box-shadow .18s ease; }
+.cg-seta-previa:active { transform: translate(3px, 3px); box-shadow: 0 0 0 transparent; }
+.cg-seta-previa:focus-visible { outline: 3px solid var(--agua); outline-offset: 2px; }
+.cg-seta-previa i { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--agua, #3fd2ff); color: #04131c; animation: cgSetaQuica 1.6s var(--t-mola, ease-in-out) infinite; }
+@keyframes cgSetaQuica { 0%, 55%, 100% { transform: translateY(0); } 25% { transform: translateY(6px); } 40% { transform: translateY(-2px); } }
+
+/* depois do sinal pago: a página muda de fase (status da produção, sem pacote nem pagamento) */
+.cg-fase-sinal { display: grid; gap: 6px; margin: 12px 0 0; padding: 12px 14px; border-radius: 16px; border: 2px solid #15863f; background: var(--sup, #0b111c); animation: cgPixEntra .35s ease-out both; }
+.cg-fase-sinal p { margin: 0; font-size: .92rem; }
+.cg-fase-sinal p b { display: inline-block; width: 1.2em; color: #3ddc84; }
+.cg-fase-sinal p span { color: var(--txt-2); }
+
+@media (prefers-reduced-motion: reduce) { .cg-pix-qr, .cg-pac-dif span, .cg-zap-duvida a.cg-zap-btn, .cg-fase-sinal, .cg-seta-previa, .cg-seta-previa i { animation: none; transition: none; } }

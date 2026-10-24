@@ -73,7 +73,7 @@
     $('status-t').textContent = window.CGAndamento ? window.CGAndamento.limpo(r, an) : (r.situacaoTexto || 'Pedido recebido');
     $('status-s').textContent = i.publicado ? 'Seu site está no ar. Para mudar alguma coisa, use "Pedir uma mudança" logo abaixo.'
       : i.restanteLiberado ? 'Seu site final está pronto! Veja na prévia. Assim que o restante cair, ele vai ao ar de vez.'
-      : i.sinalRecebido ? 'Recebemos o sinal. Mande na conversa o que faltar para o site final.'
+      : i.sinalRecebido ? 'Sinal pago. Seu site final está em produção. Mande na conversa a logo ou o que faltar.'
       : i.pixLiberado ? (temLinkMP(i) ? 'O link de pagamento (Pix ou cartão) está logo abaixo. Assim que o sinal for aprovado, começamos o site final.' : 'Os dados do Pix estão logo abaixo. Assim que o sinal cair, começamos o site final.')
       : an.naFila ? 'Seu pedido está na fila de produção da nossa equipe. Enquanto isso, pode tirar dúvidas na conversa.'
       : an.emProd && i.versao ? 'Nossa equipe está aplicando os seus ajustes. A nova versão aparece aqui na prévia.'
@@ -102,9 +102,20 @@
     cta.hidden = prep || !(i.podeAprovar || (i.versao && !i.pixLiberado && !an.naFila && !an.emProd));
     desenharPix(prep);
     $('aprovar').disabled = !i.podeAprovar;
-    $('cta-s').textContent = i.rodadasRestantes === 0 ? 'Ajustes da prévia usados. Aprove e o resto entra no site final, depois do sinal.' : 'Você só paga o sinal de 50% depois de aprovar. O resto, na entrega.';
+    // valor EXATO que vai ser cobrado ao aprovar (vem do app, o mesmo do Pix; nunca a conta da tabela aqui no navegador)
+    var sp = Number(i.sinalPrevisto) || 0;
+    $('cta-s').textContent = i.rodadasRestantes === 0 ? 'Ajustes da prévia usados. Aprove e o resto entra no site final, depois do sinal' + (sp ? ' de ' + brl2(sp) : '') + '.' : sp ? 'Ao aprovar, você paga só o sinal: ' + brl2(sp) + '. O resto, na entrega.' : 'Você só paga o sinal de 50% depois de aprovar. O resto, na entrega.';
     // pacotes (valores vêm da tabela da ClickGo, mandados pelo app)
     desenharPacotes();
+    // SINAL PAGO (dono 24/10/2026): a página muda de fase. Status da produção, prazo e o restante na entrega; nada de
+    // escolher pacote, aprovar ou pagar o sinal de novo
+    var posSinal = !!(i.sinalRecebido && !i.restanteLiberado && !i.publicado && !i.cancelado && !proj && r.situacao !== 'desistencia');
+    $('fase-sinal').hidden = !posSinal;
+    if (posSinal) {
+      cta.hidden = true; $('pacotes').hidden = true; $('resumo-pac').hidden = true; $('pix').hidden = true;
+      var rp = Number(i.restantePrevisto) || 0;
+      $('fase-resta-l').hidden = !rp; $('fase-resta').textContent = rp ? brl2(rp) + ', só na entrega' : '';
+    }
     // pedido substituído por um novo deste aparelho
     if (i.cancelado || r.situacao === 'cancelado') {
       $('giro').hidden = true; cta.hidden = true; $('pacotes').hidden = true; $('resumo-pac').hidden = true; $('aba-editor').hidden = true; $('ir-editar').hidden = true;
@@ -151,11 +162,14 @@
   function desenharAvisoPag() {
     var i = estado.info || {}, rest = !!(i.restanteLiberado && !i.publicado), sin = !!(i.pixLiberado && !i.sinalRecebido && !i.publicado && !i.cancelado);
     $('aviso-pag').hidden = !(rest || sin);
+    // site pronto: setinha "a prévia está logo abaixo" (dono 24/10/2026)
+    $('seta-previa').hidden = !(rest && estado.previaUrl && !i.previaExpirada);
     if (!(rest || sin)) return;
     var v = rest ? Number(i.restante) || 0 : Number(i.sinal) || 0;
-    $('aviso-pag-t').textContent = rest ? 'Seu site está pronto! Falta só o restante' + (v ? ' (' + brl(v) + ')' : '') + ' para ir ao ar.' : 'Prévia aprovada! Falta só o sinal' + (v ? ' (' + brl(v) + ')' : '') + ' para começar o site final.';
-    $('aviso-pag-s').textContent = temLinkMP(i) ? 'Toque para pagar (Pix ou cartão, até 12x).' : 'Toque para ver o Pix' + (i.querCartao ? '. O link do cartão chega na conversa.' : ' ou pedir o cartão parcelado.');
+    $('aviso-pag-t').textContent = rest ? 'Seu site está pronto! Falta só o restante' + (v ? ' (' + brl2(v) + ')' : '') + ' para ir ao ar.' : 'Prévia aprovada! Falta só o sinal' + (v ? ' (' + brl2(v) + ')' : '') + ' para começar o site final.';
+    $('aviso-pag-s').textContent = i.precisaContato ? 'Toque para informar o e-mail e gerar o Pix.' : temPix(i) ? 'Toque para ver o QR Code do Pix (qualquer banco).' : temLinkMP(i) ? 'Toque para pagar (Pix ou cartão, até 12x).' : 'Toque para ver o Pix' + (i.querCartao ? '. O link do cartão chega na conversa.' : ' ou pedir o cartão parcelado.');
   }
+  $('seta-previa').onclick = function () { if (!ehLargo()) abrirAba('previa'); $('painel-previa').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); };
   $('aviso-pag').onclick = function () { $('pix').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
   // "Prefere cartão parcelado? Toque aqui": o pedido vai à conversa e a equipe é avisada (sem digitar)
   $('pix-cartao').onclick = function () {
@@ -173,6 +187,18 @@
   })();
   // Mercado Pago ligado no app (dono, 21/10/2026): o pagamento sai SÓ pelo link (Pix ou cartão), sem chave copia-e-cola
   function temLinkMP(i) { return /^https:\/\/(www\.|sandbox\.)?mercadopago\.com(\.br)?\//.test(String((i || {}).cartaoUrl || '')); }
+  // PIX NA PÁGINA (24/10/2026): QR Code + copia e cola gerados pela API do Mercado Pago (qualquer banco, sem app do MP)
+  function temPix(i) { return /^000201[\x20-\x7e]{20,600}$/.test(String((i || {}).pixQr || '')); }
+  var qrCarregado = '', qrBuscando = '';
+  function carregarQr(id) {
+    if (!id || qrCarregado === id || qrBuscando === id) return;
+    qrBuscando = id;
+    CG.chamar('/pedido/' + encodeURIComponent(ID) + '/pix-img', { chave: K }).then(function (r) {
+      qrBuscando = '';
+      if (!r || r.id !== id || !/^[A-Za-z0-9+/]{100,40000}={0,2}$/.test(String(r.b64 || ''))) return;
+      var im = $('pix-qr'); im.src = 'data:image/png;base64,' + r.b64; im.hidden = false; $('pix-qr-carregando').hidden = true; qrCarregado = id;
+    }).catch(function () { qrBuscando = ''; $('pix-qr-carregando').textContent = 'Use o código abaixo (copia e cola).'; });
+  }
   function desenharPix(prep) {
     var i = estado.info || {}, rest = !!(i.restanteLiberado && !i.publicado && !i.cancelado), mostra = rest || !!(i.pixLiberado && !i.sinalRecebido && !i.publicado && !i.cancelado);
     desenharAvisoPag();
@@ -185,16 +211,27 @@
     $('pix-titulo').textContent = rest ? 'Pague o restante e coloque o seu site no ar' : 'Pague o sinal e garanta o seu site';
     $('pix-rotulo').textContent = rest ? 'Restante (50%)' : 'Sinal (50%)';
     $('pix-garante-sinal').hidden = rest; $('pix-garante-restante').hidden = !rest;
-    // Mercado Pago ligado no app: link de pagamento com o valor exato (até 12x); senão, o pedido de cartão vai à equipe
-    var mp = temLinkMP(i);
-    $('pix-cartao-link').hidden = !mp; $('pix-cartao').hidden = mp; $('pix-mp-nota').hidden = !mp;
-    $('pix-nota').hidden = mp; $('pix-comprovante').hidden = mp;
+    // 1º o e-mail (obrigatório: recibo e link da página); depois o Pix na página (QR + copia e cola); o cartão do MP fica
+    // como opção secundária. Sem Pix (Mercado Pago desligado ou fora): o link do MP ou a chave Pix, como antes.
+    var contato = !!i.precisaContato, pix = !contato && temPix(i);
+    $('pix-contato').hidden = !contato; $('pix-tel-box').hidden = !!i.telConhecido;
+    $('pix-qr-box').hidden = !pix;
+    if (pix) {
+      if ($('pix-copia').textContent !== i.pixQr) $('pix-copia').textContent = i.pixQr;
+      if (qrCarregado !== i.pixId) { $('pix-qr').hidden = true; $('pix-qr-carregando').hidden = false; }
+      carregarQr(i.pixId);
+    }
+    var mp = !contato && temLinkMP(i);
+    $('pix-cartao-link').hidden = !mp; $('pix-cartao').hidden = mp || contato; $('pix-mp-nota').hidden = !mp || pix;
+    $('pix-cartao-link').className = 'cg-btn cg-pix-mp ' + (pix ? 'cg-btn-linha secundario' : 'cg-btn-prim');
+    $('pix-cartao-link').innerHTML = pix ? 'Prefere cartão? Até 12x <small>Mercado Pago</small>' : 'Pagar (Pix ou cartão, até 12x) <small>Mercado Pago</small>';
+    $('pix-nota').hidden = mp || pix || contato; $('pix-comprovante').hidden = mp || pix || contato;
     if (mp) $('pix-cartao-link').href = i.cartaoUrl;
     if (i.querCartao && !$('pix-cartao').disabled) { $('pix-cartao').disabled = true; $('pix-cartao').innerHTML = 'Pedido de cartão enviado. O link chega na conversa.'; }
     var sinal = rest ? Number(i.restante) || 0 : Number(i.sinal) || 0, chave = String(i.pixChave || '');
     $('pix-valor').parentNode.hidden = !sinal;
-    $('pix-valor').textContent = brl(sinal);
-    $('pix-chave-box').hidden = mp || !chave; $('pix-sem').hidden = mp || !!chave;
+    $('pix-valor').textContent = brl2(sinal);
+    $('pix-chave-box').hidden = mp || pix || contato || !chave; $('pix-sem').hidden = mp || pix || contato || !!chave;
     $('pix-chave').textContent = chave;
   }
   function copiarTexto(t) {
@@ -211,6 +248,23 @@
     var b = this, t = $('pix-chave').textContent;
     copiarTexto(t).then(function () { b.textContent = 'Chave copiada!'; toast('Chave Pix copiada. É só colar no app do seu banco.'); setTimeout(function () { b.textContent = 'Copiar chave Pix'; }, 2500); })
       .catch(function () { toast('Não consegui copiar: segure o dedo sobre a chave para copiar.'); });
+  };
+  $('pix-copiar-cc').onclick = function () {
+    var b = this, t = $('pix-copia').textContent;
+    copiarTexto(t).then(function () { b.textContent = 'Código copiado!'; toast('Código Pix copiado. No app do banco, escolha Pix > Copia e cola.'); setTimeout(function () { b.textContent = 'Copiar código Pix'; }, 2500); })
+      .catch(function () { toast('Não consegui copiar: segure o dedo sobre o código para copiar.'); });
+  };
+  var EMAIL_OK = /^[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,190}\.[A-Za-z]{2,24}$/;
+  $('pix-contato').onsubmit = function (ev) {
+    ev.preventDefault();
+    var em = String($('pix-email').value || '').trim(), tel = String($('pix-tel').value || '').replace(/\D/g, ''), er = $('pix-contato-erro'), b = $('pix-contato-ok');
+    er.hidden = true;
+    if (!EMAIL_OK.test(em)) { er.textContent = 'Confira o e-mail (ex.: voce@email.com).'; er.hidden = false; $('pix-email').focus(); return; }
+    if (tel && !/^(55)?[1-9]\d{9,10}$/.test(tel)) { er.textContent = 'Confira o WhatsApp: DDD + número.'; er.hidden = false; $('pix-tel').focus(); return; }
+    if (b.disabled) return;
+    b.disabled = true; b.textContent = 'Gerando o seu Pix…';
+    mandar('', { tipo: 'pagador', email: em, telefone: tel }).then(function () { toast('E-mail recebido! O Pix aparece aqui em instantes.'); setTimeout(function () { b.disabled = false; b.textContent = 'Gerar meu Pix'; }, 15000); })
+      .catch(function () { b.disabled = false; b.textContent = 'Gerar meu Pix'; });
   };
   $('pix-comprovante').onclick = function () {
     if (ehLargo()) $('painel-conversa').scrollIntoView({ behavior: 'smooth' }); else abrirAba('conversa');
@@ -229,6 +283,8 @@
   };
 
   function brl(v) { var n = Number(v) || 0; return 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
+  // valor a pagar: sempre com centavos (R$ 1,00), igual ao que o Mercado Pago cobra
+  function brl2(v) { var n = Number(v) || 0; return 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   var pacotesDesenhados = '', rolouPacote = false;
   $('resumo-pac').onclick = function () { $('pacotes').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   function desenharPacotes() {
@@ -243,6 +299,20 @@
     if (assin === pacotesDesenhados) return;
     pacotesDesenhados = assin;
     box.innerHTML = '';
+    // COMPARAÇÃO (dono 24/10/2026): do menor para o maior, o que cada pacote tem A MAIS fica marcado (+) e o menor mostra,
+    // riscado, o que só vem no próximo. Só com os itens da tabela (nada inventado aqui); "Tudo do X" vira o cabeçalho.
+    var ord = ps.slice().sort(function (a, b) { return (Number(a.implantacao) || 0) - (Number(b.implantacao) || 0); });
+    var ehPonte = function (t) { return /^tudo do /i.test(String(t)); };
+    var normI = function (t) { return String(t).toLowerCase().replace(/\s+/g, ' ').trim(); };
+    var difDe = {};
+    ord.forEach(function (p, k) {
+      var ant = k ? ord[k - 1] : null, prox = ord[k + 1] || null;
+      var tinha = ant ? (ant.inclui || []).map(normI) : [];
+      var ponte = (p.inclui || []).filter(ehPonte)[0] || '';
+      var novos = ant ? (p.inclui || []).filter(function (t) { return !ehPonte(t) && tinha.indexOf(normI(t)) < 0; }) : [];
+      var falta = prox ? (prox.inclui || []).filter(function (t) { return !ehPonte(t) && (p.inclui || []).map(normI).indexOf(normI(t)) < 0; }) : [];
+      difDe[p.pacote] = { ponte: ponte, novos: novos, falta: falta, prox: prox ? prox.pacote : '' };
+    });
     ps.forEach(function (p) {
       var c = document.createElement('article');
       c.className = 'cg-pac' + (p.recomendado ? ' rec' : '') + (p.escolhido ? ' esc' : '');
@@ -254,8 +324,11 @@
       c.querySelector('.cg-pac-preco b').textContent = p.implantacao ? brl(p.implantacao) : brl(p.mensalidade) + '/mês';
       c.querySelector('.cg-pac-preco span').textContent = p.implantacao ? (p.mensalidade ? 'implantação + ' + brl(p.mensalidade) + '/mês' : 'pagamento único') : '';
       c.querySelector('.cg-pac-prazo').textContent = p.prazo ? 'Prazo: ' + p.prazo : '';
-      var ul = c.querySelector('ul');
-      (p.inclui || []).forEach(function (t) { var li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+      var ul = c.querySelector('ul'), df = difDe[p.pacote] || { novos: [], falta: [] };
+      if (df.ponte) { var mais = document.createElement('p'); mais.className = 'cg-pac-mais'; mais.textContent = df.ponte.replace(/[.:]$/, '') + ', mais:'; ul.parentNode.insertBefore(mais, ul); }
+      (p.inclui || []).filter(function (t) { return !(df.ponte && t === df.ponte); }).forEach(function (t) { var li = document.createElement('li'); li.textContent = t; if (df.novos.indexOf(t) >= 0) li.className = 'novo'; ul.appendChild(li); });
+      df.falta.slice(0, 3).forEach(function (t) { var li = document.createElement('li'); li.className = 'falta'; li.textContent = t; li.title = 'Só a partir do ' + df.prox; ul.appendChild(li); });
+      if (df.falta.length) { var lf = document.createElement('li'); lf.className = 'falta-nota'; lf.textContent = (df.falta.length > 3 ? 'Riscados e mais ' + (df.falta.length - 3) : 'Riscados') + ': só no ' + df.prox; ul.appendChild(lf); }
       if (p.mensalidadeInclui && p.mensalidade) { var li = document.createElement('li'); li.className = 'mens'; li.textContent = 'Mensalidade: ' + p.mensalidadeInclui; ul.appendChild(li); }
       var b = c.querySelector('button');
       if (p.escolhido) { b.className = 'cg-btn cg-btn-linha'; b.textContent = 'Pacote escolhido'; b.disabled = true; }
@@ -318,8 +391,8 @@
     // pergunta da equipe esperando resposta: as respostas rápidas tomam o lugar das sugestões
     var pp = window.CGAndamento && window.CGAndamento.pendente(estado);
     if (pp && pp.opcoes.length) { pp.opcoes.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.className = 'cg-op-perg perg'; b.textContent = t; b.onclick = function () { window.CGAndamento.responder(t, estado); }; s.appendChild(b); }); return; }
-    var lista = i.publicado ? ['Quero mudar uma coisa no site'] : i.restanteLiberado ? ['Já paguei o restante', temLinkMP(i) ? 'Como faço para pagar?' : 'Aceita cartão?'] : i.pixLiberado ? ['Já paguei o sinal', temLinkMP(i) ? 'Como faço para pagar?' : 'Qual é a chave Pix?'] : i.versao ? ['Quanto fica?', 'Como funciona o pagamento?', 'Quanto tempo para ficar no ar?'] : ['Quanto custa um site?', 'Em quanto tempo fica pronto?'];
-    lista.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function () { if (i.publicado && $('sala-texto') && !$('sala-mudar').hidden && !$('sala').hidden) { $('sala-mudar').scrollIntoView({ behavior: 'smooth' }); $('sala-texto').focus(); } else mandar(t); }; s.appendChild(b); });
+    var lista = i.publicado ? ['Quero mudar uma coisa no site'] : (i.sinalRecebido && !i.restanteLiberado) ? ['Mandar logo', 'Quando fica pronto?', 'Quero mudar algo'] : i.restanteLiberado ? ['Já paguei o restante', temLinkMP(i) ? 'Como faço para pagar?' : 'Aceita cartão?'] : i.pixLiberado ? ['Já paguei o sinal', temLinkMP(i) ? 'Como faço para pagar?' : 'Qual é a chave Pix?'] : i.versao ? ['Quanto fica?', 'Como funciona o pagamento?', 'Quanto tempo para ficar no ar?'] : ['Quanto custa um site?', 'Em quanto tempo fica pronto?'];
+    lista.forEach(function (t) { var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function () { if (t === 'Mandar logo') { abrirConversa(); $('anexo-input').click(); return; } if (i.publicado && $('sala-texto') && !$('sala-mudar').hidden && !$('sala').hidden) { $('sala-mudar').scrollIntoView({ behavior: 'smooth' }); $('sala-texto').focus(); } else mandar(t); }; s.appendChild(b); });
   }
 
   // ---------- conversa ----------
